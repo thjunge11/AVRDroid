@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue_light">#33B5E5</color><color name="blue_light_trans">#5533B5E5</color><color name="orange">#FF8800</color><color name="orange_trans">#55FF8800</color><color name="white">#FFFFFF</color><color name="white_trans">#55FFFFFF</color><color name="bg_grey">#282828</color><color name="bg_magenta">#481379</color><color name="bg_black">#000000</color><color name="green_shell">#0BEA0B</color>
+    <color name="grey_remote">#181b19</color>
+    <color name="green_button">#3a6d3d</color>
+    <color name="black">#000000</color>
+    <color name="pageNo">#FFFFFF</color>
+    
+    <color name="blue_dark">#0099CC</color>
+    <color name="text_shadow">#7F000000</color>
+    <color name="text_shadow_white">#FFFFFF</color>
+    
+    
+    
+    
+    <color name="page_button_bg">#80464646</color>
+    
+    
+    
+    
+    
+</resources>

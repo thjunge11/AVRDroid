@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+<item 
+        android:id="@+id/cmenu_show_comment" 
+        android:orderInCategory="1" 
+        android:title="@string/cmenu_show_comment"></item> 
+<item 
+        android:id="@+id/cmenu_edit_label" 
+        android:orderInCategory="2" 
+        android:title="@string/cmenu_edit_label"></item>
+<item 
+        android:id="@+id/cmenu_edit_style" 
+        android:orderInCategory="4" 
+        android:title="@string/cmenu_edit_style"></item>
+<item 
+        android:id="@+id/cmenu_edit_icon" 
+        android:orderInCategory="3" 
+        android:title="@string/cmenu_edit_icon"></item>
+<item 
+        android:id="@+id/cmenu_edit_command" 
+        android:orderInCategory="5" 
+        android:title="@string/cmenu_edit_command"></item>
+<item 
+        android:id="@+id/cmenu_edit_comment" 
+        android:orderInCategory="6" 
+        android:title="@string/cmenu_edit_comment"></item>
+
+</menu>

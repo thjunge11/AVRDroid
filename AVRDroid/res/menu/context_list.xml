@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<item 
+        android:id="@+id/cmenulist_select" 
+        android:orderInCategory="1" 
+        android:title="@string/cmenulist_select"></item> 
+<item 
+        android:id="@+id/cmenulist_rename" 
+        android:orderInCategory="2" 
+        android:title="@string/cmenulist_rename"></item>
+<item 
+        android:id="@+id/cmenulist_delete" 
+        android:orderInCategory="3" 
+        android:title="@string/cmenulist_delete"></item>    
+
+</menu>

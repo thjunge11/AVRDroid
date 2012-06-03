@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+<LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >    
+    <TextView android:id="@+id/version_label"
+		android:layout_marginTop="5sp"
+		android:layout_marginLeft="5sp"
+	    android:layout_marginBottom="5sp"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+    	android:text="@string/version" />
+   <TextView 
+		android:layout_marginLeft="5sp"
+   		android:layout_marginTop="5sp"
+   		android:layout_marginBottom="5sp"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+    	android:text="Remote control your Denon® AVR via local network. You have to specify the ip address of the receiver in the settings menu. Create your own remote control button layouts with XML files."
+    	android:autoLink="all" />
+  <TextView 
+		android:layout_marginLeft="5sp"
+   		android:layout_marginTop="5sp"
+   		android:layout_marginBottom="5sp"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+    	android:text="Further infos are available on the project page at: http://avrdroid.wordpress.com"
+    	android:autoLink="all" />
+<TextView 
+		android:layout_marginLeft="5sp"
+   		android:layout_marginTop="5sp"
+   		android:layout_marginBottom="5sp"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+    	android:text="Send me bug reports, general feedback, feature requests or just share your layouts via email: thjunge11@googlemail.com"
+    	android:autoLink="all" />   
+   <TextView 
+		android:layout_marginLeft="5sp"
+   		android:layout_marginTop="5sp"
+   		android:layout_marginBottom="5sp"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+    	android:text="For xml serialization/deserialization the Simple XML serialization open source library (http://simple.sourceforge.com) is used in this app."
+    	android:autoLink="all" />
+    <TextView 
+		android:layout_marginLeft="5sp"
+   		android:layout_marginTop="5sp"
+   		android:layout_marginBottom="5sp"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+    	android:text="This application is not affiliated with Denon. Denon is a registered trademark of D&amp;M Holdings, Inc."
+    	android:autoLink="all" />
+    
+    
+</LinearLayout>
+</ScrollView>

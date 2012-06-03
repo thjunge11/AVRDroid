@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries_buttoncolor">
+        <item >Blue</item>
+        <item >Orange</item>
+        <item >White</item>
+    </string-array>
+    <string-array name="entries_backgroundcolor">
+        <item >Grey</item>
+        <item >Black</item>
+        <item >Magenta</item>
+    </string-array>
+    <string-array name="entries_textsize">
+        <item >Large</item>
+        <item >Medium</item>
+        <item >Small</item>
+    </string-array>
+    <string-array name="entries_volume_up_keys">
+        <item >Default</item>
+        <item >Increase AVR volume</item>
+        <item >Custom command</item>
+    </string-array>
+    <string-array name="entries_volume_down_keys">
+        <item >Default</item>
+        <item >Decrease AVR volume</item>
+        <item >Custom command</item>
+    </string-array>
+    
+     <string-array name="buttonstyle_items">
+        <item >Dark (default)</item>
+        <item >Light</item>
+        <item >Red</item>
+    </string-array>
+    <string-array name="buttonstyle_item_values">
+        <item >dark</item>
+        <item >light</item>
+        <item >red</item>
+    </string-array>
+    
+</resources>

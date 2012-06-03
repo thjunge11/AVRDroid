@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/grey_remote" >
+
+	<TextView
+	    android:layout_margin="5dp"	    
+	    android:textSize="12sp"
+	    android:id="@+id/tv_status"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="@+id/bt_connect"
+	    android:layout_alignParentLeft="true"
+	    android:text="@string/status_not_connected"
+	    android:textColor="@color/green_shell" />
+	<Button
+	    android:textSize="12sp"
+	    android:layout_marginRight="2dp"
+	    android:layout_marginLeft="2dp"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp" 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/tv_status"
+	    android:layout_toLeftOf="@+id/bt_dump"
+	    android:id="@+id/bt_connect"
+		android:text="@string/label_bt_connect"
+		android:textColor="@color/grey_remote"
+		android:background="@color/green_shell"
+		android:padding="5dp" />
+	<Button
+	    android:textSize="12sp"
+	    android:layout_marginRight="2dp"
+	    android:layout_marginLeft="2dp"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp" 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:id="@+id/bt_dump"
+	    android:text="@string/label_bt_dump"
+	    android:layout_below="@+id/tv_status"
+	    android:layout_toLeftOf="@+id/bt_clear"
+	    android:textColor="@color/grey_remote"
+		android:background="@color/green_shell"
+		android:padding="5dp" />
+	<Button
+	    android:textSize="12sp"
+	    android:layout_marginRight="5dp"
+	    android:layout_marginLeft="2dp"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp" 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:id="@+id/bt_clear"
+	    android:text="@string/label_bt_clear"
+	    android:layout_below="@+id/tv_status"
+	    android:layout_alignParentRight="true"
+	    android:textColor="@color/grey_remote"
+		android:background="@color/green_shell"
+		android:padding="5dp" />
+
+	<Button 
+	    android:textSize="12sp"
+	    android:layout_marginRight="2dp"
+	    android:layout_marginLeft="2dp"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp" 
+	    android:id="@+id/bt_setget" 
+	    android:text="@string/label_bt_send" 
+		android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/tv_status"
+	    android:layout_alignParentLeft="true"
+	    android:textColor="@color/grey_remote"
+		android:background="@color/green_shell"
+		android:padding="5dp" />
+	<Button 
+	    android:textSize="12sp"
+	    android:layout_marginRight="2dp"
+	    android:layout_marginLeft="2dp"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp" 
+	    android:id="@+id/bt_read" 
+	    android:text="@string/label_bt_read" 
+		android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/tv_status"
+	    android:layout_toRightOf="@+id/bt_setget"
+	    android:textColor="@color/grey_remote"
+		android:background="@color/green_shell"
+		android:padding="5dp" />
+		
+	<EditText
+	    android:layout_margin="5dp"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" 
+	    android:id="@+id/ev_send"
+	    android:layout_alignParentLeft="true"
+	    android:layout_below="@+id/bt_setget" 
+	    android:inputType="textCapCharacters"
+	    android:singleLine="true"
+	    android:background="@color/green_button"
+	    android:textColor="@color/green_shell" />
+	
+		
+	<ScrollView 
+	    android:id="@+id/scroll"
+	    android:layout_margin="5dp" 
+	    android:layout_height="fill_parent"
+		android:layout_width="fill_parent"
+		android:layout_below="@+id/ev_send">
+		
+		<TextView 
+		    	    
+	        android:id="@+id/tv_response"
+	        android:typeface="monospace" 
+		    android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textSize="12sp"
+			android:textColor="@color/green_shell" />
+	</ScrollView>
+	
+</RelativeLayout>

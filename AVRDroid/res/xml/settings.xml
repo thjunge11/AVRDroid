@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/pref_cat_connect">
+        <EditTextPreference 
+            android:title="@string/pref_cat_connect_addr" 
+            android:summary="@string/pref_cat_connect_addr_summary" 
+            android:key="ipaddress" 
+            android:defaultValue="@string/pref_cat_connect_addr_default"/>
+        <EditTextPreference 
+            android:title="@string/pref_cat_connect_port" 
+            android:summary="@string/pref_cat_connect_port_summary" 
+            android:key="port" 
+            android:defaultValue="@string/pref_cat_connect_port_default"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_cat_gui">
+        <CheckBoxPreference
+            android:title="@string/pref_cat_gui_enable_select_warning" 
+            android:summary="@string/pref_cat_gui_enable_select_warning_summary" 
+            android:key="select_warning_dialog" 
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:title="@string/pref_cat_gui_screenlock" 
+            android:summary="@string/pref_cat_gui_screenlock_summary" 
+            android:key="screenlock" 
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:title="@string/pref_cat_gui_useicons" 
+            android:summary="@string/pref_cat_gui_useicons_summary" 
+            android:key="useicons" 
+            android:defaultValue="true"/>
+         <ListPreference
+            android:title="@string/pref_cat_gui_tabcolor"
+            android:summary="@string/pref_cat_gui_tabcolor_summary"
+            android:entries="@array/entries_buttoncolor"
+            android:entryValues="@array/entries_buttoncolor"
+            android:defaultValue="@string/pref_cat_gui_tabcolor_default"
+            android:key="tabcolor" />
+        <ListPreference
+            android:title="@string/pref_cat_gui_buttoncolor"
+            android:summary="@string/pref_cat_gui_buttoncolor_summary"
+            android:entries="@array/entries_buttoncolor"
+            android:entryValues="@array/entries_buttoncolor"
+            android:defaultValue="@string/pref_cat_gui_buttoncolor_default"
+            android:key="buttoncolor" />
+       <ListPreference
+            android:title="@string/pref_cat_gui_textsize"
+            android:summary="@string/pref_cat_gui_textsize_summary"
+            android:entries="@array/entries_textsize"
+            android:entryValues="@array/entries_textsize"
+            android:defaultValue="Small"
+            android:key="textsize" />
+      	</PreferenceCategory>
+      	<PreferenceCategory
+      	    android:title="@string/pref_cat_volumekeys">
+        <ListPreference
+            android:title="@string/pref_cat_volumekeys_volup"
+            android:summary="@string/pref_cat_volumekeys_volup_summary"
+            android:entries="@array/entries_volume_up_keys"
+            android:entryValues="@array/entries_volume_up_keys"
+            android:defaultValue="@string/pref_cat_volumekeys_voldown_default"
+            android:key="volupkey_action" />
+        <EditTextPreference
+            android:title="@string/pref_cat_volumekeys_volup_custom"
+            android:summary="@string/pref_cat_volumekeys_volup_custom_summary"
+            android:key="volupkey_custom" 
+            android:defaultValue="@string/pref_cat_volumekeys_volup_custom_default"
+            android:enabled="false"/>
+        <ListPreference
+            android:title="@string/pref_cat_volumekeys_voldown"
+            android:summary="@string/pref_cat_volumekeys_voldown_summary"
+            android:entries="@array/entries_volume_down_keys"
+            android:entryValues="@array/entries_volume_down_keys"
+            android:defaultValue="@string/pref_cat_volumekeys_voldown_default"
+            android:key="voldownkey_action" />
+        <EditTextPreference
+            android:title="@string/pref_cat_volumekeys_voldown_custom"
+            android:summary="@string/pref_cat_volumekeys_voldown_custom_summary"
+            android:key="voldownkey_custom" 
+            android:defaultValue="@string/pref_cat_volumekeys_voldown_custom_default"
+            android:enabled="false"/>
+        </PreferenceCategory>
+        
+        <PreferenceCategory 
+       	    android:title="@string/pref_cat_extras" >
+       	<CheckBoxPreference
+       	    android:title="@string/pref_cat_extras_broadcast"
+       	    android:summary="@string/pref_cat_extras_broadcast_summary"
+       	    android:key="broadcast"
+       	    android:defaultValue="false" />
+       	</PreferenceCategory>
+</PreferenceScreen>
