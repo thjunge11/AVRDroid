@@ -115,7 +115,8 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			Log.e(TAG, "onCreate(): error loading current layout " + e.getMessage());
 			ButtonStore.readButtonsFromXmlInputStream(this.getResources().openRawResource(R.raw.buttonslayout));
 		}
-	};
+		
+	}
 	
 	@Override
 	protected void onResume() {
@@ -741,6 +742,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 	}
 	
+	
 	@Override
 	protected void updateConnectionStatus(boolean status) {
 		super.updateConnectionStatus(status);
@@ -1060,7 +1062,26 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					AVRRemoteActivity.this.selectPage(v.getId());
+					// AVRRemoteActivity.this.selectPage(v.getId());
+					new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+								
+								int i = 0;
+								while (i < 100) {
+									String answer = AVRConnection.setget("MV?");
+									i++;
+									Log.d(TAG,"periodic answer)" + i);
+									if (answer != null) {
+										Log.d(TAG,"periodic answer)" + answer);
+										
+									}
+								}
+				
+							
+						}
+					}).start();
 				}
 			});
 		}

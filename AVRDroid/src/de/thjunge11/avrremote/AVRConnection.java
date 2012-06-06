@@ -71,7 +71,7 @@ public class AVRConnection {
 				}
 			}
 		}
-		socket = null;
+		// socket = null;
 		if (Constants.DEBUG) Log.d(TAG, "called .close()");
 	}
 	
