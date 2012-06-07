@@ -46,6 +46,7 @@
             </intent-filter>
         </receiver>
         <service android:name="AVRRemoteService" android:exported="false"></service>
+        <service android:name=".AVRRemoteStateChangeService"></service>
     </application>
 
 </manifest>

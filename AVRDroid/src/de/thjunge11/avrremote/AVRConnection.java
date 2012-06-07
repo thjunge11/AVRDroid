@@ -1,6 +1,7 @@
 package de.thjunge11.avrremote;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -171,6 +172,10 @@ public class AVRConnection {
 		
 		if (Constants.DEBUG) Log.d(TAG, "sendCommand(): sent " + strCommand);
 		return true;
+	}
+	
+	public static InputStream getInputStream() throws IOException {
+		return socket.getInputStream();
 	}
 	
 	public static String getResponse() {

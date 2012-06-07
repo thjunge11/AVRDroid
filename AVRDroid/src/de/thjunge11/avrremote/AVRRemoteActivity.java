@@ -83,6 +83,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 
 	private int storedViewonCreateContext;
 	private SendAVRCommand taskHandlerSendAVRCommand;
+	private boolean StateChangeReceiverRunning;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -116,6 +117,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			ButtonStore.readButtonsFromXmlInputStream(this.getResources().openRawResource(R.raw.buttonslayout));
 		}
 		
+	}
+	
+	@Override
+	protected void onStart() {
+		StateChangeReceiverRunning = false;
+		super.onStart();
 	}
 	
 	@Override
@@ -754,6 +761,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		else if (!status) {
 			Toast.makeText(this, R.string.toast_no_connection, Toast.LENGTH_SHORT).show();
 		}
+		if (status && !StateChangeReceiverRunning) {
+			// start receiving service
+			Intent intent = new Intent(this, AVRRemoteStateChangeService.class);
+			this.startService(intent);
+			StateChangeReceiverRunning = true;
+		}
 	}
 	
 	// layout state handling
@@ -1062,26 +1075,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					// AVRRemoteActivity.this.selectPage(v.getId());
-					new Thread(new Runnable() {
-						
-						@Override
-						public void run() {
-								
-								int i = 0;
-								while (i < 100) {
-									String answer = AVRConnection.setget("MV?");
-									i++;
-									Log.d(TAG,"periodic answer)" + i);
-									if (answer != null) {
-										Log.d(TAG,"periodic answer)" + answer);
-										
-									}
-								}
-				
-							
-						}
-					}).start();
+					AVRRemoteActivity.this.selectPage(v.getId());
 				}
 			});
 		}
