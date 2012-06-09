@@ -86,7 +86,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private int storedViewonCreateContext;
 	private SendAVRCommand taskHandlerSendAVRCommand;
 
-	private boolean mStateChangeReceiverRunning;
 	private boolean mStateChangeReceiverBound;
 	private AVRRemoteStateChangeService mStateChangeReceiverService;
 	private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -104,7 +103,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			// try to start receiving service there is a connection
 			if (AVRConnection.isAVRconnected()) {
 				mStateChangeReceiverService.startReceiving();
-				mStateChangeReceiverRunning = true;
 			}
 		}
 	};
@@ -151,7 +149,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	protected void onStart() {
 		super.onStart();
 		// bind to StateChangeReceiverService
-		mStateChangeReceiverRunning = false;
 		mStateChangeReceiverBound = false;
 		Intent intent = new Intent(this, AVRRemoteStateChangeService.class);
 		this.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);	
@@ -380,7 +377,9 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				
 				// to block multiple send tasks esp in case of no connection
 				if (AVRConnection.isAVRconnected()) {
-					return AVRConnection.sendComplexCommand(params[0]);
+					if (AVRConnection.sendComplexCommand(params[0])) {
+						return true;
+					}					
 				}
 				// try reconnect
 				if (AVRConnection.reconnect()) {
@@ -413,11 +412,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		else if (!status) {
 			Toast.makeText(this, R.string.toast_no_connection, Toast.LENGTH_SHORT).show();
 		}
-		
-		// start StateChangeReceiverService receiving thread
-		if (status && mStateChangeReceiverBound && !mStateChangeReceiverRunning) {
+		else {
+			// is service is bound 
+			// start StateChangeReceiverService receiving thread if not running already
+			if (mStateChangeReceiverBound && !mStateChangeReceiverService.isReceivingThreadRunning()) {
 			mStateChangeReceiverService.startReceiving();
-			mStateChangeReceiverRunning = true;
+			}
 		}
 	}
 	

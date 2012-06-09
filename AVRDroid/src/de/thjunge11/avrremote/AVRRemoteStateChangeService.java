@@ -2,6 +2,7 @@ package de.thjunge11.avrremote;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -46,9 +47,17 @@ public class AVRRemoteStateChangeService extends Service {
 	}
 	
 	public void startReceiving() {
-		handlerReceivingThread = new Thread(bodyReceivingThread);
-		handlerReceivingThread.start();
 		stateReceiving.set(true);
+		handlerReceivingThread = new Thread(bodyReceivingThread);
+		// handlerReceivingThread.setDaemon(true);
+		handlerReceivingThread.start();
+	}
+	
+	public boolean isReceivingThreadRunning () {
+		if (handlerReceivingThread != null) {
+			return handlerReceivingThread.isAlive();
+		}
+		return false;
 	}
 	
 	private Runnable bodyReceivingThread = new Runnable() {
@@ -81,10 +90,16 @@ public class AVRRemoteStateChangeService extends Service {
 						// better way would be to use socketChannel with thread.interrupt
 					}
 				}
-				
-			} catch (IOException e) {
-				// bad style, thread may be cancelled due to socket close before read() returns after timeout
-				Log.d(TAG, e.getMessage());
+			} catch (SocketException se) {
+				// bad style, thread may be cancelled due to socket closed exception before read() returns after timeout
+				if ("Socket closed".equals(se.getMessage())) {
+					if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread " + se.getMessage());
+				}
+				else {
+					Log.e(TAG, se.getMessage());
+				}
+			} catch (IOException e) {				
+				Log.e(TAG, e.getMessage());
 			}
 			
 			if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread stopped");
