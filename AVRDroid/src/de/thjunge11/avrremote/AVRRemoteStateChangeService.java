@@ -2,6 +2,9 @@ package de.thjunge11.avrremote;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -14,6 +17,7 @@ public class AVRRemoteStateChangeService extends Service {
 	
 	private final IBinder mBinder = new LocalBinder();
 	private Thread handlerReceivingThread;
+	private AtomicBoolean stateReceiving = new AtomicBoolean();
 	
 	public class LocalBinder extends Binder {
 		AVRRemoteStateChangeService getService() {
@@ -37,15 +41,14 @@ public class AVRRemoteStateChangeService extends Service {
 	@Override
 	public void onDestroy() {
 		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService destroyed");
-		if (handlerReceivingThread != null) {
-			handlerReceivingThread.interrupt();
-		}
+		stateReceiving.set(false);
 		super.onDestroy();
 	}
 	
 	public void startReceiving() {
 		handlerReceivingThread = new Thread(bodyReceivingThread);
 		handlerReceivingThread.start();
+		stateReceiving.set(true);
 	}
 	
 	private Runnable bodyReceivingThread = new Runnable() {
@@ -61,21 +64,27 @@ public class AVRRemoteStateChangeService extends Service {
 				String receiveEvent = "";
 				int intChar;
 				
-				
-				// socketInputStream.read() blocks until characters are available
-				while((intChar = socketInputStream.read()) != -1) {
+				while(stateReceiving.get()) {
 					
-					if (intChar == 0x0D) {
-						if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
-						receiveEvent = "";
-					}
-					else {
-						receiveEvent += (char) intChar;
+					try { 
+						intChar = socketInputStream.read();
+					
+						if (intChar == 0x0D) {
+							if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
+							receiveEvent = "";
+						}
+						else {
+							receiveEvent += (char) intChar;
+						}
+					} catch (SocketTimeoutException ste) {
+						// bad style, thread is stopped by stateReceiving variable
+						// better way would be to use socketChannel with thread.interrupt
 					}
 				}
 				
 			} catch (IOException e) {
-				Log.e(TAG, e.getMessage());
+				// bad style, thread may be cancelled due to socket close before read() returns after timeout
+				Log.d(TAG, e.getMessage());
 			}
 			
 			if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread stopped");

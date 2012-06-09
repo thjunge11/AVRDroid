@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
@@ -83,7 +84,7 @@ public class AVRConnection {
 	
 	private static void connect() {
 		
-		logStatus(".connect()@begin");
+		// logStatus(".connect()@begin");
 		
 		// wait for possible previous close
 		try {
@@ -110,6 +111,7 @@ public class AVRConnection {
         	// This method will block no more than timeout
         	// If the timeout occurs, SocketTimeoutException is thrown.
         	socket.connect(sockaddr, timeoutConnectMs);
+        	socket.setSoTimeout((int) responseTimeMs);
         } catch (UnknownHostException e) {
         	Log.e(TAG, e.getMessage());
         } catch (SocketTimeoutException e) {
@@ -120,7 +122,8 @@ public class AVRConnection {
 	}
 	
 	public static boolean reconnect() {
-		logStatus("reconnect()@begin");
+		
+		// logStatus("reconnect()@begin");
 		
 		close();
 		
@@ -132,6 +135,11 @@ public class AVRConnection {
 		
 		open();
 		
+		if (dstAddr == null || dstPort == 0) {
+			Log.e(TAG, ".connect(): SocketAdress not inizialized");
+			return false;
+		}
+		
         try {
         	InetAddress addr = InetAddress.getByName(dstAddr);
         	SocketAddress sockaddr = new InetSocketAddress(addr, dstPort);
@@ -139,6 +147,7 @@ public class AVRConnection {
         	// If the timeout occurs, SocketTimeoutException is thrown.
         	int timeoutMs = 2000;   // 2 seconds
         	socket.connect(sockaddr, timeoutMs);
+        	socket.setSoTimeout((int) responseTimeMs);
         } catch (UnknownHostException e) {
         	Log.e(TAG, e.getMessage());
         } catch (SocketTimeoutException e) {
@@ -151,7 +160,8 @@ public class AVRConnection {
 	}
 	
 	public static boolean sendCommand(String strCommand) {
-		logStatus("sendCommand()@begin");
+		
+		// logStatus("sendCommand()@begin");
 		
 		if (!isAVRconnected() || (strCommand == null)) {
 			return false;
@@ -182,7 +192,8 @@ public class AVRConnection {
 	}
 	
 	public static String getResponse() {
-		logStatus("getResponse()@begin");
+		
+		// logStatus("getResponse()@begin");
 		
 		if (!isAVRconnected()) {
 			return null;
@@ -219,6 +230,7 @@ public class AVRConnection {
 	}
 		
 	public static String setget(String str) {
+		
 		if(!sendComplexCommand(str))
 			return null;
 		// wait for response
