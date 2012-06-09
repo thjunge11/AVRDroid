@@ -88,6 +88,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 
 	private boolean mStateChangeReceiverBound;
 	private AVRRemoteStateChangeService mStateChangeReceiverService;
+	private StateChangeListener stateChangeListener;
 	private ServiceConnection mServiceConnection = new ServiceConnection() {
 		
 		@Override
@@ -100,7 +101,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			AVRRemoteStateChangeService.LocalBinder binder = (AVRRemoteStateChangeService.LocalBinder) service;
 			mStateChangeReceiverService = binder.getService();
 			mStateChangeReceiverBound = true;
-			// try to start receiving service there is a connection
+			// try to start receiving service if there is a connection
 			if (AVRConnection.isAVRconnected()) {
 				mStateChangeReceiverService.startReceiving();
 			}
@@ -121,6 +122,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		layoutButtons = (RelativeLayout) this.findViewById(R.id.remote_buttons);
 		detector = new SimpleGestureFilter(this, this);
 		avrButtonOnClickListener = new AVRButtonOnClickListener();
+		stateChangeListener = new StateChangeListener();
 		AVRLayoutUtils.bScreenLock = false;
 		
 		// load current layout from private file if possible, else load default
@@ -141,8 +143,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		} catch (IOException e) {
 			Log.e(TAG, "onCreate(): error loading current layout " + e.getMessage());
 			ButtonStore.readButtonsFromXmlInputStream(this.getResources().openRawResource(R.raw.buttonslayout));
-		}
-		
+		}		
 	}
 	
 	@Override
@@ -151,7 +152,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		// bind to StateChangeReceiverService
 		mStateChangeReceiverBound = false;
 		Intent intent = new Intent(this, AVRRemoteStateChangeService.class);
-		this.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);	
+		this.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 	}
 	
 	@Override
@@ -367,6 +368,21 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 	}
 	
+	private class StateChangeListener implements AVRRemoteStateChangeListener {
+
+		@Override
+		public void onStateChange(final String message) {
+			AVRRemoteActivity.this.runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+					Toast.makeText(AVRRemoteActivity.this, message, Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
+		
+	}
+	
 	protected class SendAVRCommand extends AsyncTask<String, Void, Boolean> {
 		@Override
 		protected Boolean doInBackground(String... params) {
@@ -413,10 +429,11 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			Toast.makeText(this, R.string.toast_no_connection, Toast.LENGTH_SHORT).show();
 		}
 		else {
-			// is service is bound 
+			// if service is bound, 
 			// start StateChangeReceiverService receiving thread if not running already
 			if (mStateChangeReceiverBound && !mStateChangeReceiverService.isReceivingThreadRunning()) {
-			mStateChangeReceiverService.startReceiving();
+				mStateChangeReceiverService.registerListener("MUON", stateChangeListener);
+				mStateChangeReceiverService.startReceiving();
 			}
 		}
 	}

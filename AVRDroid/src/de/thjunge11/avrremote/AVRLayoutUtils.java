@@ -33,11 +33,11 @@ public class AVRLayoutUtils {
 		
 		// determine orientation by aspect ratio
 		if (display.getWidth() < display.getHeight()) {
-			if (Constants.DEBUG) Log.d(TAG, "Display orientation: vertical");
+			// if (Constants.DEBUG) Log.d(TAG, "Display orientation: vertical");
 			return Page.ORIENTATION_VERTICAL;
 		}
 		else {
-			if (Constants.DEBUG) Log.d(TAG, "Display orientation: horizontal");
+			// if (Constants.DEBUG) Log.d(TAG, "Display orientation: horizontal");
 			return Page.ORIENTATION_HORIZONTAL;
 		}
 	}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.app.Service;
@@ -16,9 +17,19 @@ public class AVRRemoteStateChangeService extends Service {
 
 	private static final String TAG = AVRRemoteStateChangeService.class.getSimpleName();
 	
+	private class State {
+		public AVRRemoteStateChangeListener callback;
+		public String statename;
+		public State(String statename, AVRRemoteStateChangeListener callback) {
+			this.statename = statename;
+			this.callback = callback;
+		}		
+	}
+	
 	private final IBinder mBinder = new LocalBinder();
 	private Thread handlerReceivingThread;
 	private AtomicBoolean stateReceiving = new AtomicBoolean();
+	private Vector<State> StateVector;
 	
 	public class LocalBinder extends Binder {
 		AVRRemoteStateChangeService getService() {
@@ -29,6 +40,7 @@ public class AVRRemoteStateChangeService extends Service {
 	
 	@Override
 	public void onCreate() {
+		StateVector = new Vector<State>();
 		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService created");
 		super.onCreate();
 	}
@@ -44,6 +56,10 @@ public class AVRRemoteStateChangeService extends Service {
 		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService destroyed");
 		stateReceiving.set(false);
 		super.onDestroy();
+	}
+	
+	public void registerListener(String state, AVRRemoteStateChangeListener callback) {
+		StateVector.add(new State(state, callback));
 	}
 	
 	public void startReceiving() {
@@ -80,6 +96,14 @@ public class AVRRemoteStateChangeService extends Service {
 					
 						if (intChar == 0x0D) {
 							if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
+							
+							// check states
+							for (State state : StateVector) {
+								if (receiveEvent.equals(state.statename)) {
+									state.callback.onStateChange(state.statename + " receiveed");
+								}
+							}
+							
 							receiveEvent = "";
 						}
 						else {
