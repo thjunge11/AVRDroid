@@ -22,6 +22,7 @@ public class AVRConnection {
 	private static final long responseTimeMs = 300;
 	private static final long waitCloseTimeMs = 500;
 	private static final int timeoutConnectMs = 2000;
+	private static final int readTimeoutMs = 1000;
 	
 	private static Socket socket = null;
 	private static String dstAddr = null;
@@ -111,7 +112,7 @@ public class AVRConnection {
         	// This method will block no more than timeout
         	// If the timeout occurs, SocketTimeoutException is thrown.
         	socket.connect(sockaddr, timeoutConnectMs);
-        	socket.setSoTimeout((int) responseTimeMs);
+        	socket.setSoTimeout((int) readTimeoutMs);
         } catch (UnknownHostException e) {
         	Log.e(TAG, e.getMessage());
         } catch (SocketTimeoutException e) {
@@ -147,7 +148,7 @@ public class AVRConnection {
         	// If the timeout occurs, SocketTimeoutException is thrown.
         	int timeoutMs = 2000;   // 2 seconds
         	socket.connect(sockaddr, timeoutMs);
-        	socket.setSoTimeout((int) responseTimeMs);
+        	socket.setSoTimeout((int) readTimeoutMs);
         } catch (UnknownHostException e) {
         	Log.e(TAG, e.getMessage());
         } catch (SocketTimeoutException e) {
