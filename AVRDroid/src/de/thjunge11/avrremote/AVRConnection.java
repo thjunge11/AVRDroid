@@ -175,7 +175,10 @@ public class AVRConnection {
 	}
 	
 	public static InputStream getInputStream() throws IOException {
-		return socket.getInputStream();
+		if (socket != null) {
+			return socket.getInputStream();
+		}
+		else return null;
 	}
 	
 	public static String getResponse() {

@@ -12,9 +12,11 @@ import java.io.OutputStream;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -26,6 +28,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -80,11 +83,36 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private int storedCurrentPage;
 	private AVRButtonOnClickListener avrButtonOnClickListener;
 	private SimpleGestureFilter detector;
-
 	private int storedViewonCreateContext;
 	private SendAVRCommand taskHandlerSendAVRCommand;
-	private boolean StateChangeReceiverRunning;
-	
+
+	private boolean mStateChangeReceiverRunning;
+	private boolean mStateChangeReceiverBound;
+	private AVRRemoteStateChangeService mStateChangeReceiverService;
+	private ServiceConnection mServiceConnection = new ServiceConnection() {
+		
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mStateChangeReceiverBound = false;			
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			AVRRemoteStateChangeService.LocalBinder binder = (AVRRemoteStateChangeService.LocalBinder) service;
+			mStateChangeReceiverService = binder.getService();
+			mStateChangeReceiverBound = true;
+			// try to start receiving service there is a connection
+			if (AVRConnection.isAVRconnected()) {
+				mStateChangeReceiverService.startReceiving();
+				mStateChangeReceiverRunning = true;
+			}
+		}
+	};
+    
+
+	// *********************************************
+	// activity lifecycle state handling 
+	// *********************************************
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
@@ -121,8 +149,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	
 	@Override
 	protected void onStart() {
-		StateChangeReceiverRunning = false;
 		super.onStart();
+		// bind to StateChangeReceiverService
+		mStateChangeReceiverRunning = false;
+		mStateChangeReceiverBound = false;
+		Intent intent = new Intent(this, AVRRemoteStateChangeService.class);
+		this.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);	
 	}
 	
 	@Override
@@ -149,6 +181,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	
 	@Override
 	protected void onStop() {
+		super.onStop();
 		// persist current layout
 		try {
 			FileOutputStream fos = openFileOutput(CURRENTLAYOUT, MODE_PRIVATE);
@@ -160,10 +193,239 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		} catch (IOException e) {
 			Log.e(TAG, "onStop(): error writing current layout " + e.getMessage());
 		}
-		super.onStop();
+		// unbind to StateChangeReceiverService
+		if (mStateChangeReceiverBound) {
+			this.unbindService(mServiceConnection);
+			mStateChangeReceiverBound = false;
+		}
+	}
+		
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (Constants.DEBUG) Log.d(TAG, "onActivityResult(): request: " + requestCode + ", result code: " + resultCode);
+		
+		if (resultCode == RESULT_OK) {
+			switch (requestCode) {
+			
+			case REQUEST_CODE_IMPORT :
+				if (data.getData() != null) {
+					Intent intent = new Intent(this, AVRRemoteImportActivity.class);
+					intent.putExtra(Intent.EXTRA_STREAM, data.getData());
+					this.startActivity(intent);
+					// this.loadLayoutFromStorage(data.getData().getPath());
+				}
+				break;
+				
+			case REQUEST_CODE_SELECT :
+				// load received layout from private file or default if selected in list
+				// onActivityResult is called before onResume, so no need to build layout here
+				if (!data.getBooleanExtra(AVRRemoteSelectActivity.INTENT_EXTRA_IS_DEFAULT, true)) {
+					this.loadLayoutFromExternalStorage(data.getStringExtra(AVRRemoteSelectActivity.INTENT_EXTRA_FILENAME));
+				}
+				else {
+					storedCurrentPage = 1;
+					ButtonStore.readButtonsFromXmlInputStream(this.getResources().openRawResource(R.raw.buttonslayout));
+					if (Constants.DEBUG) Log.d(TAG, "onActivityResult(): default layout loaded");
+				} 
+				break;
+				  
+			default :
+				
+			}
+		}
 	}
 	
 	
+	
+	// *********************************************
+	// events dispatching & listeners & worker threads
+	// *********************************************
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent me) {
+		this.detector.onTouchEvent(me);
+		return super.dispatchTouchEvent(me);
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+	    int action = event.getAction();
+	    int keyCode = event.getKeyCode();
+	    switch (keyCode) {
+        case KeyEvent.KEYCODE_VOLUME_UP:
+            if (action == KeyEvent.ACTION_DOWN) {
+                return VolumeKeyUpEvent();
+            }
+            
+        case KeyEvent.KEYCODE_VOLUME_DOWN:
+            if (action == KeyEvent.ACTION_DOWN) {
+            	return VolumeKeyDownEvent();
+            }
+            
+        default:
+            return super.dispatchKeyEvent(event);
+	    }
+	}
+	
+	private boolean VolumeKeyUpEvent() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+        String strVolUpAction = prefs.getString("volupkey_action", 
+        		getResources().getStringArray(R.array.entries_volume_up_keys)[0]);
+
+        if (strVolUpAction.equals(getResources().getStringArray(R.array.entries_volume_up_keys)[0])) {
+			return false;			
+		}
+		else if (strVolUpAction.equals(getResources().getStringArray(R.array.entries_volume_up_keys)[1])){
+			if (taskHandlerSendAVRCommand != null) {
+				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
+					taskHandlerSendAVRCommand.cancel(true);
+				}
+			}
+			taskHandlerSendAVRCommand = new SendAVRCommand();
+			taskHandlerSendAVRCommand.execute(getString(R.string.pref_cat_volumekeys_volup_custom_default));
+			return true;
+		}
+		else if (strVolUpAction.equals(getResources().getStringArray(R.array.entries_volume_up_keys)[2])){
+			String customcommand = prefs.getString("volupkey_custom", getString(R.string.pref_cat_volumekeys_volup_custom_default));
+			if (taskHandlerSendAVRCommand != null) {
+				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
+					taskHandlerSendAVRCommand.cancel(true);
+				}
+			}
+			taskHandlerSendAVRCommand = new SendAVRCommand();
+			taskHandlerSendAVRCommand.execute(customcommand);
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean VolumeKeyDownEvent() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+        String strVolDownAction = prefs.getString("voldownkey_action", 
+        		getResources().getStringArray(R.array.entries_volume_down_keys)[0]);
+
+        if (strVolDownAction.equals(getResources().getStringArray(R.array.entries_volume_down_keys)[0])) {
+			return false;			
+		}
+		else if (strVolDownAction.equals(getResources().getStringArray(R.array.entries_volume_down_keys)[1])){
+			if (taskHandlerSendAVRCommand != null) {
+				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
+					taskHandlerSendAVRCommand.cancel(true);
+				}
+			}
+			taskHandlerSendAVRCommand = new SendAVRCommand();
+			taskHandlerSendAVRCommand.execute(getString(R.string.pref_cat_volumekeys_voldown_custom_default));
+			return true;
+		}
+		else if (strVolDownAction.equals(getResources().getStringArray(R.array.entries_volume_down_keys)[2])){
+			String customcommand = prefs.getString("voldownkey_custom", getString(R.string.pref_cat_volumekeys_voldown_custom_default));
+			if (taskHandlerSendAVRCommand != null) {
+				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
+					taskHandlerSendAVRCommand.cancel(true);
+				}
+			}
+			taskHandlerSendAVRCommand = new SendAVRCommand();
+			taskHandlerSendAVRCommand.execute(customcommand);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public void onSwipe(int direction) {
+		
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		
+		switch (direction) {
+
+		case SimpleGestureFilter.SWIPE_RIGHT:
+			this.selectPage(storedCurrentPage-1);
+			break;
+		case SimpleGestureFilter.SWIPE_LEFT:
+			this.selectPage(storedCurrentPage+1);
+			break;
+		case SimpleGestureFilter.SWIPE_DOWN:
+			if (settings.getBoolean("screenlock", false))
+				AVRLayoutUtils.lockScreen(false, true, this);
+			break;
+		case SimpleGestureFilter.SWIPE_UP:
+			if (settings.getBoolean("screenlock", false))
+				AVRLayoutUtils.lockScreen(true, true, this);
+			break;
+		}
+	}
+	
+	private class AVRButtonOnClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			if (taskHandlerSendAVRCommand != null) {
+				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
+					taskHandlerSendAVRCommand.cancel(true);
+				}
+			}
+			taskHandlerSendAVRCommand = new SendAVRCommand();
+			taskHandlerSendAVRCommand.execute(ButtonStore.getButtonCommand(v.getId()));
+		}
+	}
+	
+	protected class SendAVRCommand extends AsyncTask<String, Void, Boolean> {
+		@Override
+		protected Boolean doInBackground(String... params) {
+			
+			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI); 
+			if (networkInfo.isConnected()) {
+				
+				// to block multiple send tasks esp in case of no connection
+				if (AVRConnection.isAVRconnected()) {
+					return AVRConnection.sendComplexCommand(params[0]);
+				}
+				// try reconnect
+				if (AVRConnection.reconnect()) {
+					if (Constants.DEBUG) Log.d(TAG, "SendAVRCommand.doInBackground(); reconnect success");
+					return AVRConnection.sendComplexCommand(params[0]);
+				}
+				else {
+					if (Constants.DEBUG) Log.d(TAG, "SendAVRCommand.doInBackground(); reconnect unsuccessfull");
+					return false;
+				}
+			}
+			else {
+				return false;
+			}
+			
+		}
+		protected void onPostExecute(Boolean connected) {
+			updateConnectionStatus(connected);
+		}
+	}
+	
+	@Override
+	protected void updateConnectionStatus(boolean status) {
+		super.updateConnectionStatus(status);
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI); 
+		if (!networkInfo.isConnected()) {
+			Toast.makeText(this, R.string.wifi_not_avaiable, Toast.LENGTH_SHORT).show();
+		}
+		else if (!status) {
+			Toast.makeText(this, R.string.toast_no_connection, Toast.LENGTH_SHORT).show();
+		}
+		
+		// start StateChangeReceiverService receiving thread
+		if (status && mStateChangeReceiverBound && !mStateChangeReceiverRunning) {
+			mStateChangeReceiverService.startReceiving();
+			mStateChangeReceiverRunning = true;
+		}
+	}
+	
+	
+	
+	// *********************************************
+	// context and options menus + dialogs
+	// *********************************************
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -171,6 +433,24 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		inflator.inflate(R.menu.context_buttons, menu);
 		// store view id which called onCreateContextMenu
 		storedViewonCreateContext = v.getId();
+	}
+		
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, OP_MENU_SELECT, Menu.FIRST, this.getString(R.string.op_menu_select))
+		.setIcon(android.R.drawable.ic_menu_view);
+		menu.add(Menu.NONE, OP_MENU_SAVE, Menu.FIRST+1, this.getString(R.string.op_menu_save))
+		.setIcon(android.R.drawable.ic_menu_save);
+		menu.add(Menu.NONE, OP_MENU_IMPORT, Menu.FIRST+2, this.getString(R.string.op_menu_import))
+		.setIcon(android.R.drawable.ic_menu_add);
+		menu.add(Menu.NONE, OP_MENU_SHARE, Menu.FIRST+3, this.getString(R.string.op_menu_share))
+		.setIcon(android.R.drawable.ic_menu_share);
+		menu.add(Menu.NONE, OP_MENU_EDIT, Menu.FIRST+4, this.getString(R.string.op_menu_edit))
+		.setIcon(android.R.drawable.ic_menu_edit);
+		
+		menu.add(Menu.NONE, OP_MENU_ITEM_SHELL, Menu.FIRST+50, this.getString(R.string.op_menu_shell));
+		
+		return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
@@ -203,24 +483,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		default :
 			return super.onContextItemSelected(item);
 		}
-	}
-		
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, OP_MENU_SELECT, Menu.FIRST, this.getString(R.string.op_menu_select))
-		.setIcon(android.R.drawable.ic_menu_view);
-		menu.add(Menu.NONE, OP_MENU_SAVE, Menu.FIRST+1, this.getString(R.string.op_menu_save))
-		.setIcon(android.R.drawable.ic_menu_save);
-		menu.add(Menu.NONE, OP_MENU_IMPORT, Menu.FIRST+2, this.getString(R.string.op_menu_import))
-		.setIcon(android.R.drawable.ic_menu_add);
-		menu.add(Menu.NONE, OP_MENU_SHARE, Menu.FIRST+3, this.getString(R.string.op_menu_share))
-		.setIcon(android.R.drawable.ic_menu_share);
-		menu.add(Menu.NONE, OP_MENU_EDIT, Menu.FIRST+4, this.getString(R.string.op_menu_edit))
-		.setIcon(android.R.drawable.ic_menu_edit);
-		
-		menu.add(Menu.NONE, OP_MENU_ITEM_SHELL, Menu.FIRST+50, this.getString(R.string.op_menu_shell));
-		
-		return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
@@ -296,40 +558,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 	}
 	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (Constants.DEBUG) Log.d(TAG, "onActivityResult(): request: " + requestCode + ", result code: " + resultCode);
-		
-		if (resultCode == RESULT_OK) {
-			switch (requestCode) {
-			
-			case REQUEST_CODE_IMPORT :
-				if (data.getData() != null) {
-					Intent intent = new Intent(this, AVRRemoteImportActivity.class);
-					intent.putExtra(Intent.EXTRA_STREAM, data.getData());
-					this.startActivity(intent);
-					// this.loadLayoutFromStorage(data.getData().getPath());
-				}
-				break;
-				
-			case REQUEST_CODE_SELECT :
-				// load received layout from private file or default if selected in list
-				// onActivityResult is called before onResume, so no need to build layout here
-				if (!data.getBooleanExtra(AVRRemoteSelectActivity.INTENT_EXTRA_IS_DEFAULT, true)) {
-					this.loadLayoutFromExternalStorage(data.getStringExtra(AVRRemoteSelectActivity.INTENT_EXTRA_FILENAME));
-				}
-				else {
-					storedCurrentPage = 1;
-					ButtonStore.readButtonsFromXmlInputStream(this.getResources().openRawResource(R.raw.buttonslayout));
-					if (Constants.DEBUG) Log.d(TAG, "onActivityResult(): default layout loaded");
-				} 
-				break;
-				  
-			default :
-				
-			}
-		}
-	}
 	
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
@@ -583,193 +811,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	    
 		return dialog;
 	}
-	
-	
-	// events dispatching & listeners & worker threads
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent me) {
-		this.detector.onTouchEvent(me);
-		return super.dispatchTouchEvent(me);
-	}
-	
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) {
-	    int action = event.getAction();
-	    int keyCode = event.getKeyCode();
-	    switch (keyCode) {
-        case KeyEvent.KEYCODE_VOLUME_UP:
-            if (action == KeyEvent.ACTION_DOWN) {
-                return VolumeKeyUpEvent();
-            }
-            
-        case KeyEvent.KEYCODE_VOLUME_DOWN:
-            if (action == KeyEvent.ACTION_DOWN) {
-            	return VolumeKeyDownEvent();
-            }
-            
-        default:
-            return super.dispatchKeyEvent(event);
-	    }
-	}
-	
-	private boolean VolumeKeyUpEvent() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-        String strVolUpAction = prefs.getString("volupkey_action", 
-        		getResources().getStringArray(R.array.entries_volume_up_keys)[0]);
-
-        if (strVolUpAction.equals(getResources().getStringArray(R.array.entries_volume_up_keys)[0])) {
-			return false;			
-		}
-		else if (strVolUpAction.equals(getResources().getStringArray(R.array.entries_volume_up_keys)[1])){
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(getString(R.string.pref_cat_volumekeys_volup_custom_default));
-			return true;
-		}
-		else if (strVolUpAction.equals(getResources().getStringArray(R.array.entries_volume_up_keys)[2])){
-			String customcommand = prefs.getString("volupkey_custom", getString(R.string.pref_cat_volumekeys_volup_custom_default));
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(customcommand);
-			return true;
-		}
-		return false;
-	}
-	
-	private boolean VolumeKeyDownEvent() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-        String strVolDownAction = prefs.getString("voldownkey_action", 
-        		getResources().getStringArray(R.array.entries_volume_down_keys)[0]);
-
-        if (strVolDownAction.equals(getResources().getStringArray(R.array.entries_volume_down_keys)[0])) {
-			return false;			
-		}
-		else if (strVolDownAction.equals(getResources().getStringArray(R.array.entries_volume_down_keys)[1])){
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(getString(R.string.pref_cat_volumekeys_voldown_custom_default));
-			return true;
-		}
-		else if (strVolDownAction.equals(getResources().getStringArray(R.array.entries_volume_down_keys)[2])){
-			String customcommand = prefs.getString("voldownkey_custom", getString(R.string.pref_cat_volumekeys_voldown_custom_default));
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(customcommand);
-			return true;
-		}
-		return false;
-	}
 
 	
-	@Override
-	public void onSwipe(int direction) {
-		
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		
-		switch (direction) {
-
-		case SimpleGestureFilter.SWIPE_RIGHT:
-			this.selectPage(storedCurrentPage-1);
-			break;
-		case SimpleGestureFilter.SWIPE_LEFT:
-			this.selectPage(storedCurrentPage+1);
-			break;
-		case SimpleGestureFilter.SWIPE_DOWN:
-			if (settings.getBoolean("screenlock", false))
-				AVRLayoutUtils.lockScreen(false, true, this);
-			break;
-		case SimpleGestureFilter.SWIPE_UP:
-			if (settings.getBoolean("screenlock", false))
-				AVRLayoutUtils.lockScreen(true, true, this);
-			break;
-		}
-	}
 	
-	private class AVRButtonOnClickListener implements OnClickListener {
-
-		@Override
-		public void onClick(View v) {
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(ButtonStore.getButtonCommand(v.getId()));
-		}
-	}
-	
-	protected class SendAVRCommand extends AsyncTask<String, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(String... params) {
-			
-			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI); 
-			if (networkInfo.isConnected()) {
-				
-				// to block multiple send tasks esp in case of no connection
-				if (AVRConnection.isAVRconnected()) {
-					return AVRConnection.sendComplexCommand(params[0]);
-				}
-				// try reconnect
-				if (AVRConnection.reconnect()) {
-					if (Constants.DEBUG) Log.d(TAG, "SendAVRCommand.doInBackground(); reconnect success");
-					return AVRConnection.sendComplexCommand(params[0]);
-				}
-				else {
-					if (Constants.DEBUG) Log.d(TAG, "SendAVRCommand.doInBackground(); reconnect unsuccessfull");
-					return false;
-				}
-			}
-			else {
-				return false;
-			}
-			
-		}
-		protected void onPostExecute(Boolean connected) {
-			updateConnectionStatus(connected);
-		}
-	}
-	
-	
-	@Override
-	protected void updateConnectionStatus(boolean status) {
-		super.updateConnectionStatus(status);
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI); 
-		if (!networkInfo.isConnected()) {
-			Toast.makeText(this, R.string.wifi_not_avaiable, Toast.LENGTH_SHORT).show();
-		}
-		else if (!status) {
-			Toast.makeText(this, R.string.toast_no_connection, Toast.LENGTH_SHORT).show();
-		}
-		if (status && !StateChangeReceiverRunning) {
-			// start receiving service
-			Intent intent = new Intent(this, AVRRemoteStateChangeService.class);
-			this.startService(intent);
-			StateChangeReceiverRunning = true;
-		}
-	}
-	
-	// layout state handling
+	// *********************************************
+	// xml layout writing, reading 
+	// *********************************************
 	private boolean loadLayoutFromExternalStorage (String filename) {
 		
 		// reset page
@@ -866,7 +913,11 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 	}
 	
-	// layout
+	
+	
+	// *********************************************
+	// layout handling and building 
+	// *********************************************
 	private void selectPage(int pageNo) {
 		// ensure that page exists
 		int pageCount = ButtonStore.getNoOfPages(AVRLayoutUtils.determinOrientation(this));
