@@ -8,6 +8,12 @@ import org.simpleframework.xml.core.Validate;
 @Element
 public class Button{
 	
+	public static final int STATETYPE_NONE = 0;
+	public static final int STATETYPE_TOGGLE = 1;
+	public static final int STATETYPE_TOGGLE_VIEW = 2;
+	public static final int STATETYPE_VALUE = 3;
+	public static final int STATETYPE_VALUE_VIEW = 4;
+	
 	@Attribute(required=false)
 	private int span;
 	
@@ -39,6 +45,7 @@ public class Button{
 	// state buttons
 	@Attribute(required=false)
 	private String statetype;
+	private int intStatetype;
 	
 	@Attribute(required=false)
 	private String statequery;
@@ -56,7 +63,7 @@ public class Button{
 	public boolean getSeperator() { return seperator; }
 	public int getIconId() { return intIconId; }
 	public String getStyle() { return style; }
-	public String getStateType() { return statetype; }
+	public int getStateType() { return intStatetype; }
 	public String getStateQuery() { return statequery; }
 	public String getStates() { return states; }
 	
@@ -78,9 +85,10 @@ public class Button{
 		
 		// states dependent validation
 		if (statetype == null) {
+			intStatetype = STATETYPE_NONE;
 			// transform String iconid into integer
 			if (iconid == null) {
-				iconid="";
+				iconid="0";
 				intIconId = 0;
 			}
 			else {
@@ -92,8 +100,17 @@ public class Button{
 			}
 		}
 		else if (statetype.equals("toggle")) {
+			intStatetype = STATETYPE_TOGGLE;
 			// validate state elements
-			
+			if ((statequery == null) || (states == null)) {
+				throw new XmlFileLayoutException("missing state attributes for statetype=" + statetype);
+			}
+			if (statequery.equals("")) {
+				throw new XmlFileLayoutException("statequery attribute must not be empty");
+			}
+			if (states.equals("")) {
+				throw new XmlFileLayoutException("states attribute must not be empty");
+			}
 		}
 		else {
 			throw new XmlFileLayoutException("invalid statetype=" + statetype);
@@ -110,6 +127,8 @@ public class Button{
 		str.append(comment);
 		str.append(";iconid=");
 		str.append(iconid);
+		str.append(";intIconId=");
+		str.append(intIconId);
 		str.append(";span=");
 		str.append(span);
 		str.append(";skip=");
@@ -124,6 +143,8 @@ public class Button{
 		str.append(value);
 		str.append(";statetype=");
 		str.append(statetype);
+		str.append(";intStatetype=");
+		str.append(intStatetype);
 		str.append(";statequery=");
 		str.append(statequery);
 		str.append(";states=");

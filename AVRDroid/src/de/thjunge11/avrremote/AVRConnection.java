@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
@@ -23,8 +22,6 @@ public class AVRConnection {
 	private static final long waitCloseTimeMs = 500;
 	private static final int timeoutConnectMs = 2000;
 	private static final int readTimeoutMs = 1000;
-	private static final int keepAliveMs = 10000;
-	
 	private static Socket socket = null;
 	private static String dstAddr = null;
 	private static int dstPort = 0;
@@ -246,7 +243,7 @@ public class AVRConnection {
 		return getResponse();
 	}
 	
-	private static void logStatus(String str) {
+/*	private static void logStatus(String str) {
 		if  (socket != null && dstAddr != null) {
 			if (Constants.DEBUG) {
 				Log.d(TAG, str + ": socket dstAddr: " + dstAddr + ", dstPort: " + dstPort);
@@ -254,7 +251,7 @@ public class AVRConnection {
 				Log.d(TAG, str + ": socket status isClosed(): " + socket.isClosed());
 			}
 		}		
-	}
+	}*/
 	
 	public static boolean sendComplexCommand (String strCommand) {
 		

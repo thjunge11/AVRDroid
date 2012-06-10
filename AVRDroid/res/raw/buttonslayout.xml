@@ -25,7 +25,7 @@
                 statequery="MU?" 
                 states="MUON|MUOFF" 
                 label="Mute off|Mute on"
-                iconid="20"
+                iconid="20|21"
                 style="red|light"
                 comment="Mute toggle" seperator="false" skip="0" span="1" 
                 newrow="false">MUOFF|MUON</button>
