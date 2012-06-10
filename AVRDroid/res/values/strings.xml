@@ -80,6 +80,7 @@
     <string name="cmenu_edit_style">Edit button style</string>
     <string name="toast_edit_label">Updated label.</string>
     <string name="toast_edit_command">Updated command.</string>
+    <string name="toast_edit_command_error">Input line could not be left blank.</string>
     <string name="toast_edit_iconid">Updated icon Id.</string>
     <string name="toast_edit_comment">Updated comment.</string>
     <string name="toast_edit_style">Updated button style.</string>

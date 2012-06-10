@@ -382,9 +382,14 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				String newCommand = inputCommand.getText().toString();
-				if (ButtonStore.modify(ButtonStore.MODIFY_COMMAND, storedViewonCreateContext, newCommand)) {
-					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command, Toast.LENGTH_SHORT).show();
-					AVRRemoteActivity.this.selectPage(storedCurrentPage);
+				if (newCommand.length() > 0) {
+					if (ButtonStore.modify(ButtonStore.MODIFY_COMMAND, storedViewonCreateContext, newCommand)) {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command, Toast.LENGTH_SHORT).show();
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+				}
+				else {
+					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
 				}
 				removeDialog(CMENU_EDIT_COMMAND); // <-- else view id is not updated
 			  }
@@ -396,6 +401,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			});
 			dialog = builderCommand.create();
 	        break;
+	        
 	        
 		case CMENU_EDIT_COMMENT:
 			final EditText inputComment = new EditText(this);
