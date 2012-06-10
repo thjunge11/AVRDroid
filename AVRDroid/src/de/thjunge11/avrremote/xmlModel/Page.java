@@ -42,7 +42,7 @@ public class Page {
 	public void validateOrientation() throws Exception {
 		if (orientation.equals("portrait")) { intOrientation = ORIENTATION_VERTICAL; }
 		else if (orientation.equals("landscape")) { intOrientation = ORIENTATION_HORIZONTAL; }
-		else intOrientation = ORIENTATION_VERTICAL;
+		else throw new XmlFileLayoutException("invalid orientation=" + orientation);
 		if (name == null) { name = ""; }
 		if (buttons_per_row < 1) { buttons_per_row = 1; }
 		else if (buttons_per_row > MAX_BUTTONS_PER_ROW) { buttons_per_row = MAX_BUTTONS_PER_ROW; }

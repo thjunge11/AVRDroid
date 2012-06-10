@@ -2,6 +2,7 @@ package de.thjunge11.avrremote.xmlLayout;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -185,6 +186,7 @@ public class ButtonStore {
 					newIconId = Integer.parseInt(newValue);
 				} catch (NumberFormatException e) {
 					Log.e(TAG, "modify():" + e.getMessage());
+					return false;
 				}
 				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setIconId(newIconId);
 				break;
@@ -205,8 +207,16 @@ public class ButtonStore {
 		try {
 			Serializer serializer = new Persister();
 			xmlButtonslayout = serializer.read(Buttonslayout.class, inputStream);
+		} catch (InvocationTargetException ite) {
+			if (ite.getCause() != null) {
+				Log.e(TAG,"readButtonsFromXmlInputStream(): " + ite.getCause().getMessage());
+			}
+			else {
+				Log.e(TAG,"readButtonsFromXmlInputStream(): " + ite.getMessage());
+			}
+			return false;
 		} catch (Exception e) {
-			Log.e(TAG,"readButtonsFromXmlInputStream" + e.getMessage());
+			Log.e(TAG,"readButtonsFromXmlInputStream(): " + e.getMessage());
 			return false;
 		}
 		
@@ -230,13 +240,26 @@ public class ButtonStore {
         
 		// try to deserialize xml file
 		Buttonslayout validateButtonslayout;
+		String errorMessage = "";
 		
 		try {
 			Serializer serializer = new Persister();
 			validateButtonslayout = serializer.read(Buttonslayout.class, inputStream);
+		
+		} catch (InvocationTargetException ite) {	
+			if (ite.getCause() != null) {
+				errorMessage += ite.getCause().getMessage();
+				Log.e(TAG,"validateXmlInputStream(): " + errorMessage);				
+			}
+			else {
+				errorMessage += ite.getMessage();
+				Log.e(TAG,"validateXmlInputStream(): " + errorMessage);
+			}
+			return new XmlValidationResults(false, 0, 0, null, null, errorMessage);
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
-			return new XmlValidationResults(false, 0, 0, null, null, e.getMessage());
+			errorMessage += e.getMessage();
+			Log.e(TAG, "validateXmlInputStream(): " + errorMessage);
+			return new XmlValidationResults(false, 0, 0, null, null, errorMessage);
 		}
 		if (Constants.DEBUG) Log.d(TAG, validateButtonslayout.toString());
 		

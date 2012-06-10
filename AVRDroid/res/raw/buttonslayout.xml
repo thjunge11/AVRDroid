@@ -20,7 +20,15 @@
             <button comment="Call Preset 2" label="Preset 2" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP2</button>
             <button comment="Call Preset 3" label="Preset 3" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP3</button>
             <button comment="Set volume to -50db" label="-50db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV30</button>
-            <button comment="Mute on" label="Mute On" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="21">MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON|MUOFF" 
+                label="Mute off|Mute on"
+                iconid="20"
+                style="red|light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF|MUON</button>
             <button comment="Increase volume" label="Vol+" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP</button>
             <button comment="Increase volume by 5 steps" label="Vol++" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP_MVUP_MVUP_MVUP_MVUP</button>
             <button comment="Set volume to -40db" label="-40db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV40</button>

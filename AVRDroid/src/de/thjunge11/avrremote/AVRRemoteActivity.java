@@ -705,6 +705,9 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_iconid, Toast.LENGTH_SHORT).show();
 					AVRRemoteActivity.this.selectPage(storedCurrentPage);
 				}
+				else {
+					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_iconid_error, Toast.LENGTH_SHORT).show();
+				}
 				removeDialog(CMENU_EDIT_ICON); // <-- else view id is not updated
 			  }
 			})

@@ -82,6 +82,7 @@
     <string name="toast_edit_command">Updated command.</string>
     <string name="toast_edit_command_error">Input line could not be left blank.</string>
     <string name="toast_edit_iconid">Updated icon Id.</string>
+    <string name="toast_edit_iconid_error">No valid icon Id.</string>
     <string name="toast_edit_comment">Updated comment.</string>
     <string name="toast_edit_style">Updated button style.</string>
     <string name="toast_no_comment">No comment attached.</string>

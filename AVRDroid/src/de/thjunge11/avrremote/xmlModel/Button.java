@@ -24,7 +24,8 @@ public class Button{
 	private String comment;
 
 	@Attribute(required=false)
-	private int iconid;
+	private String iconid;
+	private int intIconId;
 	
 	@Attribute(required=false)
 	private String style;
@@ -35,6 +36,16 @@ public class Button{
 	@Text
 	private String value;
 	
+	// state buttons
+	@Attribute(required=false)
+	private String statetype;
+	
+	@Attribute(required=false)
+	private String statequery;
+	
+	@Attribute(required=false)
+	private String states;
+	
 	// getters
 	public String getLabel() { return label; }
 	public boolean getNewRow() { return newrow;	}
@@ -43,22 +54,50 @@ public class Button{
 	public String getValue() { return value; }
 	public int getSkip() { return skip; }
 	public boolean getSeperator() { return seperator; }
-	public int getIconId() { return iconid; }
+	public int getIconId() { return intIconId; }
 	public String getStyle() { return style; }
+	public String getStateType() { return statetype; }
+	public String getStateQuery() { return statequery; }
+	public String getStates() { return states; }
+	
 	// modify
 	public void setLabel(String newLabel) { if (newLabel != null) this.label = newLabel; else this.label = ""; }
 	public void setCommand (String newCommand) { if (newCommand != null ) this.value = newCommand; else this.value = "";}
 	public void setComment (String newComment) { if (newComment != null) this.comment = newComment; else this.comment = ""; }
-	public void setIconId (int newId) { this.iconid = newId; }
+	public void setIconId (int newId) { 
+		this.intIconId = newId;
+		this.iconid = Integer.toString(newId); }
 	public void setStyle (String newStyle) { if (newStyle != null) this.style = newStyle; else this.style = ""; }
 		
 	@Validate
-	public void validate() {
+	public void validate() throws XmlFileLayoutException {
 		if (span < 1) span = 1;
 		if (comment == null) comment = "";
 		if (skip < 0) skip = 0;
-		if (iconid < 0) iconid = 0;
-		if (style == null) style=""; 
+		if (style == null) style="";
+		
+		// states dependent validation
+		if (statetype == null) {
+			// transform String iconid into integer
+			if (iconid == null) {
+				iconid="";
+				intIconId = 0;
+			}
+			else {
+				try {
+					intIconId = Integer.parseInt(iconid);
+				} catch (NumberFormatException nfe) {
+					throw new XmlFileLayoutException("iconid=" + nfe.getMessage());
+				}
+			}
+		}
+		else if (statetype.equals("toggle")) {
+			// validate state elements
+			
+		}
+		else {
+			throw new XmlFileLayoutException("invalid statetype=" + statetype);
+		}
 	}
 	
 	// toString()
@@ -83,6 +122,12 @@ public class Button{
 		str.append(style);
 		str.append(";value=");
 		str.append(value);
+		str.append(";statetype=");
+		str.append(statetype);
+		str.append(";statequery=");
+		str.append(statequery);
+		str.append(";states=");
+		str.append(states);
 		str.append("]");
 		return str.toString();
 	}
