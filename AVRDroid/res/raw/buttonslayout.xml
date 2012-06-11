@@ -23,12 +23,12 @@
             <button 
                 statetype="toggle" 
                 statequery="MU?" 
-                states="MUON|MUOFF" 
-                label="Mute off|Mute on"
-                iconid="20|21"
-                style="red|light"
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
                 comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF|MUON</button>
+                newrow="false">MUOFF;MUON</button>
             <button comment="Increase volume" label="Vol+" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP</button>
             <button comment="Increase volume by 5 steps" label="Vol++" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP_MVUP_MVUP_MVUP_MVUP</button>
             <button comment="Set volume to -40db" label="-40db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV40</button>

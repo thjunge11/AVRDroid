@@ -8,6 +8,9 @@ import org.simpleframework.xml.core.Validate;
 @Element
 public class Button{
 	
+	public static final String PAUSE_SEP = "_";
+	public static final String STATE_SEP = ";";
+	
 	public static final int STATETYPE_NONE = 0;
 	public static final int STATETYPE_TOGGLE = 1;
 	public static final int STATETYPE_TOGGLE_VIEW = 2;
@@ -62,6 +65,7 @@ public class Button{
 	public int getSkip() { return skip; }
 	public boolean getSeperator() { return seperator; }
 	public int getIconId() { return intIconId; }
+	public String getIconIds() { return iconid; }
 	public String getStyle() { return style; }
 	public int getStateType() { return intStatetype; }
 	public String getStateQuery() { return statequery; }
@@ -82,28 +86,26 @@ public class Button{
 		if (comment == null) comment = "";
 		if (skip < 0) skip = 0;
 		if (style == null) style="";
+		if (iconid == null) {
+			iconid="0";
+			intIconId = 0;
+		}
 		
 		// states dependent validation
 		if (statetype == null) {
 			intStatetype = STATETYPE_NONE;
 			// transform String iconid into integer
-			if (iconid == null) {
-				iconid="0";
-				intIconId = 0;
-			}
-			else {
-				try {
-					intIconId = Integer.parseInt(iconid);
-				} catch (NumberFormatException nfe) {
-					throw new XmlFileLayoutException("iconid=" + nfe.getMessage());
-				}
+			try {
+				intIconId = Integer.parseInt(iconid);
+			} catch (NumberFormatException nfe) {
+				throw new XmlFileLayoutException("iconid=" + nfe.getMessage());
 			}
 		}
 		else if (statetype.equals("toggle")) {
 			intStatetype = STATETYPE_TOGGLE;
 			// validate state elements
 			if ((statequery == null) || (states == null)) {
-				throw new XmlFileLayoutException("missing state attributes for statetype=" + statetype);
+				throw new XmlFileLayoutException("missing state attributes \"statequery\",  \"states\" for statetype=" + statetype);
 			}
 			if (statequery.equals("")) {
 				throw new XmlFileLayoutException("statequery attribute must not be empty");

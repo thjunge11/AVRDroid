@@ -9,6 +9,8 @@ import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import de.thjunge11.avrremote.xmlModel.Button;
+
 import android.util.Log;
 
 public class AVRConnection {
@@ -259,8 +261,7 @@ public class AVRConnection {
 			return false;
 		
 		// diessect string for concatenate operator &
-		String sep = "_";
-		String[] commandArray = strCommand.split(sep, 0);
+		String[] commandArray = strCommand.split(Button.PAUSE_SEP, 0);
 		
 		// process array  
 		// pause if String is "" as result of consecutive "__" in String.split()
