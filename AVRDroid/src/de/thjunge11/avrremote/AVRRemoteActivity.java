@@ -949,6 +949,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}	
 	}
 	
+	
 	private void clearButtonLayout() {
 		layoutButtons.removeAllViews();
 	}
@@ -985,7 +986,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		while(ButtonStore.streamHasButton()) {
 			
 			XmlButton xmlButton = ButtonStore.getButtonFromStream();
-			
 			
 			// consider newrow or seperator if not first element
 			if ((ButtonStore.streamIsNewRow() || ButtonStore.streamIsSeperator()) && !firstButton) {
@@ -1063,6 +1063,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				button.setId(xmlButton.id);
 				button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
 				button.setPadding(BUTTON_PADDING * 2, BUTTON_PADDING, BUTTON_PADDING * 2, BUTTON_PADDING);
+				button.setEnabled(xmlButton.enabled);
 				layoutButtons.addView(button, lp);
 				button.setOnClickListener(avrButtonOnClickListener);
 				this.registerForContextMenu(button);
@@ -1076,10 +1077,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				button.setText(xmlButton.label);
 				button.setShadowLayer(3, -1, -1, getResources().getColor(R.color.text_shadow));
 				button.setPadding(BUTTON_PADDING * 2, BUTTON_PADDING, BUTTON_PADDING * 2, BUTTON_PADDING);
+				button.setEnabled(xmlButton.enabled);
 				layoutButtons.addView(button, lp);
 				button.setOnClickListener(avrButtonOnClickListener);
 				this.registerForContextMenu(button);
 			}
+
 			
 			// update storeId and alignLeft
 			storeId = xmlButton.id;

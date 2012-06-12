@@ -359,34 +359,43 @@ public class ButtonStore {
 		if ((buttonStreamPageindex != STREAM_NOT_INITIALIZED) &&
 				(buttonStreamButtonindex < xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().size())) {
 			
+			int stateType = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStateType();
 			int id = BUTTON_BASE_ID * (buttonStreamPageindex + 1) + buttonStreamButtonindex;
-			String label = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getLabel();
 			int span = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getSpan();
+			String comment = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getComment();
+			String label = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getLabel();
 			int iconid = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getIconId();
 			String style = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStyle();
-			int stateType = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStateType();
-			XmlButton xmlButton = new XmlButton(id, label, span, iconid, style);
-			
-			// store other button attributes in Map
 			String command = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getValue();
-			String comment = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getComment();
-			ButtonAttributes  buttonAttributes = new ButtonAttributes(comment, command, label, 
-					style, iconid, buttonStreamPageindex, buttonStreamButtonindex, stateType);
-			mapButtonAttributes.put(id, buttonAttributes);
+			boolean enabled = true;
+			
+			if (stateType == Button.STATETYPE_TOGGLE) {
+				
+				if (!mapStateButtonAttributes.containsKey(id)) {
+					String statequery = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStateQuery();
+					String states = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStates();
+					String iconIds = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getIconIds();
+					StateButtonAttributes stateButtonAttributes = new StateButtonAttributes(stateType, statequery, states, command, label, style, iconIds);
+					mapStateButtonAttributes.put(id, stateButtonAttributes);
+					if (BuildConfig.DEBUG) Log.d(TAG, stateButtonAttributes.toString());
+				}
+				
+				int storedState = mapStateButtonAttributes.get(id).getStoredState();
+				
+				label = mapStateButtonAttributes.get(id).getLabel(storedState);
+				iconid = mapStateButtonAttributes.get(id).getIconId(storedState);
+				style = mapStateButtonAttributes.get(id).getStyle(storedState);
+				command = mapStateButtonAttributes.get(id).getCommand(storedState);
+				if (storedState == StateButtonAttributes.STATE_UNDEFINED) enabled = false;
+			}
 			
 			buttonStreamNewRow = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getNewRow();
 			buttonStreamSeperator = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getSeperator();
 			buttonStreamSkip = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getSkip();
 			
-			// state buttons
-			if ( stateType == Button.STATETYPE_TOGGLE) {
-				String statequery = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStateQuery();
-				String states = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStates();
-				String iconIds = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getIconIds();
-				StateButtonAttributes stateButtonAttributes = new StateButtonAttributes(stateType, statequery, states, command, label, style, iconIds);
-				mapStateButtonAttributes.put(id, stateButtonAttributes);
-				if (BuildConfig.DEBUG) Log.d(TAG, stateButtonAttributes.toString());
-			}
+			ButtonAttributes  buttonAttributes = new ButtonAttributes(comment, command, label, style, iconid, buttonStreamPageindex, buttonStreamButtonindex, stateType);
+			mapButtonAttributes.put(id, buttonAttributes);
+			XmlButton xmlButton = new XmlButton(id, label, span, iconid, style, enabled);
 			
 			// increment index for next call
 			buttonStreamButtonindex++;
@@ -396,6 +405,7 @@ public class ButtonStore {
 		
 		return null;
 	}
+	
 		
 	// utils
 	static private void initializePageAttributes(int displayWidth, int marginWidthPerButton, int marginWidthLayout) {

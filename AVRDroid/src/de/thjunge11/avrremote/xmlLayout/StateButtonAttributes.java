@@ -4,6 +4,10 @@ import de.thjunge11.avrremote.xmlModel.Button;
 
 public class StateButtonAttributes {
 	
+	
+	public final static int STATE_UNDEFINED = -1;
+	private int storeState;
+	
 	private int noOfStates;
 	private int stateType;
 	private String statequery;
@@ -17,15 +21,18 @@ public class StateButtonAttributes {
 	public int getNoOfStates() { return noOfStates; }
 	public String getStateQuery() { return statequery; }
 	public int getStateType() { return stateType; }
-	public String getState(int stateId) { if (stateId >= 0 && stateId < noOfStates) return states[stateId]; else return ""; }
+	public int getStoredState() { return storeState; }
+	
 	public String getLabel(int stateId) { if (stateId >= 0 && stateId < noOfStates) return labels[stateId]; else return ""; }
-	public String getCommand(int stateId) { if (stateId >= 0 && stateId < noOfStates) return styles[stateId]; else return ""; }
-	public String getStyle(int stateId) { if (stateId >= 0 && stateId < noOfStates) return commands[stateId]; else return ""; }
+	public String getCommand(int stateId) { if (stateId >= 0 && stateId < noOfStates) return commands[stateId]; else return ""; }
+	public String getStyle(int stateId) { if (stateId >= 0 && stateId < noOfStates) return styles[stateId]; else return ""; }
 	public int getIconId(int stateId) { if (stateId >= 0 && stateId < noOfStates) return iconIds[stateId]; else return ButtonIcons.NO_ICON; }
 	
 	// constructor
 	public StateButtonAttributes(int stateType, String statequery, String states, String command,
 			String label, String style, String iconid) {
+		
+		storeState =  STATE_UNDEFINED;
 		
 		this.stateType = stateType;
 		this.statequery = statequery;

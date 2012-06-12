@@ -7,13 +7,15 @@ public class XmlButton {
 	public int span;
 	public int iconid;
 	public String style;
+	public boolean enabled;
 	
-	XmlButton (int id, String label, int span, int iconid, String style) {
+	XmlButton (int id, String label, int span, int iconid, String style, boolean enabled) {
 		this.id = id;
 		this.span = span;
 		this.label = label;
 		this.iconid = iconid;
 		this.style = style;
+		this.enabled = enabled;
 	}
 	
 	public String toString() {
