@@ -371,12 +371,14 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private class StateChangeListener implements AVRRemoteStateChangeListener {
 
 		@Override
-		public void onStateChange(final String message) {
+		public void onStateChange(final String state) {
 			AVRRemoteActivity.this.runOnUiThread(new Runnable() {
 				
 				@Override
 				public void run() {
-					Toast.makeText(AVRRemoteActivity.this, message, Toast.LENGTH_SHORT).show();
+					if (ButtonStore.processState(state)) {
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
 				}
 			});
 		}
@@ -432,7 +434,8 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			// if service is bound, 
 			// start StateChangeReceiverService receiving thread if not running already
 			if (mStateChangeReceiverBound && !mStateChangeReceiverService.isReceivingThreadRunning()) {
-				mStateChangeReceiverService.registerListener("MUON", stateChangeListener);
+				mStateChangeReceiverService.registerListener(stateChangeListener);
+				mStateChangeReceiverService.registerStates(ButtonStore.getStates());
 				mStateChangeReceiverService.startReceiving();
 			}
 		}

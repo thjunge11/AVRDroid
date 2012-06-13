@@ -21,18 +21,37 @@ public class StateButtonAttributes {
 	public int getNoOfStates() { return noOfStates; }
 	public String getStateQuery() { return statequery; }
 	public int getStateType() { return stateType; }
-	public int getStoredState() { return storeState; }
+	public String[] getStates() { return states; }
+	public String[] getLabels() { return labels; }
+	public String[] getStyles() { return styles; }
+	public String[] getCommands() { return commands; }
+	public int[] geticonIds() { return iconIds; }
 	
+	// single state access
+	public int getStoredState() { return storeState; }
 	public String getLabel(int stateId) { if (stateId >= 0 && stateId < noOfStates) return labels[stateId]; else return ""; }
 	public String getCommand(int stateId) { if (stateId >= 0 && stateId < noOfStates) return commands[stateId]; else return ""; }
 	public String getStyle(int stateId) { if (stateId >= 0 && stateId < noOfStates) return styles[stateId]; else return ""; }
 	public int getIconId(int stateId) { if (stateId >= 0 && stateId < noOfStates) return iconIds[stateId]; else return ButtonIcons.NO_ICON; }
 	
+	// copy constructor
+	public StateButtonAttributes(StateButtonAttributes stateButtonAttributes, int storeState) {
+		this.storeState = storeState;
+		this.noOfStates = stateButtonAttributes.getNoOfStates();
+		this.statequery = stateButtonAttributes.getStateQuery();
+		this.stateType = stateButtonAttributes.getStateType();
+		this.states = stateButtonAttributes.getStates();
+		this.labels = stateButtonAttributes.getLabels();
+		this.commands = stateButtonAttributes.getCommands();
+		this.styles = stateButtonAttributes.getStyles();
+		this.iconIds = stateButtonAttributes.geticonIds();
+	}
+	
 	// constructor
 	public StateButtonAttributes(int stateType, String statequery, String states, String command,
-			String label, String style, String iconid) {
+			String label, String style, String iconid, int storeState) {
 		
-		storeState =  STATE_UNDEFINED;
+		this.storeState =  storeState;
 		
 		this.stateType = stateType;
 		this.statequery = statequery;

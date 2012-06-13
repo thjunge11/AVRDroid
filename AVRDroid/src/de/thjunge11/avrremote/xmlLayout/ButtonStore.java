@@ -3,7 +3,9 @@ package de.thjunge11.avrremote.xmlLayout;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.simpleframework.xml.Serializer;
@@ -153,6 +155,35 @@ public class ButtonStore {
 		else {
 			return ButtonIcons.NO_ICON;
 		}
+	}
+	
+	// states
+	static public Vector<String> getStates() {
+		Vector<String> states = new Vector<String>();
+		for (StateButtonAttributes stateButtonAttributes : mapStateButtonAttributes.values()) {
+			states.addAll(Arrays.asList(stateButtonAttributes.getStates()));
+		}
+		return states;
+	}
+	
+	static public boolean processState(String receivedState) {
+		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): " + receivedState);
+		boolean foundMatch = false;
+		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()) {
+		    int key = entry.getKey();
+		    // StateButtonAttributes value = entry.getValue();
+		    String[] states = entry.getValue().getStates();
+		    for (int i=0; i < states.length; i++) {
+		    	if (states[i].equals(receivedState)) {
+		    		mapStateButtonAttributes.remove(key);
+		    		mapStateButtonAttributes.put(key, new StateButtonAttributes(entry.getValue(), i));
+		    		foundMatch = true;
+		    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found Match");
+		    		break;
+		    	}
+		    }
+		}
+		return foundMatch;
 	}
 	
 	// Modify
@@ -375,7 +406,9 @@ public class ButtonStore {
 					String statequery = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStateQuery();
 					String states = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStates();
 					String iconIds = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getIconIds();
-					StateButtonAttributes stateButtonAttributes = new StateButtonAttributes(stateType, statequery, states, command, label, style, iconIds);
+					StateButtonAttributes stateButtonAttributes = new StateButtonAttributes(stateType, statequery, states, command, label, style, iconIds, 
+							StateButtonAttributes.STATE_UNDEFINED);
+					
 					mapStateButtonAttributes.put(id, stateButtonAttributes);
 					if (BuildConfig.DEBUG) Log.d(TAG, stateButtonAttributes.toString());
 				}

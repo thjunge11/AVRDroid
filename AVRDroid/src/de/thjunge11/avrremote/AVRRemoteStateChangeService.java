@@ -16,20 +16,12 @@ import android.util.Log;
 public class AVRRemoteStateChangeService extends Service {
 
 	private static final String TAG = AVRRemoteStateChangeService.class.getSimpleName();
-	
-	private class State {
-		public AVRRemoteStateChangeListener callback;
-		public String statename;
-		public State(String statename, AVRRemoteStateChangeListener callback) {
-			this.statename = statename;
-			this.callback = callback;
-		}		
-	}
-	
+		
 	private final IBinder mBinder = new LocalBinder();
 	private Thread handlerReceivingThread;
 	private AtomicBoolean stateReceiving = new AtomicBoolean();
-	private Vector<State> StateVector;
+	AVRRemoteStateChangeListener callback;
+	private Vector<String> stateVector;
 	
 	public class LocalBinder extends Binder {
 		AVRRemoteStateChangeService getService() {
@@ -40,7 +32,7 @@ public class AVRRemoteStateChangeService extends Service {
 	
 	@Override
 	public void onCreate() {
-		StateVector = new Vector<State>();
+		stateVector = new Vector<String>();
 		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService created");
 		super.onCreate();
 	}
@@ -58,14 +50,19 @@ public class AVRRemoteStateChangeService extends Service {
 		super.onDestroy();
 	}
 	
-	public void registerListener(String state, AVRRemoteStateChangeListener callback) {
-		StateVector.add(new State(state, callback));
+	public void registerListener(AVRRemoteStateChangeListener callback) {
+		this.callback = callback;
+	}
+	
+	public void registerStates(Vector<String> states) {
+		stateVector.clear();
+		stateVector.addAll(states);
 	}
 	
 	public void startReceiving() {
 		stateReceiving.set(true);
 		handlerReceivingThread = new Thread(bodyReceivingThread);
-		// handlerReceivingThread.setDaemon(true);
+		handlerReceivingThread.setDaemon(true);
 		handlerReceivingThread.start();
 	}
 	
@@ -97,11 +94,9 @@ public class AVRRemoteStateChangeService extends Service {
 						if (intChar == 0x0D) {
 							if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
 							
-							// check states
-							for (State state : StateVector) {
-								if (receiveEvent.equals(state.statename)) {
-									state.callback.onStateChange(state.statename + " receiveed");
-								}
+							// check if in state vector
+							if (stateVector.contains(receiveEvent)) {								
+								callback.onStateChange(receiveEvent);
 							}
 							
 							receiveEvent = "";
