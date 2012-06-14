@@ -194,6 +194,23 @@ public class AVRConnection {
 		else return null;
 	}
 	
+	public static void emptyReadBuffer() {
+		
+		// logStatus("flushReadBuffer()@begin");
+		
+		if (!isAVRconnected()) {
+			return;
+		}
+		
+		try  {
+			socket.getInputStream().skip(socket.getInputStream().available());
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage());
+		}
+		return;
+	}
+	
+	
 	public static String getResponse() {
 		
 		// logStatus("getResponse()@begin");

@@ -166,24 +166,42 @@ public class ButtonStore {
 		return states;
 	}
 	
+	static public String[] getStateQueries() {
+		// String[] stateQueries = new String[mapStateButtonAttributes.size()];
+		Vector<String> stateQueries = new Vector<String>();
+		for (StateButtonAttributes stateButtonAttributes : mapStateButtonAttributes.values()) {
+			if (!stateQueries.contains(stateButtonAttributes.getStateQuery())) {
+				stateQueries.add(stateButtonAttributes.getStateQuery());
+			}
+		}
+		return stateQueries.toArray(new String[1]);
+	}
+	
 	static public boolean processState(String receivedState) {
-		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): " + receivedState);
-		boolean foundMatch = false;
+		Vector<Integer> matchedKeys = new Vector<Integer>();
+		Vector<Integer> matchedKeysStateIds = new Vector<Integer>();
 		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()) {
-		    int key = entry.getKey();
-		    // StateButtonAttributes value = entry.getValue();
 		    String[] states = entry.getValue().getStates();
 		    for (int i=0; i < states.length; i++) {
 		    	if (states[i].equals(receivedState)) {
-		    		mapStateButtonAttributes.remove(key);
-		    		mapStateButtonAttributes.put(key, new StateButtonAttributes(entry.getValue(), i));
-		    		foundMatch = true;
-		    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found Match");
+		    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found Match:" + states[i]);
+		    		matchedKeys.add(entry.getKey());
+		    		matchedKeysStateIds.add(i);
 		    		break;
-		    	}
+		    	}		    	
 		    }
 		}
-		return foundMatch;
+		if (matchedKeys.size() > 0) {
+			for (int i=0; i < matchedKeys.size(); i++) {
+				StateButtonAttributes storeAttr = mapStateButtonAttributes.get(matchedKeys.get(i));
+				mapStateButtonAttributes.remove(matchedKeys.get(i));
+				mapStateButtonAttributes.put(matchedKeys.get(i), new StateButtonAttributes(storeAttr, matchedKeysStateIds.get(i)));
+			}
+    		return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	// Modify
@@ -414,12 +432,16 @@ public class ButtonStore {
 				}
 				
 				int storedState = mapStateButtonAttributes.get(id).getStoredState();
-				
+				if (storedState == StateButtonAttributes.STATE_UNDEFINED) {
+					enabled = false;
+					// set storedState to 0 to display first state
+					storedState = 0;
+				}
 				label = mapStateButtonAttributes.get(id).getLabel(storedState);
 				iconid = mapStateButtonAttributes.get(id).getIconId(storedState);
 				style = mapStateButtonAttributes.get(id).getStyle(storedState);
 				command = mapStateButtonAttributes.get(id).getCommand(storedState);
-				if (storedState == StateButtonAttributes.STATE_UNDEFINED) enabled = false;
+				
 			}
 			
 			buttonStreamNewRow = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getNewRow();

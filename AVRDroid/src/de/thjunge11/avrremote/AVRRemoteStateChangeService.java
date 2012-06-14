@@ -51,12 +51,14 @@ public class AVRRemoteStateChangeService extends Service {
 	}
 	
 	public void registerListener(AVRRemoteStateChangeListener callback) {
+		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService: listener registered");
 		this.callback = callback;
 	}
 	
 	public void registerStates(Vector<String> states) {
 		stateVector.clear();
 		stateVector.addAll(states);
+		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService: states registered:" + states.toString());
 	}
 	
 	public void startReceiving() {
@@ -81,6 +83,8 @@ public class AVRRemoteStateChangeService extends Service {
 			if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread started");
 			
 			try {
+				// clear buffer
+				AVRConnection.emptyReadBuffer();
 				InputStreamReader socketInputStream = new InputStreamReader(AVRConnection.getInputStream());
 				
 				String receiveEvent = "";

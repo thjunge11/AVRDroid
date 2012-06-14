@@ -73,6 +73,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private static final String CURRENTLAYOUT = "currentlayout.xml"; 
 	private static final String CURRENTLAYOUTSHARE = "currentlayout_share.xml";
 	private static final String KEY_FILENAME = "filename";
+	private static final int TIME_WAIT_STATE_QUERIES = 100;
 	
 	private static final int HOR_DUMMY_VIEW_HEIGHT = 20;
 	private static final int BUTTON_MARGIN = 0;
@@ -103,7 +104,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			mStateChangeReceiverBound = true;
 			// try to start receiving service if there is a connection
 			if (AVRConnection.isAVRconnected()) {
-				mStateChangeReceiverService.startReceiving();
+				AVRRemoteActivity.this.setupStateChangeReceiverService();
 			}
 		}
 	};
@@ -393,7 +394,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI); 
 			if (networkInfo.isConnected()) {
 				
-				// to block multiple send tasks esp in case of no connection
 				if (AVRConnection.isAVRconnected()) {
 					if (AVRConnection.sendComplexCommand(params[0])) {
 						return true;
@@ -419,6 +419,24 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 	}
 	
+	protected class SendAVRStateQueryCommand extends AsyncTask<String, Void, Void> {
+
+		@Override
+		protected Void doInBackground(String... arg0) {
+			// flush socket read buffer
+			
+			for (int i = 0; i < arg0.length; i++) {
+				AVRConnection.sendComplexCommand(arg0[i]);
+				try {
+					Thread.sleep(TIME_WAIT_STATE_QUERIES);
+				} catch (InterruptedException e1) {
+					Log.e(TAG, e1.getMessage());
+				}
+			}
+			return null;
+		}
+	}
+	
 	@Override
 	protected void updateConnectionStatus(boolean status) {
 		super.updateConnectionStatus(status);
@@ -434,14 +452,17 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			// if service is bound, 
 			// start StateChangeReceiverService receiving thread if not running already
 			if (mStateChangeReceiverBound && !mStateChangeReceiverService.isReceivingThreadRunning()) {
-				mStateChangeReceiverService.registerListener(stateChangeListener);
-				mStateChangeReceiverService.registerStates(ButtonStore.getStates());
-				mStateChangeReceiverService.startReceiving();
+				this.setupStateChangeReceiverService();
 			}
 		}
 	}
 	
-	
+	private void setupStateChangeReceiverService() {
+		mStateChangeReceiverService.registerListener(stateChangeListener);
+		mStateChangeReceiverService.registerStates(ButtonStore.getStates());
+		mStateChangeReceiverService.startReceiving();
+		new SendAVRStateQueryCommand().execute(ButtonStore.getStateQueries());
+	}
 	
 	// *********************************************
 	// context and options menus + dialogs
