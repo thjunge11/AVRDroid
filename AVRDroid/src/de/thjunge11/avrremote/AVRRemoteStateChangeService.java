@@ -44,6 +44,12 @@ public class AVRRemoteStateChangeService extends Service {
     }
 	
 	@Override
+	public boolean onUnbind(Intent intent) {
+		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService unbound");
+		return super.onUnbind(intent);
+	}
+	
+	@Override
 	public void onDestroy() {
 		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService destroyed");
 		stateReceiving.set(false);

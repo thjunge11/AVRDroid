@@ -50,31 +50,6 @@
                 states="Z2ON;Z2OFF"
                 label="Z2 Off;Z2 on" style="red;light"
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z3?"
-                states="Z3ON;Z3OFF"
-                label="Z3 Off;Z3 on" style="light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z3OFF;Z3ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z3?"
-                states="Z3ON;Z3OFF"
-                label="Z3 Off;Z3 on" style="red;light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z3OFF;Z3ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z3?"
-                states="Z3ON;Z3OFF"
-                label="Z3 Off;Z3 on" style="light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z3OFF;Z3ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z3?"
-                states="Z3ON;Z3OFF"
-                label="Z3 Off;Z3 on" style="red;light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z3OFF;Z3ON</button>
-            
             <button 
                 statetype="toggle" 
                 statequery="MU?" 
@@ -139,14 +114,11 @@
                 comment="Mute toggle" seperator="false" skip="0" span="1" 
                 newrow="false">MUOFF;MUON</button>
             <button 
-                statetype="toggle" 
-                statequery="MU?" 
-                states="MUON;MUOFF" 
-                label="Mute off;Mute on"
-                iconid="20;21"
-                style="red;light"
-                comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF;MUON</button>
+                label="long running"
+                iconid="0"
+                style="dark"
+                seperator="false" skip="0" span="1" 
+                newrow="false">_MVUP__MVDOWN__MVUP__MVDOWN__MVUP__MVDOWN</button>
             
          </buttons>
       </page>
@@ -222,18 +194,7 @@
                 states="Z2ON;Z2OFF"
                 label="Z2 Off;Z2 on" style="red;light"
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z2?"
-                states="Z2ON;Z2OFF"
-                label="Z2 Off;Z2 on" style="light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z2?"
-                states="Z2ON;Z2OFF"
-                label="Z2 Off;Z2 on" style="red;light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+           
             <button comment="Switch receiver on" 
                 statetype="toggle"
                 statequery="Z3?"

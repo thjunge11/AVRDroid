@@ -154,6 +154,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		mStateChangeReceiverBound = false;
 		Intent intent = new Intent(this, AVRRemoteStateChangeService.class);
 		this.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+		if (BuildConfig.DEBUG) Log.d(TAG, "onStart(): bind StateChangeReceiverService");
 	}
 	
 	@Override
@@ -193,10 +194,10 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			Log.e(TAG, "onStop(): error writing current layout " + e.getMessage());
 		}
 		// unbind to StateChangeReceiverService
-		if (mStateChangeReceiverBound) {
-			this.unbindService(mServiceConnection);
-			mStateChangeReceiverBound = false;
-		}
+		if (BuildConfig.DEBUG) Log.d(TAG, "onStop(): mStateChangeReceiverBound=" + mStateChangeReceiverBound);
+		this.unbindService(mServiceConnection);
+		if (BuildConfig.DEBUG) Log.d(TAG, "onStop(): unbind StateChangeReceiverService");
+		mStateChangeReceiverBound = false;
 	}
 		
 	@Override
@@ -464,6 +465,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		new SendAVRStateQueryCommand().execute(ButtonStore.getStateQueries());
 	}
 	
+	private void updateStateChangeReceiverService() {
+		if (mStateChangeReceiverBound && mStateChangeReceiverService.isReceivingThreadRunning()) {
+			mStateChangeReceiverService.registerStates(ButtonStore.getStates());
+			new SendAVRStateQueryCommand().execute(ButtonStore.getStateQueries());
+		}
+	}
 	// *********************************************
 	// context and options menus + dialogs
 	// *********************************************
@@ -471,7 +478,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflator = this.getMenuInflater();
-		inflator.inflate(R.menu.context_buttons, menu);
+		if (ButtonStore.getStateType(v.getId()) == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_NONE) {
+			inflator.inflate(R.menu.context_buttons, menu);
+		}
+		else {
+			inflator.inflate(R.menu.context_statebuttons, menu);
+		}
 		// store view id which called onCreateContextMenu
 		storedViewonCreateContext = v.getId();
 	}
@@ -969,6 +981,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		if (pageNo > 0 && pageNo <= pageCount) {
 			AVRRemoteActivity.this.clearButtonLayout();
 			AVRRemoteActivity.this.buildButtonLayout(pageNo, display.getWidth());
+			
+			// update states on page change only
+			if (storedCurrentPage != pageNo) {
+				this.updateStateChangeReceiverService();
+			}
+			
 			storedCurrentPage = pageNo;
 		}	
 	}
