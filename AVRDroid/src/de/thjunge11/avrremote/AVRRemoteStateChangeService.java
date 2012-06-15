@@ -20,7 +20,7 @@ public class AVRRemoteStateChangeService extends Service {
 	private final IBinder mBinder = new LocalBinder();
 	private Thread handlerReceivingThread;
 	private AtomicBoolean stateReceiving = new AtomicBoolean();
-	AVRRemoteStateChangeListener callback;
+	private AVRRemoteStateChangeListener callback;
 	private Vector<String> stateVector;
 	
 	public class LocalBinder extends Binder {

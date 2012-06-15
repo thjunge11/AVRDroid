@@ -43,10 +43,12 @@ public class AVRRemoteSelectActivity extends ListActivity {
 	private static final String KEY_DETAILS = "d";
 	private static final String KEY_IMGSOURCE = "i";
 	private static final String KEY_POS_ID = "pos";
-	private static final int DEFAULT_LAYOUT_ID = 0;
 	private static final int DIALOG_RENAME = 1;
+	private static final int START_OF_USER_LAYOUTS = 2;
 	public static final String INTENT_EXTRA_FILENAME = "de.thjunge11.avrremote.filename";
 	public static final String INTENT_EXTRA_IS_DEFAULT = "de.thjunge11.avrremote.isdefault";
+	public static final String INTENT_EXTRA_RESOURCE_ID = "de.thjunge11.avrremote.resourceid";
+	
 	
 	
 	@Override
@@ -55,13 +57,21 @@ public class AVRRemoteSelectActivity extends ListActivity {
 		
 		layoutList = new ArrayList<Map<String,Object>>();
 		
-		// add first entry for default layout (DEFAULT_LAYOUT_ID = 0) 
+		// add first entry for default layout (id = 0) 
 		Map<String, Object> mapDef = new HashMap<String, Object>();
 		mapDef.put(KEY_LAYOUTNAME, getResources().getString(R.string.filelist_default));
 		mapDef.put(KEY_FILENAME, null);
 		mapDef.put(KEY_DETAILS, getResources().getString(R.string.filelist_default_name));
 		mapDef.put(KEY_IMGSOURCE, null);
 		layoutList.add(mapDef);
+		
+		// add first entry for default layout (id = 1) 
+		Map<String, Object> mapStateDef = new HashMap<String, Object>();
+		mapStateDef.put(KEY_LAYOUTNAME, getResources().getString(R.string.filelist_default_state));
+		mapStateDef.put(KEY_FILENAME, null);
+		mapStateDef.put(KEY_DETAILS, getResources().getString(R.string.filelist_default_state_name));
+		mapStateDef.put(KEY_IMGSOURCE, null);
+		layoutList.add(mapStateDef);
 		
 		// add entries from xml files in external storage dir
 		if ((Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) ||
@@ -149,7 +159,7 @@ public class AVRRemoteSelectActivity extends ListActivity {
 		AdapterContextMenuInfo adapterInfo = (AdapterContextMenuInfo) menuInfo;
 		
 		// no menu for first entry default
-		if (adapterInfo.id > 0) {
+		if (adapterInfo.id >= START_OF_USER_LAYOUTS) {
 			MenuInflater inflater = this.getMenuInflater();
 			inflater.inflate(R.menu.context_list, menu);
 		}
@@ -227,8 +237,12 @@ public class AVRRemoteSelectActivity extends ListActivity {
 	private void selectLayout(long id) {
 		
 		Intent intent = new Intent(AVRRemoteSelectActivity.this, AVRRemoteActivity.class);
-		if (id == DEFAULT_LAYOUT_ID) {
-			intent.putExtra(INTENT_EXTRA_FILENAME, "default");
+		if (id == 0) {
+			intent.putExtra(INTENT_EXTRA_RESOURCE_ID, R.raw.buttonslayout);
+			intent.putExtra(INTENT_EXTRA_IS_DEFAULT, true);
+		}
+		else if (id == 1) {
+			intent.putExtra(INTENT_EXTRA_RESOURCE_ID, R.raw.statebuttonslayout);
 			intent.putExtra(INTENT_EXTRA_IS_DEFAULT, true);
 		}
 		else {

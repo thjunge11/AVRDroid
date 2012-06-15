@@ -224,7 +224,8 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				}
 				else {
 					storedCurrentPage = 1;
-					ButtonStore.readButtonsFromXmlInputStream(this.getResources().openRawResource(R.raw.buttonslayout));
+					int rawResourceId = data.getIntExtra(AVRRemoteSelectActivity.INTENT_EXTRA_RESOURCE_ID, R.raw.buttonslayout);
+					ButtonStore.readButtonsFromXmlInputStream(this.getResources().openRawResource(rawResourceId));
 					if (Constants.DEBUG) Log.d(TAG, "onActivityResult(): default layout loaded");
 				} 
 				break;

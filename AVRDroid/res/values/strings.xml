@@ -60,6 +60,8 @@
     <string name="pref_cat_gui_grid">Show grid</string>
     <string name="filelist_default">Default layout</string>
     <string name="filelist_default_name">The built-in default layout</string>
+    <string name="filelist_default_state">Default state layout</string>
+    <string name="filelist_default_state_name">Built-in layout with state logic</string>
     <string name="dialog_share">Share layout XML code as</string>
     <string name="dialog_share_plaintext">Plain text</string>
     <string name="dialog_share_file">XML file</string>
