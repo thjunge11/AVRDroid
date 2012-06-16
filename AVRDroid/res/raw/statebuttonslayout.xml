@@ -1,0 +1,480 @@
+<buttonslayout>
+   <pages class="java.util.ArrayList">
+      <page orientation="portrait" name="Main" buttonheight_scale="0.7" buttons_per_row="4">
+         <buttons class="java.util.ArrayList">
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="PW?"
+                states="PWON;PWSTANDBY"
+                label="Standby;On" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">PWSTANDBY;PWON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="PW?"
+                states="PWON;PWSTANDBY"
+                label="Standby;On" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">PWSTANDBY;PWON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                label="long running"
+                iconid="0"
+                style="dark"
+                seperator="false" skip="0" span="1" 
+                newrow="false">_MVUP__MVDOWN__MVUP__MVDOWN__MVUP__MVDOWN</button>
+            
+         </buttons>
+      </page>
+      <page orientation="landscape" name="Control" buttonheight_scale="0.7" buttons_per_row="8">
+         <buttons class="java.util.ArrayList">
+            <button comment="Switch receiver on" label="On" style="light" seperator="false" skip="0" span="2" newrow="false" iconid="0">PWON</button>
+            <button comment="Switch receiver to standby" label="Standby" style="red" seperator="false" skip="0" span="2" newrow="false" iconid="0">PWSTANDBY</button>
+            <button comment="Quick Select 1" label="Quick 1" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSQUICK1</button>
+            <button comment="Quick Select 2" label="Quick 2" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSQUICK2</button>
+            <button comment="Quick Select 3" label="Quick 3" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSQUICK3</button>
+            <button comment="Quick Select 4" label="Quick 4" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSQUICK4</button>
+            <button comment="Call Preset 1" label="Preset 1" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP1</button>
+            <button comment="Call Preset 2" label="Preset 2" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP2</button>
+            <button comment="Call Preset 3" label="Preset 3" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP3</button>
+            <button comment="Select source Tuner" label="Tuner" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">SITuner</button>
+            <button comment="Select source Internet Radio" label="IRadio" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">SIIRADIO</button>
+            <button comment="Select source Media Server" label="Media" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">SISERVER</button>
+            <button comment="Select Favorites" label="Favorites" style="" seperator="false" skip="0" span="1" newrow="false" iconid="10">SIFAVORITES</button>
+            <button comment="Switch on and select source Internet Radio, then select Preset 1 and set Volume to -40db" label="@ Home" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">PWON____SIIRADIO___NSP1__MV40</button>
+            <button comment="Mute on" label="Mute On" style="red" seperator="true" skip="0" span="1" newrow="false" iconid="21">MUON</button>
+            <button comment="Increase volume" label="Vol+" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP</button>
+            <button comment="Increase volume by 5 steps" label="Vol++" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP_MVUP_MVUP_MVUP_MVUP</button>
+            <button comment="Set volume to -60db" label="-60db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV20</button>
+            <button comment="Set volume to -50db" label="-50db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV30</button>
+            <button comment="Set volume to -40db" label="-40db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV40</button>
+            <button comment="Set volume to -30db" label="-30db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV50</button>
+            <button comment="Set volume to -20db" label="-20db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV60</button>
+            <button comment="Mute off" label="Mute Off" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="20">MUOFF</button>
+            <button comment="Decrease volume" label="Vol-" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN</button>
+            <button comment="Decrease volume by 5 steps" label="Vol--" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN_MVDOWN_MVDOWN_MVDOWN</button>
+            <button comment="Skip previous title/track" label="Skip prev" style="" seperator="false" skip="0" span="1" newrow="false" iconid="5">NS9E</button>
+            <button comment="Play" label="Play" style="" seperator="false" skip="0" span="1" newrow="false" iconid="4">NS9A</button>
+            <button comment="Pause" label="Pause" style="" seperator="false" skip="0" span="1" newrow="false" iconid="3">NS9B</button>
+            <button comment="Stop" label="Stop" style="" seperator="false" skip="0" span="1" newrow="false" iconid="9">NS9C</button>
+            <button comment="Skip next title/track" label="Skip next" style="" seperator="false" skip="0" span="1" newrow="false" iconid="2">NS9D</button>
+         </buttons>
+      </page>
+      <page orientation="portrait" name="Main" buttonheight_scale="0.7" buttons_per_row="4">
+         <buttons class="java.util.ArrayList">
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="PW?"
+                states="PWON;PWSTANDBY"
+                label="Standby;On" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">PWSTANDBY;PWON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="PW?"
+                states="PWON;PWSTANDBY"
+                label="Standby;On" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">PWSTANDBY;PWON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z2?"
+                states="Z2ON;Z2OFF"
+                label="Z2 Off;Z2 on" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+           
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z3?"
+                states="Z3ON;Z3OFF"
+                label="Z3 Off;Z3 on" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z3OFF;Z3ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z3?"
+                states="Z3ON;Z3OFF"
+                label="Z3 Off;Z3 on" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z3OFF;Z3ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z3?"
+                states="Z3ON;Z3OFF"
+                label="Z3 Off;Z3 on" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z3OFF;Z3ON</button>
+            <button comment="Switch receiver on" 
+                statetype="toggle"
+                statequery="Z3?"
+                states="Z3ON;Z3OFF"
+                label="Z3 Off;Z3 on" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z3OFF;Z3ON</button>
+            
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            
+         </buttons>
+      </page>
+      <page orientation="landscape" name="Control" buttonheight_scale="0.7" buttons_per_row="8">
+         <buttons class="java.util.ArrayList">
+            <button comment="Switch receiver on" label="On" style="light" seperator="false" skip="0" span="2" newrow="false" iconid="0">PWON</button>
+            <button comment="Switch receiver to standby" label="Standby" style="red" seperator="false" skip="0" span="2" newrow="false" iconid="0">PWSTANDBY</button>
+            <button comment="Quick Select 1" label="Quick 1" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSQUICK1</button>
+            <button comment="Quick Select 2" label="Quick 2" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSQUICK2</button>
+            <button comment="Quick Select 3" label="Quick 3" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSQUICK3</button>
+            <button comment="Quick Select 4" label="Quick 4" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSQUICK4</button>
+            <button comment="Call Preset 1" label="Preset 1" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP1</button>
+            <button comment="Call Preset 2" label="Preset 2" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP2</button>
+            <button comment="Call Preset 3" label="Preset 3" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP3</button>
+            <button comment="Select source Tuner" label="Tuner" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">SITuner</button>
+            <button comment="Select source Internet Radio" label="IRadio" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">SIIRADIO</button>
+            <button comment="Select source Media Server" label="Media" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">SISERVER</button>
+            <button comment="Select Favorites" label="Favorites" style="" seperator="false" skip="0" span="1" newrow="false" iconid="10">SIFAVORITES</button>
+            <button comment="Switch on and select source Internet Radio, then select Preset 1 and set Volume to -40db" label="@ Home" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">PWON____SIIRADIO___NSP1__MV40</button>
+            <button comment="Mute on" label="Mute On" style="red" seperator="true" skip="0" span="1" newrow="false" iconid="21">MUON</button>
+            <button comment="Increase volume" label="Vol+" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP</button>
+            <button comment="Increase volume by 5 steps" label="Vol++" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP_MVUP_MVUP_MVUP_MVUP</button>
+            <button comment="Set volume to -60db" label="-60db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV20</button>
+            <button comment="Set volume to -50db" label="-50db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV30</button>
+            <button comment="Set volume to -40db" label="-40db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV40</button>
+            <button comment="Set volume to -30db" label="-30db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV50</button>
+            <button comment="Set volume to -20db" label="-20db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV60</button>
+            <button comment="Mute off" label="Mute Off" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="20">MUOFF</button>
+            <button comment="Decrease volume" label="Vol-" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN</button>
+            <button comment="Decrease volume by 5 steps" label="Vol--" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN_MVDOWN_MVDOWN_MVDOWN</button>
+            <button comment="Skip previous title/track" label="Skip prev" style="" seperator="false" skip="0" span="1" newrow="false" iconid="5">NS9E</button>
+            <button comment="Play" label="Play" style="" seperator="false" skip="0" span="1" newrow="false" iconid="4">NS9A</button>
+            <button comment="Pause" label="Pause" style="" seperator="false" skip="0" span="1" newrow="false" iconid="3">NS9B</button>
+            <button comment="Stop" label="Stop" style="" seperator="false" skip="0" span="1" newrow="false" iconid="9">NS9C</button>
+            <button comment="Skip next title/track" label="Skip next" style="" seperator="false" skip="0" span="1" newrow="false" iconid="2">NS9D</button>
+         </buttons>
+      </page>
+      <page orientation="portrait" name="Media" buttonheight_scale="0.7" buttons_per_row="4">
+         <buttons class="java.util.ArrayList">
+            <button comment="Search for letter A" label="Search A" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDA</button>
+            <button comment="Search for letter D" label="Search D" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDD</button>
+            <button comment="Search for letter G" label="Search G" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDG</button>
+            <button comment="Search for letter J" label="Search J" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDJ</button>
+            <button comment="Search for letter M" label="Search M" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDM</button>
+            <button comment="Search for letter P" label="Search P" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDP</button>
+            <button comment="Search for letter T" label="Search T" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDT</button>
+            <button comment="Search for letter W" label="Search W" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDW</button>
+            <button comment="Move up" label="up" style="" seperator="true" skip="1" span="1" newrow="false" iconid="19">NS90</button>
+            <button comment="Page up" label="page up" style="" seperator="false" skip="1" span="1" newrow="false" iconid="17">NS9Y</button>
+            <button comment="Move left" label="left" style="" seperator="false" skip="0" span="1" newrow="false" iconid="16">NS92</button>
+            <button comment="Enter/Play" label="Enter" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="4">NS94</button>
+            <button comment="Move right" label="right" style="" seperator="false" skip="0" span="1" newrow="false" iconid="18">NS93</button>
+            <button comment="Page down" label="page down" style="" seperator="false" skip="0" span="1" newrow="false" iconid="15">NS9X</button>
+            <button comment="Move down" label="down" style="" seperator="false" skip="1" span="1" newrow="false" iconid="14">NS91</button>
+            <button comment="Go back" label="Back" style="" seperator="false" skip="1" span="1" newrow="false" iconid="12">MNRTN</button>
+            <button comment="Skip previous track/title" label="Skip prev" style="light" seperator="true" skip="0" span="1" newrow="false" iconid="5">NS9E</button>
+            <button comment="Pause" label="Pause" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="3">NS9B</button>
+            <button comment="Skip next track/title" label="Skip next" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="2">NS9D</button>
+            <button comment="Increase volume" label="Vol +" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP_MVUP</button>
+            
+            <button comment="Toggle Random" label="Rnd On" style="" seperator="false" skip="0" span="1" newrow="false" iconid="8">NS9K</button>
+            
+            <button comment="Switch Repeat on" label="Rpt On" style="" seperator="false" skip="0" span="1" newrow="false" iconid="6">NS9H</button>
+            <button comment="Switch Repeat/Random off" label="Off" style="" seperator="false" skip="0" span="1" newrow="false" iconid="13">NS9M_NS9J</button>
+            <button comment="Decrease volume" label="Vol -" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN</button>
+         </buttons>
+      </page>
+      <page orientation="landscape" name="Media" buttonheight_scale="0.7" buttons_per_row="8">
+         <buttons class="java.util.ArrayList">
+            <button comment="Search for letter A" label="Search A" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDA</button>
+            <button comment="Search for letter D" label="Search D" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDD</button>
+            <button comment="Search for letter G" label="Search G" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDG</button>
+            <button comment="Search for letter J" label="Search J" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDJ</button>
+            <button comment="Search for letter M" label="Search M" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDM</button>
+            <button comment="Search for letter P" label="Search P" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDP</button>
+            <button comment="Search for letter T" label="Search T" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDT</button>
+            <button comment="Search for letter W" label="Search W" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDW</button>
+            <button comment="Move up" label="up" style="" seperator="true" skip="1" span="1" newrow="false" iconid="19">NS90</button>
+            <button comment="Page up" label="page up" style="" seperator="false" skip="1" span="1" newrow="false" iconid="17">NS9Y</button>
+            <button comment="Skip previous track/title" label="Skip prev" style="light" seperator="false" skip="1" span="1" newrow="false" iconid="5">NS9E</button>
+            <button comment="Pause" label="Pause" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="3">NS9B</button>
+            <button comment="Skip next track/title" label="Skip next" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="2">NS9D</button>
+            <button comment="Move left" label="left" style="" seperator="false" skip="0" span="1" newrow="false" iconid="16">NS92</button>
+            <button comment="Enter/Play" label="Enter" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="4">NS94</button>
+            <button comment="Move right" label="right" style="" seperator="false" skip="0" span="1" newrow="false" iconid="18">NS93</button>
+            <button comment="Page down" label="page down" style="" seperator="false" skip="0" span="1" newrow="false" iconid="15">NS9X</button>
+            <button comment="Switch Random on" label="Rnd On" style="" seperator="false" skip="1" span="1" newrow="false" iconid="8">NS9K</button>
+            <button comment="Switch Repeat on" label="Rpt On" style="" seperator="false" skip="0" span="1" newrow="false" iconid="6">NS9H</button>
+            <button comment="Switch Repeat/Random off" label="Off" style="" seperator="false" skip="0" span="1" newrow="false" iconid="13">NS9M_NS9J</button>
+            <button comment="Move down" label="down" style="" seperator="false" skip="1" span="1" newrow="false" iconid="14">NS91</button>
+            <button comment="Go back" label="Back" style="" seperator="false" skip="1" span="1" newrow="false" iconid="12">MNRTN</button>
+            <button comment="Increase volume" label="Vol +" style="red" seperator="false" skip="1" span="1" newrow="false" iconid="0">MVUP_MVUP</button>
+            <button comment="Decrease volume" label="Vol -" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN</button>
+            <button comment="Mute on" label="Mute On" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="21">MUON</button>
+         </buttons>
+      </page>
+      <page orientation="landscape" name="Channel/EQ" buttonheight_scale="0.7" buttons_per_row="6">
+         <buttons class="java.util.ArrayList">
+            <button comment="Increase front left channel volume" label="Front L+" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFL UP</button>
+            <button comment="Increase front right channel volume" label="Front R+" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFR UP</button>
+            <button comment="Increase center channel volume" label="Center+" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVC UP</button>
+            <button comment="Increase subwoofer channel volume" label="Sub+" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSW UP</button>
+            <button comment="Increase surround left channel volume" label="Surround L+" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSL UP</button>
+            <button comment="Increase surround right channel volume" label="Surround R+" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSR UP</button>
+            <button comment="Decrease front left channel volume" label="Front L-" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFL DOWN</button>
+            <button comment="Decrease front right channel volume" label="Front R-" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFR DOWN</button>
+            <button comment="Decrease center channel volume" label="Center-" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVC DOWN</button>
+            <button comment="Decrease subwoofer channel volume" label="Sub-" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSW DOWN</button>
+            <button comment="Decrease surround left channel volume" label="Surround L-" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSL DOWN</button>
+            <button comment="Decrease surround right channel volume" label="Surround R-" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSR DOWN</button>
+            <button comment="Turn Tone Control on" label="Tone Ctrl On" style="red" seperator="true" skip="0" span="1" newrow="false" iconid="0">PSTONE CTRL ON</button>
+            <button comment="Turn Tone Control off" label="Tone Ctrl Off" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">PSTONE CTRL OFF</button>
+            <button comment="Increase Bass" label="Bass+" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">PSBAS UP</button>
+            <button comment="Decrease Bass" label="Bass-" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">PSBAS DOWN</button>
+            <button comment="Increase Treble" label="Treble+" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">PSTRE UP</button>
+            <button comment="Decrease Terble" label="Treble-" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">PSTRE DOWN</button>
+         </buttons>
+      </page>
+      <page orientation="portrait" name="Modes" buttonheight_scale="0.7" buttons_per_row="3">
+         <buttons class="java.util.ArrayList">
+            <button comment="" label="Movie" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSMOVIE</button>
+            <button comment="" label="Music" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSMUSIC</button>
+            <button comment="" label="Game" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSGAME</button>
+            <button comment="" label="Direct" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSDIRECT</button>
+            <button comment="" label="Pure Direct" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSPURE DIRECT</button>
+            <button comment="" label="Stereo" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSSTEREO</button>
+            <button comment="" label="Standard" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSSTANDARD</button>
+            <button comment="" label="Dolby Digital" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSDOLBY DIGITAL</button>
+            <button comment="" label="DTS Sourround" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSDTS SOURROUND</button>
+            <button comment="" label="Multi Ch Stereo" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSMCH STEREO</button>
+            <button comment="" label="Rock Arena" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSROCK ARENA</button>
+            <button comment="" label="Jazz Club" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSJAZZ CLUB</button>
+            <button comment="" label="Matrix" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSMATRIX</button>
+            <button comment="" label="Video Game" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSVIDEO GAME</button>
+            <button comment="" label="Virtual" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSVIRTUAL</button>
+         </buttons>
+      </page>
+      <page orientation="landscape" name="Modes" buttonheight_scale="0.65" buttons_per_row="5">
+         <buttons class="java.util.ArrayList">
+            <button comment="" label="Movie" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSMOVIE</button>
+            <button comment="" label="Music" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSMUSIC</button>
+            <button comment="" label="Game" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSGAME</button>
+            <button comment="" label="Direct" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSDIRECT</button>
+            <button comment="" label="Pure Direct" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSPURE DIRECT</button>
+            <button comment="" label="Stereo" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSSTEREO</button>
+            <button comment="" label="Standard" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSSTANDARD</button>
+            <button comment="" label="Dolby Digital" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSDOLBY DIGITAL</button>
+            <button comment="" label="DTS Sourround" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSDTS SOURROUND</button>
+            <button comment="" label="Multi Ch Stereo" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSMCH STEREO</button>
+            <button comment="" label="Rock Arena" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSROCK ARENA</button>
+            <button comment="" label="Jazz Club" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSJAZZ CLUB</button>
+            <button comment="" label="Matrix" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSMATRIX</button>
+            <button comment="" label="Video Game" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSVIDEO GAME</button>
+            <button comment="" label="Virtual" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">MSVIRTUAL</button>
+         </buttons>
+      </page>
+      <page orientation="portrait" name="Preset" buttonheight_scale="0.7" buttons_per_row="4">
+         <buttons class="java.util.ArrayList">
+            <button comment="" label="Store 1" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC00</button>
+            <button comment="" label="Store 2" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC01</button>
+            <button comment="" label="Store 3" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC02</button>
+            <button comment="" label="Store 4" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC03</button>
+            <button comment="" label="Store 5" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC04</button>
+            <button comment="" label="Store 6" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC05</button>
+            <button comment="" label="Store 7" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC06</button>
+            <button comment="" label="Store 8" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC07</button>
+            <button comment="" label="Store 9" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC08</button>
+            <button comment="" label="Store 10" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC09</button>
+            <button comment="" label="Store 11" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC10</button>
+            <button comment="" label="Store 12" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSC11</button>
+            <button comment="" label="Preset 1" style="light" seperator="true" skip="0" span="1" newrow="false" iconid="0">NSB00</button>
+            <button comment="" label="Preset 2" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB01</button>
+            <button comment="" label="Preset 3" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB02</button>
+            <button comment="" label="Preset 4" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB03</button>
+            <button comment="" label="Preset 5" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB04</button>
+            <button comment="" label="Preset 6" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB05</button>
+            <button comment="" label="Preset 7" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB06</button>
+            <button comment="" label="Preset 8" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB07</button>
+            <button comment="" label="Preset 9" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB08</button>
+            <button comment="" label="Preset 10" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB09</button>
+            <button comment="" label="Preset 11" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB10</button>
+            <button comment="" label="Preset 12" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSB11</button>
+       </buttons>      
+      </page>
+   </pages>
+</buttonslayout>
