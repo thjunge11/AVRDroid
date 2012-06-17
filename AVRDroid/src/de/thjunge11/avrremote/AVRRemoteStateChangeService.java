@@ -21,7 +21,7 @@ public class AVRRemoteStateChangeService extends Service {
 	private Thread handlerReceivingThread;
 	private AtomicBoolean stateReceiving = new AtomicBoolean();
 	private AVRRemoteStateChangeListener callback;
-	private Vector<String> stateVector;
+	private StateVector stateVector;
 	
 	public class LocalBinder extends Binder {
 		AVRRemoteStateChangeService getService() {
@@ -30,9 +30,32 @@ public class AVRRemoteStateChangeService extends Service {
         }
     }
 	
+	private class StateVector extends Vector<String> {
+		private static final long serialVersionUID = -3769538380581428269L;
+		// public StateVector() { super(); }
+		public boolean contains(String value) {
+			for (String match : this) {
+				if (match.endsWith("$")) {
+					try {
+						if (value.startsWith(match.substring(0, match.length()-1))) {
+							return true;
+						}
+					} catch (IndexOutOfBoundsException e)
+					{
+						Log.e(TAG, e.getMessage());
+					}	
+				}
+				else if (match.equals(value)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
 	@Override
 	public void onCreate() {
-		stateVector = new Vector<String>();
+		stateVector = new StateVector();
 		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService created");
 		super.onCreate();
 	}
@@ -73,7 +96,7 @@ public class AVRRemoteStateChangeService extends Service {
 		handlerReceivingThread.setDaemon(true);
 		handlerReceivingThread.start();
 	}
-	
+		
 	public boolean isReceivingThreadRunning () {
 		if (handlerReceivingThread != null) {
 			return handlerReceivingThread.isAlive();
@@ -105,7 +128,8 @@ public class AVRRemoteStateChangeService extends Service {
 							if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
 							
 							// check if in state vector
-							if (stateVector.contains(receiveEvent)) {								
+							if (stateVector.contains(receiveEvent)) {
+								if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread callback: " + receiveEvent);
 								callback.onStateChange(receiveEvent);
 							}
 							

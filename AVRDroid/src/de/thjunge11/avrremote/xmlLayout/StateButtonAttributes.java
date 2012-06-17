@@ -6,7 +6,12 @@ public class StateButtonAttributes {
 	
 	
 	public final static int STATE_UNDEFINED = -1;
+	public final static int PARAM_TYPE_NUMBER = 10;
+	public final static int PARAM_TYPE_TEXT = 11;
+	public final static int PARAM_TYPE_NONE = 12;
+	
 	private int storeState;
+	private String storedParam;
 	
 	private int noOfStates;
 	private int stateType;
@@ -16,6 +21,7 @@ public class StateButtonAttributes {
 	private int[] iconIds;
 	private String[] styles;
 	private String[] commands;
+	private int paramType;
 	
 	// getters
 	public int getNoOfStates() { return noOfStates; }
@@ -26,16 +32,26 @@ public class StateButtonAttributes {
 	public String[] getStyles() { return styles; }
 	public String[] getCommands() { return commands; }
 	public int[] geticonIds() { return iconIds; }
+	public int getParamType() { return paramType; }
 	
 	// single state access
 	public int getStoredState() { return storeState; }
-	public String getLabel(int stateId) { if (stateId >= 0 && stateId < noOfStates) return labels[stateId]; else return ""; }
+	public String getStoredParam () { return storedParam; }
+	public String getLabel(int stateId) { 
+		if (stateId >= 0 && stateId < noOfStates) {
+			String label = labels[stateId].replace("$", storedParam);
+			return label;
+		}
+		else return ""; 
+	}
 	public String getCommand(int stateId) { if (stateId >= 0 && stateId < noOfStates) return commands[stateId]; else return ""; }
 	public String getStyle(int stateId) { if (stateId >= 0 && stateId < noOfStates) return styles[stateId]; else return ""; }
 	public int getIconId(int stateId) { if (stateId >= 0 && stateId < noOfStates) return iconIds[stateId]; else return ButtonIcons.NO_ICON; }
+	public String getState(int stateId) { if (stateId >= 0 && stateId < noOfStates) return states[stateId]; else return ""; }
+	
 	
 	// copy constructor
-	public StateButtonAttributes(StateButtonAttributes stateButtonAttributes, int storeState) {
+	public StateButtonAttributes(StateButtonAttributes stateButtonAttributes, int storeState, String receivedState) {
 		this.storeState = storeState;
 		this.noOfStates = stateButtonAttributes.getNoOfStates();
 		this.statequery = stateButtonAttributes.getStateQuery();
@@ -45,7 +61,24 @@ public class StateButtonAttributes {
 		this.commands = stateButtonAttributes.getCommands();
 		this.styles = stateButtonAttributes.getStyles();
 		this.iconIds = stateButtonAttributes.geticonIds();
+		this.paramType = stateButtonAttributes.getParamType();
+		this.storedParam = stateButtonAttributes.getStoredParam();
+		
+		if (this.paramType == PARAM_TYPE_NUMBER) {
+			String value = receivedState.substring(states[0].length()-1);
+			try {
+				int intVal = Integer.parseInt(value);
+				storedParam = Integer.toString(intVal);
+			} catch (NumberFormatException e) {}
+		}
+		else if (paramType == PARAM_TYPE_TEXT) {
+			this.storedParam = receivedState.substring(states[0].length()-1);
+		}
+		else {
+			this.storedParam = "";
+		}
 	}
+	
 	
 	// constructor
 	public StateButtonAttributes(int stateType, String statequery, String states, String command,
@@ -57,8 +90,27 @@ public class StateButtonAttributes {
 		this.statequery = statequery;
 		
 		// process states
-		this.states = states.split(Button.STATE_SEP, 0);
-		this.noOfStates = this.states.length;
+		if (states.endsWith("$text")) {
+			this.paramType = PARAM_TYPE_TEXT;
+			this.storedParam = "";
+			this.noOfStates = 1;
+			this.states = new String[this.noOfStates];
+			this.states[0] = states.replace("$text","$");
+		}
+		else if (states.endsWith("$number")) {
+			this.paramType = PARAM_TYPE_NUMBER;
+			this.storedParam = "";
+			this.noOfStates = 1;
+			this.states = new String[this.noOfStates];
+			this.states[0] = states.replace("$number","$");
+		}
+		else {
+			this.states = states.split(Button.STATE_SEP, 0);
+			this.noOfStates = this.states.length;
+			storedParam = "";
+			paramType = PARAM_TYPE_NONE;
+		}
+			
 		
 		// process labels
 		String[] providedLabels = label.split(Button.STATE_SEP, 0);

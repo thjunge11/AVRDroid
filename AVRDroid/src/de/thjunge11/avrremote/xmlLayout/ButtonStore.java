@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Vector;
 
@@ -163,7 +164,8 @@ public class ButtonStore {
 		for (StateButtonAttributes stateButtonAttributes : mapStateButtonAttributes.values()) {
 			states.addAll(Arrays.asList(stateButtonAttributes.getStates()));
 		}
-		return states;
+		// hack to remove duplicates
+		return new Vector<String>(new LinkedHashSet<String>(states));
 	}
 	
 	static public String[] getStateQueries() {
@@ -180,22 +182,35 @@ public class ButtonStore {
 	static public boolean processState(String receivedState) {
 		Vector<Integer> matchedKeys = new Vector<Integer>();
 		Vector<Integer> matchedKeysStateIds = new Vector<Integer>();
+		
+		// mark matched
 		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()) {
-		    String[] states = entry.getValue().getStates();
-		    for (int i=0; i < states.length; i++) {
-		    	if (states[i].equals(receivedState)) {
-		    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found Match:" + states[i]);
-		    		matchedKeys.add(entry.getKey());
-		    		matchedKeysStateIds.add(i);
-		    		break;
-		    	}		    	
-		    }
+		   if (entry.getValue().getParamType() == StateButtonAttributes.PARAM_TYPE_NONE) { 
+			   String[] states = entry.getValue().getStates();
+		       for (int i=0; i < states.length; i++) {
+			    	if (states[i].equals(receivedState)) {
+			    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found Match:" + states[i]);
+			    		matchedKeys.add(entry.getKey());
+			    		matchedKeysStateIds.add(i);
+			    		break;
+			    	}		    	
+			    }
+		   }
+		   else {
+			   String state = entry.getValue().getState(0);
+			   state = state.substring(0, state.length() -1);
+			   if (receivedState.startsWith(state)) {
+				   	matchedKeys.add(entry.getKey());
+		    		matchedKeysStateIds.add(0);
+			   }
+		   }
 		}
+		
+		// change states
 		if (matchedKeys.size() > 0) {
 			for (int i=0; i < matchedKeys.size(); i++) {
 				StateButtonAttributes storeAttr = mapStateButtonAttributes.get(matchedKeys.get(i));
-				mapStateButtonAttributes.remove(matchedKeys.get(i));
-				mapStateButtonAttributes.put(matchedKeys.get(i), new StateButtonAttributes(storeAttr, matchedKeysStateIds.get(i)));
+				mapStateButtonAttributes.put(matchedKeys.get(i), new StateButtonAttributes(storeAttr, matchedKeysStateIds.get(i), receivedState));	
 			}
     		return true;
 		}
@@ -417,8 +432,9 @@ public class ButtonStore {
 			String style = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStyle();
 			String command = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getValue();
 			boolean enabled = true;
+			boolean viewonly = false;
 			
-			if (stateType == Button.STATETYPE_TOGGLE) {
+			if (stateType != Button.STATETYPE_NONE) {
 				
 				if (!mapStateButtonAttributes.containsKey(id)) {
 					String statequery = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStateQuery();
@@ -442,6 +458,9 @@ public class ButtonStore {
 				style = mapStateButtonAttributes.get(id).getStyle(storedState);
 				command = mapStateButtonAttributes.get(id).getCommand(storedState);
 				
+				if (stateType == Button.STATETYPE_VIEW) {
+					viewonly = true;
+				}
 			}
 			
 			buttonStreamNewRow = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getNewRow();
@@ -450,7 +469,7 @@ public class ButtonStore {
 			
 			ButtonAttributes  buttonAttributes = new ButtonAttributes(comment, command, label, style, iconid, buttonStreamPageindex, buttonStreamButtonindex, stateType);
 			mapButtonAttributes.put(id, buttonAttributes);
-			XmlButton xmlButton = new XmlButton(id, label, span, iconid, style, enabled);
+			XmlButton xmlButton = new XmlButton(id, label, span, iconid, style, enabled, viewonly);
 			
 			// increment index for next call
 			buttonStreamButtonindex++;

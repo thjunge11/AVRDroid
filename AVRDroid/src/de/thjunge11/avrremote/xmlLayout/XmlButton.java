@@ -8,14 +8,16 @@ public class XmlButton {
 	public int iconid;
 	public String style;
 	public boolean enabled;
+	public boolean viewonly;
 	
-	XmlButton (int id, String label, int span, int iconid, String style, boolean enabled) {
+	XmlButton (int id, String label, int span, int iconid, String style, boolean enabled, boolean viewonly) {
 		this.id = id;
 		this.span = span;
 		this.label = label;
 		this.iconid = iconid;
 		this.style = style;
 		this.enabled = enabled;
+		this.viewonly = viewonly;
 	}
 	
 	public String toString() {

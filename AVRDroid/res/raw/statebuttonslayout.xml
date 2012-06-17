@@ -8,12 +8,44 @@
                 states="PWON;PWSTANDBY"
                 label="Standby;On" style="light"
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">PWSTANDBY;PWON</button>
-            <button comment="Switch receiver on" 
+            <button comment="toggle input" 
                 statetype="toggle"
-                statequery="PW?"
-                states="PWON;PWSTANDBY"
-                label="Standby;On" style="red;light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">PWSTANDBY;PWON</button>
+                statequery="SI?"
+                states="SISAT/CBL;SISERVER;SIGAME"
+                label="net;ps3;reelbox" style="red;light;dark"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">SISERVER;SIGAME;SISAT/CBL</button>
+            <button comment="view source" 
+                statetype="view"
+                statequery="SI?"
+                states="SISAT/CBL;SISERVER;SIGAME"
+                label="reelbox;net;ps3" style="light;red"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="view source arg" 
+                statetype="view"
+                statequery="SI?"
+                states="SI$text"
+                label="Source: $" style="red;light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="volume" 
+                statetype="view"
+                statequery="MV?"
+                states="MV$number"
+                label="Volume: $" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button 
+                statetype="toggle" 
+                statequery="MU?" 
+                states="MUON;MUOFF" 
+                label="Mute off;Mute on"
+                iconid="20;21"
+                style="red;light"
+                comment="Mute toggle" seperator="false" skip="0" span="1" 
+                newrow="false">MUOFF;MUON</button>
+            <button comment="see all" 
+                statetype="view"
+                statequery="dummy"
+                states="$text"
+                label="$" seperator="false" skip="0" span="4" newrow="false" iconid="0">dummy</button>
             <button comment="Switch receiver on" 
                 statetype="toggle"
                 statequery="Z2?"
@@ -26,100 +58,19 @@
                 states="Z2ON;Z2OFF"
                 label="Z2 Off;Z2 on" style="red;light"
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z2?"
-                states="Z2ON;Z2OFF"
-                label="Z2 Off;Z2 on" style="light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z2?"
-                states="Z2ON;Z2OFF"
-                label="Z2 Off;Z2 on" style="red;light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z2?"
-                states="Z2ON;Z2OFF"
-                label="Z2 Off;Z2 on" style="light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z2?"
-                states="Z2ON;Z2OFF"
-                label="Z2 Off;Z2 on" style="red;light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
-            <button 
-                statetype="toggle" 
-                statequery="MU?" 
-                states="MUON;MUOFF" 
-                label="Mute off;Mute on"
-                iconid="20;21"
-                style="red;light"
-                comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF;MUON</button>
-            <button 
-                statetype="toggle" 
-                statequery="MU?" 
-                states="MUON;MUOFF" 
-                label="Mute off;Mute on"
-                iconid="20;21"
-                style="red;light"
-                comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF;MUON</button>
-            <button 
-                statetype="toggle" 
-                statequery="MU?" 
-                states="MUON;MUOFF" 
-                label="Mute off;Mute on"
-                iconid="20;21"
-                style="red;light"
-                comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF;MUON</button>
-            <button 
-                statetype="toggle" 
-                statequery="MU?" 
-                states="MUON;MUOFF" 
-                label="Mute off;Mute on"
-                iconid="20;21"
-                style="red;light"
-                comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF;MUON</button>
-            <button 
-                statetype="toggle" 
-                statequery="MU?" 
-                states="MUON;MUOFF" 
-                label="Mute off;Mute on"
-                iconid="20;21"
-                style="red;light"
-                comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF;MUON</button>
-            <button 
-                statetype="toggle" 
-                statequery="MU?" 
-                states="MUON;MUOFF" 
-                label="Mute off;Mute on"
-                iconid="20;21"
-                style="red;light"
-                comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF;MUON</button>
-            <button 
-                statetype="toggle" 
-                statequery="MU?" 
-                states="MUON;MUOFF" 
-                label="Mute off;Mute on"
-                iconid="20;21"
-                style="red;light"
-                comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF;MUON</button>
-            <button 
-                label="long running"
-                iconid="0"
-                style="dark"
-                seperator="false" skip="0" span="1" 
-                newrow="false">_MVUP__MVDOWN__MVUP__MVDOWN__MVUP__MVDOWN</button>
-            
+             <button comment="Call Preset 1" label="Preset 1" style="" seperator="true" skip="0" span="1" newrow="false" iconid="0">NSP1</button>
+            <button comment="Call Preset 2" label="Preset 2" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP2</button>
+            <button comment="Call Preset 3" label="Preset 3" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP3</button>
+            <button comment="Set volume to -50db" label="-50db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV30</button>
+            <button comment="Mute on" label="Mute On" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="21">MUON</button>
+            <button comment="Increase volume" label="Vol+" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP</button>
+            <button comment="Increase volume by 5 steps" label="Vol++" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP_MVUP_MVUP_MVUP_MVUP</button>
+            <button comment="Set volume to -40db" label="-40db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV40</button>
+            <button comment="Mute off" label="Mute Off" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="20">MUOFF</button>
+            <button comment="Decrease volume" label="Vol-" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN</button>
+            <button comment="Decrease volume by 5 steps" label="Vol--" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN_MVDOWN_MVDOWN_MVDOWN</button>
+            <button comment="Set volume to -30db" label="-30db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV50</button>
+         
          </buttons>
       </page>
       <page orientation="landscape" name="Control" buttonheight_scale="0.7" buttons_per_row="8">

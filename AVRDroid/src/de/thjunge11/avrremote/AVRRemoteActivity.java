@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -86,6 +87,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private SimpleGestureFilter detector;
 	private int storedViewonCreateContext;
 	private SendAVRCommand taskHandlerSendAVRCommand;
+	private SendAVRStateQueryCommand taskHandlerSendAVRStateQueryCommand;
 
 	private boolean mStateChangeReceiverBound;
 	private AVRRemoteStateChangeService mStateChangeReceiverService;
@@ -176,6 +178,11 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				taskHandlerSendAVRCommand.cancel(true);
 			}
 		}
+		if (taskHandlerSendAVRStateQueryCommand != null) {
+			if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
+				taskHandlerSendAVRStateQueryCommand.cancel(true);
+			}
+		}
 		super.onPause();
 	}
 	
@@ -235,7 +242,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			}
 		}
 	}
-	
 	
 	
 	// *********************************************
@@ -380,7 +386,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				@Override
 				public void run() {
 					if (ButtonStore.processState(state)) {
-						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+						// AVRRemoteActivity.this.selectPage(storedCurrentPage);
 					}
 				}
 			});
@@ -463,13 +469,25 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		mStateChangeReceiverService.registerListener(stateChangeListener);
 		mStateChangeReceiverService.registerStates(ButtonStore.getStates());
 		mStateChangeReceiverService.startReceiving();
-		new SendAVRStateQueryCommand().execute(ButtonStore.getStateQueries());
+		if (taskHandlerSendAVRStateQueryCommand != null) {
+			if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
+				taskHandlerSendAVRStateQueryCommand.cancel(true);
+			}
+		}
+		taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
+		taskHandlerSendAVRStateQueryCommand.execute(ButtonStore.getStateQueries());
 	}
 	
 	private void updateStateChangeReceiverService() {
 		if (mStateChangeReceiverBound && mStateChangeReceiverService.isReceivingThreadRunning()) {
 			mStateChangeReceiverService.registerStates(ButtonStore.getStates());
-			new SendAVRStateQueryCommand().execute(ButtonStore.getStateQueries());
+			if (taskHandlerSendAVRStateQueryCommand != null) {
+				if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
+					taskHandlerSendAVRStateQueryCommand.cancel(true);
+				}
+			}
+			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
+			taskHandlerSendAVRStateQueryCommand.execute(ButtonStore.getStateQueries());
 		}
 	}
 	// *********************************************
@@ -1100,15 +1118,22 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			
 			// add button to view
 			if ((ButtonIcons.getResId(xmlButton.iconid) != ButtonIcons.NO_ICON) && AVRLayoutUtils.UseIcons) {
+				
 				ImageButton button = new ImageButton(this);
 				button.setColorFilter(getResources().getColor(AVRLayoutUtils.resIdBtColor), PorterDuff.Mode.SRC_ATOP);
 				button.setImageDrawable(getResources().getDrawable(ButtonIcons.getResId(xmlButton.iconid)));
-				button.setId(xmlButton.id);
-				button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
 				button.setPadding(BUTTON_PADDING * 2, BUTTON_PADDING, BUTTON_PADDING * 2, BUTTON_PADDING);
+				button.setId(xmlButton.id);
+				if (xmlButton.viewonly) {
+					button.setBackgroundColor(getResources().getColor(AVRLayoutUtils.resIdBgColor));
+					button.setClickable(false);
+				}
+				else {
+					button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
+					button.setOnClickListener(avrButtonOnClickListener);
+				}				
 				button.setEnabled(xmlButton.enabled);
-				layoutButtons.addView(button, lp);
-				button.setOnClickListener(avrButtonOnClickListener);
+				layoutButtons.addView(button, lp);				
 				this.registerForContextMenu(button);
 			}
 			else {
@@ -1116,13 +1141,21 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				button.setId(xmlButton.id);
 				button.setTextAppearance(this, AVRLayoutUtils.resIdTextAppearence);
 				button.setTextColor(getResources().getColor(AVRLayoutUtils.resIdBtColor));
-				button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
 				button.setText(xmlButton.label);
 				button.setShadowLayer(3, -1, -1, getResources().getColor(R.color.text_shadow));
 				button.setPadding(BUTTON_PADDING * 2, BUTTON_PADDING, BUTTON_PADDING * 2, BUTTON_PADDING);
+				if (xmlButton.viewonly) {
+					button.setBackgroundColor(getResources().getColor(AVRLayoutUtils.resIdBgColor));
+					button.setClickable(false);
+					button.setGravity(Gravity.LEFT + Gravity.CENTER_VERTICAL);
+					
+				}
+				else {
+					button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
+					button.setOnClickListener(avrButtonOnClickListener);
+				}
 				button.setEnabled(xmlButton.enabled);
 				layoutButtons.addView(button, lp);
-				button.setOnClickListener(avrButtonOnClickListener);
 				this.registerForContextMenu(button);
 			}
 
