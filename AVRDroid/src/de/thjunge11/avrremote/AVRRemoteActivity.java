@@ -69,6 +69,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private static final int CMENU_EDIT_COMMENT = 0x10;
 	private static final int OP_MENU_OVERWRITE = 0x11;
 	private static final int CMENU_EDIT_STYLE = 0x12;
+	private static final int OP_MENU_RECONNECT = 0x13;
 	private static final int REQUEST_CODE_IMPORT = 0x51;
 	private static final int REQUEST_CODE_SELECT = 0x52;
 	
@@ -516,7 +517,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		.setIcon(android.R.drawable.ic_menu_share);
 		menu.add(Menu.NONE, OP_MENU_EDIT, Menu.FIRST+4, this.getString(R.string.op_menu_edit))
 		.setIcon(android.R.drawable.ic_menu_edit);
-		
+		menu.add(Menu.NONE, OP_MENU_RECONNECT, Menu.FIRST+5, this.getString(R.string.op_menu_reconnect));
 		menu.add(Menu.NONE, OP_MENU_ITEM_SHELL, Menu.FIRST+50, this.getString(R.string.op_menu_shell));
 		
 		return super.onCreateOptionsMenu(menu);
@@ -566,7 +567,17 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			this.startActivity(shell);
 			return true;
 		
-    	
+			
+		case OP_MENU_RECONNECT :
+			if (taskHandlerSendAVRCommand != null) {
+				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
+					taskHandlerSendAVRCommand.cancel(true);
+				}
+			}
+			taskHandlerSendAVRCommand = new SendAVRCommand();
+			taskHandlerSendAVRCommand.execute("");
+			return true;
+			
 
 		case OP_MENU_IMPORT :
         	Intent importXml = new Intent("android.intent.action.GET_CONTENT");

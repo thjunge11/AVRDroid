@@ -45,7 +45,7 @@ public class AVRActivity extends FragmentActivity {
         AVRConnection.setAddr(strAddr);
         if (Constants.DEBUG) Log.d(TAG, "ONSTART!");
         if (AVRConnection.isAVRconnected()) {
-        	AVRConnection.registerConnection();
+        	AVRConnection.registerConnection(false);
         	updateConnectionStatus(true);
         }
         else {
@@ -127,10 +127,10 @@ public class AVRActivity extends FragmentActivity {
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI); 
 			if (networkInfo.isConnected()) {
-				return AVRConnection.registerConnection();
+				return AVRConnection.registerConnection(true);
 			}
 			else {
-				return false;
+				return AVRConnection.registerConnection(false);
 			}
 		}
 		protected void onPostExecute(Boolean connected) {

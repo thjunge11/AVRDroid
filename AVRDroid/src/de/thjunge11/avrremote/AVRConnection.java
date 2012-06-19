@@ -54,8 +54,13 @@ public class AVRConnection {
 		if (Constants.DEBUG) Log.d(TAG,"unregisterConnection, Counter: " + connectionCounter);
 	}
 	
-	public static boolean registerConnection () {
-		if (connectionCounter < 1) {
+	public static boolean registerConnection (boolean connect) {
+		if ((connectionCounter < 1) && connect) {
+			open();
+			connect();
+		}
+		else if (!isAVRconnected() && connect) {
+			close();
 			open();
 			connect();
 		}

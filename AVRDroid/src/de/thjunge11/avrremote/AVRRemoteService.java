@@ -1,8 +1,11 @@
 package de.thjunge11.avrremote;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -20,8 +23,10 @@ public class AVRRemoteService extends IntentService {
 		if (arg0 != null) {
 			
 			String command = arg0.getStringExtra(AVRRemoteBroadcastReceiver.EXTRA_COMMAND);
+			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI); 
 			
-			if (command != null) {
+			if (command != null && networkInfo.isConnected()) {
 		
 				SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		        String strAddr = settings.getString("ipaddress", this.getString(R.string.pref_cat_connect_addr_default));
@@ -34,7 +39,7 @@ public class AVRRemoteService extends IntentService {
 		        }
 		        AVRConnection.setPort(dstPort);
 		        AVRConnection.setAddr(strAddr);
-		        AVRConnection.registerConnection();
+		        AVRConnection.registerConnection(true);
 		        
 		        if (AVRConnection.isAVRconnected()) {
 		        	AVRConnection.sendComplexCommand(command);
