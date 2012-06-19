@@ -9,9 +9,10 @@ public class ButtonAttributes {
 	private int buttonid;
 	private String style;
 	private int stateType;
+	private int span;
 	
 	public ButtonAttributes(String comment, String command, String label,  
-			String style, int iconid, int pageid, int buttonid, int stateType) {
+			String style, int iconid, int pageid, int buttonid, int stateType, int span) {
 		this.comment = comment;
 		this.command = command;
 		this.iconid = iconid;
@@ -20,6 +21,7 @@ public class ButtonAttributes {
 		this.label = label;
 		this.style = style;
 		this.stateType = stateType;
+		this.span = span;
 	}
 	
 	public String getCommand() { return command; }
@@ -30,4 +32,5 @@ public class ButtonAttributes {
 	public String getLabel() { return label; }
 	public String getStyle() { return style; }
 	public int getStateType() { return stateType; }
+	public int getSpan() { return span; }
 }

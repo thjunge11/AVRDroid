@@ -179,11 +179,11 @@ public class ButtonStore {
 		return stateQueries.toArray(new String[1]);
 	}
 	
-	static public boolean processState(String receivedState) {
+	static public Vector<Integer> processState(String receivedState) {
 		Vector<Integer> matchedKeys = new Vector<Integer>();
 		Vector<Integer> matchedKeysStateIds = new Vector<Integer>();
 		
-		// mark matched
+		// mark matched buttons
 		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()) {
 		   if (entry.getValue().getParamType() == StateButtonAttributes.PARAM_TYPE_NONE) { 
 			   String[] states = entry.getValue().getStates();
@@ -212,11 +212,8 @@ public class ButtonStore {
 				StateButtonAttributes storeAttr = mapStateButtonAttributes.get(matchedKeys.get(i));
 				mapStateButtonAttributes.put(matchedKeys.get(i), new StateButtonAttributes(storeAttr, matchedKeysStateIds.get(i), receivedState));	
 			}
-    		return true;
 		}
-		else {
-			return false;
-		}
+		return matchedKeys;
 	}
 	
 	// Modify
@@ -467,7 +464,8 @@ public class ButtonStore {
 			buttonStreamSeperator = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getSeperator();
 			buttonStreamSkip = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getSkip();
 			
-			ButtonAttributes  buttonAttributes = new ButtonAttributes(comment, command, label, style, iconid, buttonStreamPageindex, buttonStreamButtonindex, stateType);
+			ButtonAttributes  buttonAttributes = new ButtonAttributes(comment, command, label, style, iconid, 
+					buttonStreamPageindex, buttonStreamButtonindex, stateType, span);
 			mapButtonAttributes.put(id, buttonAttributes);
 			XmlButton xmlButton = new XmlButton(id, label, span, iconid, style, enabled, viewonly);
 			
@@ -478,6 +476,32 @@ public class ButtonStore {
 		}
 		
 		return null;
+	}
+	
+	static public XmlButton updateXmlStateButton(int id) {
+		boolean enabled = true;
+		boolean viewonly = false;
+		int span = mapButtonAttributes.get(id).getSpan();
+		int stateType = mapStateButtonAttributes.get(id).getStateType();
+		int storedState = mapStateButtonAttributes.get(id).getStoredState();
+		if (storedState == StateButtonAttributes.STATE_UNDEFINED) {
+			enabled = false;
+			// set storedState to 0 to display first state
+			storedState = 0;
+		}
+		String label = mapStateButtonAttributes.get(id).getLabel(storedState);
+		int iconid = mapStateButtonAttributes.get(id).getIconId(storedState);
+		String style = mapStateButtonAttributes.get(id).getStyle(storedState);
+		String command = mapStateButtonAttributes.get(id).getCommand(storedState);
+		
+		if (stateType == Button.STATETYPE_VIEW) {
+			viewonly = true;
+		}
+		
+		ButtonAttributes  buttonAttributes = new ButtonAttributes(mapButtonAttributes.get(id).getComment(), command, label, style, iconid, 
+				mapButtonAttributes.get(id).getPageId(), mapButtonAttributes.get(id).getButtonId(), stateType, span);
+		mapButtonAttributes.put(id, buttonAttributes);
+		return new XmlButton(id, label, span, iconid, style, enabled, viewonly);
 	}
 	
 		

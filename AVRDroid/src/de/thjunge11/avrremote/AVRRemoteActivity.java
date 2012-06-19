@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Vector;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -385,9 +386,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				
 				@Override
 				public void run() {
-					if (ButtonStore.processState(state)) {
-						// AVRRemoteActivity.this.selectPage(storedCurrentPage);
-					}
+					AVRRemoteActivity.this.updateStateButtons(ButtonStore.processState(state));
 				}
 			});
 		}
@@ -457,25 +456,23 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			Toast.makeText(this, R.string.toast_no_connection, Toast.LENGTH_SHORT).show();
 		}
 		else {
-			// if service is bound, 
-			// start StateChangeReceiverService receiving thread if not running already
-			if (mStateChangeReceiverBound && !mStateChangeReceiverService.isReceivingThreadRunning()) {
-				this.setupStateChangeReceiverService();
-			}
+			this.setupStateChangeReceiverService();
 		}
 	}
 	
 	private void setupStateChangeReceiverService() {
-		mStateChangeReceiverService.registerListener(stateChangeListener);
-		mStateChangeReceiverService.registerStates(ButtonStore.getStates());
-		mStateChangeReceiverService.startReceiving();
-		if (taskHandlerSendAVRStateQueryCommand != null) {
-			if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
-				taskHandlerSendAVRStateQueryCommand.cancel(true);
+		if (mStateChangeReceiverBound && !mStateChangeReceiverService.isReceivingThreadRunning()) {
+			mStateChangeReceiverService.registerListener(stateChangeListener);
+			mStateChangeReceiverService.registerStates(ButtonStore.getStates());
+			mStateChangeReceiverService.startReceiving();
+			if (taskHandlerSendAVRStateQueryCommand != null) {
+				if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
+					taskHandlerSendAVRStateQueryCommand.cancel(true);
+				}
 			}
+			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
+			taskHandlerSendAVRStateQueryCommand.execute(ButtonStore.getStateQueries());
 		}
-		taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
-		taskHandlerSendAVRStateQueryCommand.execute(ButtonStore.getStateQueries());
 	}
 	
 	private void updateStateChangeReceiverService() {
@@ -1271,5 +1268,33 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		horDivider.setId(dividerId);
 		layoutButtons.addView(horDivider, lp);
 		return dividerId;
+	}
+	
+	private void updateStateButtons(Vector<Integer> stateIds) {
+		for (Integer id : stateIds) {
+			// add button to view
+			XmlButton xmlButton = ButtonStore.updateXmlStateButton(id);
+			
+			if ((ButtonIcons.getResId(xmlButton.iconid) != ButtonIcons.NO_ICON) && AVRLayoutUtils.UseIcons) {
+				ImageButton button = (ImageButton) this.findViewById(id);
+				if (button != null) {
+					button.setImageDrawable(getResources().getDrawable(ButtonIcons.getResId(xmlButton.iconid)));
+					if (!xmlButton.viewonly) {
+						button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
+					}				
+					button.setEnabled(xmlButton.enabled);
+				}
+			}
+			else {
+				Button button = (Button) this.findViewById(id);
+				if (button != null) {
+					button.setText(xmlButton.label);
+					if (!xmlButton.viewonly) {
+						button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
+					}				
+					button.setEnabled(xmlButton.enabled);
+				}
+			}
+		}
 	}
 }
