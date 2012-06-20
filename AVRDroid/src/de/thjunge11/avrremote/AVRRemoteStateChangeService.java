@@ -84,7 +84,7 @@ public class AVRRemoteStateChangeService extends Service {
 		this.callback = callback;
 	}
 	
-	public void registerStates(Vector<String> states) {
+	synchronized public void registerStates(Vector<String> states) {
 		stateVector.clear();
 		stateVector.addAll(states);
 		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService: states registered:" + states.toString());
@@ -107,7 +107,7 @@ public class AVRRemoteStateChangeService extends Service {
 	private Runnable bodyReceivingThread = new Runnable() {
 		
 		@Override
-		public void run() {
+		synchronized public void run() {
 		
 			if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread started");
 			

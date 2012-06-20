@@ -44,14 +44,14 @@
             <button comment="see all" 
                 statetype="view"
                 statequery="dummy"
-                states="$text"
+                states="jetztnicht$text"
                 label="$" seperator="false" skip="0" span="4" newrow="false" iconid="0">dummy</button>
             <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z2?"
-                states="Z2ON;Z2OFF"
-                label="Z2 Off;Z2 on" style="light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+                statetype="view"
+                statequery="MS?"
+                states="MS$text"
+                label="Surround Mode:$" 
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
             <button comment="Switch receiver on" 
                 statetype="toggle"
                 statequery="Z2?"
@@ -71,6 +71,34 @@
             <button comment="Decrease volume by 5 steps" label="Vol--" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN_MVDOWN_MVDOWN_MVDOWN</button>
             <button comment="Set volume to -30db" label="-30db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV50</button>
          
+         </buttons>
+      </page>
+      <page orientation="landscape" name="Control" buttonheight_scale="0.4" buttons_per_row="8">
+         <buttons class="java.util.ArrayList">
+         <button statetype="view" statequery="NSE" states="NSE0$text" label="line 1:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSE" states="NSE1$text" label="line 2:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSE" states="NSE2$text" label="line 3:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSE" states="NSE3$text" label="line 4:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSE" states="NSE4$text" label="line 5:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSE" states="NSE5$text" label="line 6:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSE" states="NSE6$text" label="line 7:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSE" states="NSE7$text" label="line 8:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSE" states="NSE8$text" label="line 9:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+            
+         </buttons>
+      </page>
+       <page orientation="landscape" name="Control" buttonheight_scale="0.4" buttons_per_row="8">
+         <buttons class="java.util.ArrayList">
+         <button statetype="view" statequery="NSA" states="NSA0$text" label="line 1:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSA" states="NSA1$text" label="line 2:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSA" states="NSA2$text" label="line 3:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSA" states="NSA3$text" label="line 4:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSA" states="NSA4$text" label="line 5:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSA" states="NSA5$text" label="line 6:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSA" states="NSA6$text" label="line 7:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSA" states="NSA7$text" label="line 8:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+         <button statetype="view" statequery="NSA" states="NSA8$text" label="line 9:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
+            
          </buttons>
       </page>
       <page orientation="landscape" name="Control" buttonheight_scale="0.7" buttons_per_row="8">

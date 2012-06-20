@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -38,7 +39,7 @@ public class ButtonStore {
 	static private Vector<Integer> indexPagesVertical = new Vector<Integer>();
 	static private Vector<Integer> indexPagesHorizontal = new Vector<Integer>();
 	static private HashMap<Integer,ButtonAttributes> mapButtonAttributes = new HashMap<Integer,ButtonAttributes>();
-	static private HashMap<Integer,StateButtonAttributes> mapStateButtonAttributes = new HashMap<Integer,StateButtonAttributes>();
+	static private ConcurrentHashMap<Integer,StateButtonAttributes> mapStateButtonAttributes = new ConcurrentHashMap<Integer,StateButtonAttributes>();
 	static private int buttonStreamPageindex = STREAM_NOT_INITIALIZED;
 	static private int buttonStreamButtonindex = 0;
 	static private boolean buttonStreamNewRow = false;
@@ -184,26 +185,36 @@ public class ButtonStore {
 		Vector<Integer> matchedKeysStateIds = new Vector<Integer>();
 		
 		// mark matched buttons
-		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()) {
-		   if (entry.getValue().getParamType() == StateButtonAttributes.PARAM_TYPE_NONE) { 
-			   String[] states = entry.getValue().getStates();
-		       for (int i=0; i < states.length; i++) {
-			    	if (states[i].equals(receivedState)) {
-			    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found Match:" + states[i]);
+		// #1: for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet())
+		// 
+		// #2: Iterator<Map.Entry<Integer, StateButtonAttributes>> entries = mapStateButtonAttributes.entrySet().iterator(); {
+		// Map.Entry<Integer, StateButtonAttributes> entry = entries.next(); ... }
+		
+		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()){
+		    
+		    if (entry.getValue().getParamType() == StateButtonAttributes.PARAM_TYPE_NONE) {
+		    	String[] states = entry.getValue().getStates();
+		    	for (int i=0; i < states.length; i++) {
+		    		if (states[i].equals(receivedState)) {
+			    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found exact match:" + states[i]);
 			    		matchedKeys.add(entry.getKey());
 			    		matchedKeysStateIds.add(i);
 			    		break;
 			    	}		    	
 			    }
-		   }
-		   else {
-			   String state = entry.getValue().getState(0);
-			   state = state.substring(0, state.length() -1);
-			   if (receivedState.startsWith(state)) {
-				   	matchedKeys.add(entry.getKey());
+		    }
+		    else {
+		    	String state = entry.getValue().getState(0);
+		    	try {
+		    		state = state.substring(0, state.length() -1);
+		    	} catch (IndexOutOfBoundsException e) {
+		    	}
+		    	if (receivedState.startsWith(state)) {
+		    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found param match:" + state);
+		    		matchedKeys.add(entry.getKey());
 		    		matchedKeysStateIds.add(0);
-			   }
-		   }
+		    	}
+		    }
 		}
 		
 		// change states
@@ -215,6 +226,7 @@ public class ButtonStore {
 		}
 		return matchedKeys;
 	}
+	
 	
 	// Modify
 	static public boolean modify(int element, int id, String newValue) {
