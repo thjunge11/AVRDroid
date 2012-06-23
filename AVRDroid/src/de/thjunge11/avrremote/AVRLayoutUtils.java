@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ScrollView;
 import android.widget.Toast;
-import de.thjunge11.avrremote.R;
 import de.thjunge11.avrremote.xmlModel.Page;
 
 public class AVRLayoutUtils {
@@ -101,6 +100,15 @@ public class AVRLayoutUtils {
 			else if (style.equals("red")) return R.drawable.btn_red;
 		}
 		return R.drawable.btn_dark; // default
+	}
+	
+	public static int getViewStyleResId(String style) {
+		if (style != null) {
+			if (style.equals("dark")) return R.drawable.view_dark;
+			else if (style.equals("light")) return R.drawable.view_light; 
+			else if (style.equals("red")) return R.drawable.view_red;
+		}
+		return R.drawable.view_dark; // default
 	}
 	
 	public static void lockScreen(boolean keepScreenOn, boolean toast, Activity activity) {

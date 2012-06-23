@@ -45,6 +45,7 @@ public class ButtonStore {
 	static private boolean buttonStreamNewRow = false;
 	static private boolean buttonStreamSeperator = false;
 	static private int buttonStreamSkip = 0;
+	static private boolean buttonStreamWasView = false;
 	
 	// methods
 	static public void clear() {
@@ -54,6 +55,7 @@ public class ButtonStore {
 		buttonStreamNewRow = false;
 		buttonStreamSeperator = false;
 		buttonStreamSkip = 0;
+		buttonStreamWasView = false;
 		mapButtonAttributes.clear();
 		mapStateButtonAttributes.clear();
 	}
@@ -473,6 +475,12 @@ public class ButtonStore {
 			}
 			
 			buttonStreamNewRow = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getNewRow();
+			// ensure that viewonly state buttons are not in row with normal buttons 
+			if ((viewonly && !buttonStreamWasView) || (!viewonly && buttonStreamWasView)) {
+				buttonStreamNewRow = true;
+			}
+			buttonStreamWasView = viewonly;
+			
 			buttonStreamSeperator = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getSeperator();
 			buttonStreamSkip = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getSkip();
 			

@@ -41,17 +41,26 @@
                 style="red;light"
                 comment="Mute toggle" seperator="false" skip="0" span="1" 
                 newrow="false">MUOFF;MUON</button>
-            <button comment="see all" 
-                statetype="view"
-                statequery="dummy"
-                states="jetztnicht$text"
-                label="$" seperator="false" skip="0" span="4" newrow="false" iconid="0">dummy</button>
             <button comment="Switch receiver on" 
                 statetype="view"
                 statequery="MS?"
                 states="MS$text"
-                label="Surround Mode:$" 
+                label="$" 
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Switch receiver on" 
+                statetype="view"
+                statequery="MU?"
+                states="MUON;MUOFF"
+                label="Mute;Unmuted"
+                style="red;light" 
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">dummy</button>
+                <button comment="Switch receiver on" 
+                statetype="view"
+                statequery="MU?"
+                states="MUON;MUOFF"
+                label="Mute;Unmuted"
+                style="red;light" 
+                seperator="false" skip="0" span="1" newrow="false" iconid="20;21">dummy</button>
             <button comment="Switch receiver on" 
                 statetype="toggle"
                 statequery="Z2?"

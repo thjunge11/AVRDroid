@@ -35,7 +35,6 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -1062,7 +1061,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				alignLeft = true;
 				currentButtonRowFillup = 0;
 				alignBelowId = storeId;
-				// add horizontal seperator
+				// add horizontal separator
 				if (ButtonStore.streamIsSeperator()) {
 					dividerId = alignBelowId = this.addHorizontalDummyView(dividerId, alignBelowId, HOR_DUMMY_VIEW_HEIGHT, buttonWidth, maxButtonPerRow);
 				}
@@ -1107,7 +1106,13 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			currentButtonRowFillup += span;
 			
 			// create layout params
-			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(tmpButtonWidth, buttonHeight);
+			RelativeLayout.LayoutParams lp;
+			if (xmlButton.viewonly) {
+				lp = new RelativeLayout.LayoutParams(tmpButtonWidth, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+			}
+			else {
+				lp = new RelativeLayout.LayoutParams(tmpButtonWidth, buttonHeight);
+			}
 			lp.setMargins(BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_MARGIN);
 			// set alignment rules
 			if (alignTop) {
@@ -1133,7 +1138,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				button.setPadding(BUTTON_PADDING * 2, BUTTON_PADDING, BUTTON_PADDING * 2, BUTTON_PADDING);
 				button.setId(xmlButton.id);
 				if (xmlButton.viewonly) {
-					button.setBackgroundColor(getResources().getColor(AVRLayoutUtils.resIdBgColor));
+					button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style));
 					button.setClickable(false);
 				}
 				else {
@@ -1153,10 +1158,11 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				button.setShadowLayer(3, -1, -1, getResources().getColor(R.color.text_shadow));
 				button.setPadding(BUTTON_PADDING * 2, BUTTON_PADDING, BUTTON_PADDING * 2, BUTTON_PADDING);
 				if (xmlButton.viewonly) {
-					button.setBackgroundColor(getResources().getColor(AVRLayoutUtils.resIdBgColor));
+					button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style)); 
 					button.setClickable(false);
-					button.setGravity(Gravity.LEFT + Gravity.CENTER_VERTICAL);
-					
+					// button.setGravity(Gravity.LEFT + Gravity.CENTER_VERTICAL);
+					button.setLines(1);
+					button.setIncludeFontPadding(false);
 				}
 				else {
 					button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
@@ -1292,7 +1298,10 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 					button.setImageDrawable(getResources().getDrawable(ButtonIcons.getResId(xmlButton.iconid)));
 					if (!xmlButton.viewonly) {
 						button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
-					}				
+					}
+					else {
+						button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style));
+					}
 					button.setEnabled(xmlButton.enabled);
 				}
 			}
@@ -1302,7 +1311,10 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 					button.setText(xmlButton.label);
 					if (!xmlButton.viewonly) {
 						button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
-					}				
+					}
+					else {
+						button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style));
+					}
 					button.setEnabled(xmlButton.enabled);
 				}
 			}
