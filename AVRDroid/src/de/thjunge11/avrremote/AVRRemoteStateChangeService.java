@@ -125,11 +125,11 @@ public class AVRRemoteStateChangeService extends Service {
 						intChar = socketInputStream.read();
 					
 						if (intChar == 0x0D) {
-							if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
+							// if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
 							
 							// check if in state vector
 							if (stateVector.contains(receiveEvent)) {
-								if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread callback: " + receiveEvent);
+								// if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread callback: " + receiveEvent);
 								callback.onStateChange(receiveEvent);
 							}
 							

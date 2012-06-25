@@ -6,8 +6,29 @@
         android:orderInCategory="1" 
         android:title="@string/cmenu_show_comment"></item> 
 <item 
-        android:id="@+id/cmenu_edit_comment" 
+        android:id="@+id/cmenu_show_state" 
+        android:orderInCategory="1" 
+        android:title="@string/cmenu_show_state"></item> 
+<item 
+        android:id="@+id/cmenu_edit_states" 
+        android:orderInCategory="2" 
+        android:title="@string/cmenu_edit_states"></item>
+<item 
+        android:id="@+id/cmenu_edit_state_query" 
+        android:orderInCategory="3" 
+        android:title="@string/cmenu_edit_state_query"></item>
+<item 
+        android:id="@+id/cmenu_edit_state_labels" 
+        android:orderInCategory="4" 
+        android:title="@string/cmenu_edit_state_labels"></item>
+
+<item 
+        android:id="@+id/cmenu_edit_state_styles" 
         android:orderInCategory="6" 
+        android:title="@string/cmenu_edit_state_styles"></item>
+<item 
+        android:id="@+id/cmenu_edit_comment" 
+        android:orderInCategory="10" 
         android:title="@string/cmenu_edit_comment"></item>
 
 </menu>

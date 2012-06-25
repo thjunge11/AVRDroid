@@ -31,6 +31,13 @@ public class ButtonStore {
 	public final static int MODIFY_COMMAND = 3;
 	public final static int MODIFY_COMMENT = 4;
 	public final static int MODIFY_STYLE = 5;
+	public final static int MODIFY_STATES = 101;
+	public final static int MODIFY_STATE_QUERY = 102;
+	public final static int MODIFY_STATE_LABELS = 103;
+	public final static int MODIFY_STATE_ICONS = 104;
+	public final static int MODIFY_STATE_STYLES = 105;
+	public final static int MODIFY_STATE_COMMANDS = 106;
+	
 	
 	// fields
 	static private int intButtonWidth = 0;
@@ -160,8 +167,78 @@ public class ButtonStore {
 			return ButtonIcons.NO_ICON;
 		}
 	}
+	static public String getButtonStates (int id) {
+		if (mapButtonAttributes.containsKey(id)) {
+			return xmlButtonslayout.getPages().get(mapButtonAttributes.get(id).getPageId()).getButtons().get(mapButtonAttributes.get(id).getButtonId()).getStates();
+		}
+		else {
+			return "";
+		}
+	}
+	static public String getButtonStateQuery (int id) {
+		if (mapButtonAttributes.containsKey(id)) {
+			return xmlButtonslayout.getPages().get(mapButtonAttributes.get(id).getPageId()).getButtons().get(mapButtonAttributes.get(id).getButtonId()).getStateQuery();
+		}
+		else {
+			return "";
+		}
+	}
+	static public String getButtonIconIds (int id) {
+		if (mapButtonAttributes.containsKey(id)) {
+			return xmlButtonslayout.getPages().get(mapButtonAttributes.get(id).getPageId()).getButtons().get(mapButtonAttributes.get(id).getButtonId()).getIconIds();
+		}
+		else {
+			return "";
+		}
+	}
+	static public String getButtonStateLabels (int id) {
+		if (mapButtonAttributes.containsKey(id)) {
+			return xmlButtonslayout.getPages().get(mapButtonAttributes.get(id).getPageId()).getButtons().get(mapButtonAttributes.get(id).getButtonId()).getLabel();
+		}
+		else {
+			return "";
+		}
+	}
+	static public String getButtonStateStyles (int id) {
+		if (mapButtonAttributes.containsKey(id)) {
+			return xmlButtonslayout.getPages().get(mapButtonAttributes.get(id).getPageId()).getButtons().get(mapButtonAttributes.get(id).getButtonId()).getStyle();
+		}
+		else {
+			return "";
+		}
+	}
+	static public String getButtonStateCommands (int id) {
+		if (mapButtonAttributes.containsKey(id)) {
+			return xmlButtonslayout.getPages().get(mapButtonAttributes.get(id).getPageId()).getButtons().get(mapButtonAttributes.get(id).getButtonId()).getValue();
+		}
+		else {
+			return "";
+		}
+	}
+	static public String getButtonState (int id) {
+		if (mapStateButtonAttributes.containsKey(id)) {
+			return mapStateButtonAttributes.get(id).getState(mapStateButtonAttributes.get(id).getStoredState());
+		}
+		else {
+			return null;
+		}
+	}
 	
 	// states
+	static public boolean isButtonStateDefined(int id) {
+		if (mapStateButtonAttributes.containsKey(id)) {
+			if (mapStateButtonAttributes.get(id).getStoredState() == StateButtonAttributes.STATE_UNDEFINED) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+	
 	static public Vector<String> getStates() {
 		Vector<String> states = new Vector<String>();
 		for (StateButtonAttributes stateButtonAttributes : mapStateButtonAttributes.values()) {
@@ -239,6 +316,10 @@ public class ButtonStore {
 		if (!mapButtonAttributes.containsKey(id)) {
 			return false;
 		}
+		if ((element > MODIFY_STATES) && !mapStateButtonAttributes.containsKey(id)) {
+			return false;
+		}
+			
 		else {
 			pageid = mapButtonAttributes.get(id).getPageId();
 			buttonid = mapButtonAttributes.get(id).getButtonId();
@@ -276,6 +357,34 @@ public class ButtonStore {
 				}
 				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setIconId(newIconId);
 				break;
+				
+			// modifieing a state needs it removed from mapStateButtonIds
+			case MODIFY_STATES :
+				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setStates(newValue);
+				mapStateButtonAttributes.remove(id);
+				break;
+			case MODIFY_STATE_QUERY :
+				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setStateQuery(newValue);
+				mapStateButtonAttributes.remove(id);
+				break;
+			case MODIFY_STATE_LABELS :
+				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setLabel(newValue);
+				mapStateButtonAttributes.remove(id);
+				break;
+			case MODIFY_STATE_STYLES :
+				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setStyle(newValue);
+				mapStateButtonAttributes.remove(id);
+				break;
+			case MODIFY_STATE_ICONS :
+				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setIconIds(newValue);
+				mapStateButtonAttributes.remove(id);
+				break;
+			case MODIFY_STATE_COMMANDS :
+				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setCommand(newValue);
+				mapStateButtonAttributes.remove(id);
+				break;
+				
+				
 				
 			default:
 				return false;
@@ -455,7 +564,7 @@ public class ButtonStore {
 							StateButtonAttributes.STATE_UNDEFINED);
 					
 					mapStateButtonAttributes.put(id, stateButtonAttributes);
-					if (BuildConfig.DEBUG) Log.d(TAG, stateButtonAttributes.toString());
+					// if (BuildConfig.DEBUG) Log.d(TAG, stateButtonAttributes.toString());
 				}
 				
 				int storedState = mapStateButtonAttributes.get(id).getStoredState();

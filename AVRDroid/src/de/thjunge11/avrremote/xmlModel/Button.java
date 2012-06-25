@@ -77,7 +77,11 @@ public class Button{
 		this.intIconId = newId;
 		this.iconid = Integer.toString(newId); }
 	public void setStyle (String newStyle) { if (newStyle != null) this.style = newStyle; else this.style = ""; }
-		
+	public void setStates(String newStates) { if (newStates != null) this.states = newStates; else this.states = ""; }
+	public void setStateQuery(String newStateQuery) { if (newStateQuery != null) this.statequery = newStateQuery; else this.statequery = ""; }
+	public void setIconIds(String newIconIds) { if (newIconIds != null) this.iconid = newIconIds; else this.iconid = "0"; }
+	
+	
 	@Validate
 	public void validate() throws XmlFileLayoutException {
 		if (span < 1) span = 1;

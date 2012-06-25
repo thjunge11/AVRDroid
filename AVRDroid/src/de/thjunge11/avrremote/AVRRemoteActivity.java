@@ -68,7 +68,13 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private static final int CMENU_EDIT_COMMENT = 0x10;
 	private static final int OP_MENU_OVERWRITE = 0x11;
 	private static final int CMENU_EDIT_STYLE = 0x12;
-	private static final int OP_MENU_RECONNECT = 0x13;
+	private static final int CMENU_EDIT_STATES = 0x13;
+	private static final int CMENU_EDIT_STATE_QUERY = 0x14;
+	private static final int CMENU_EDIT_STATE_COMMANDS = 0x15;
+	private static final int CMENU_EDIT_STATE_LABELS = 0x16;
+	private static final int CMENU_EDIT_STATE_ICONIDS = 0x17;
+	private static final int CMENU_EDIT_STATE_STYLES = 0x18;
+	private static final int OP_MENU_RECONNECT = 0x19;
 	private static final int REQUEST_CODE_IMPORT = 0x51;
 	private static final int REQUEST_CODE_SELECT = 0x52;
 	
@@ -89,6 +95,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private int storedViewonCreateContext;
 	private SendAVRCommand taskHandlerSendAVRCommand;
 	private SendAVRStateQueryCommand taskHandlerSendAVRStateQueryCommand;
+	private boolean flagModified;
 
 	private boolean mStateChangeReceiverBound;
 	private AVRRemoteStateChangeService mStateChangeReceiverService;
@@ -131,6 +138,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		
 		// load current layout from private file if possible, else load default
 		storedCurrentPage = 1;
+		flagModified = false;
 		try {			
 			FileInputStream fis = this.openFileInput(CURRENTLAYOUT);
 			if (ButtonStore.readButtonsFromXmlInputStream(fis)) {
@@ -368,13 +376,18 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 
 		@Override
 		public void onClick(View v) {
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
+			if (ButtonStore.isButtonStateDefined(v.getId())) {
+				if (taskHandlerSendAVRCommand != null) {
+					if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
+						taskHandlerSendAVRCommand.cancel(true);
+					}
 				}
+				taskHandlerSendAVRCommand = new SendAVRCommand();
+				taskHandlerSendAVRCommand.execute(ButtonStore.getButtonCommand(v.getId()));
 			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(ButtonStore.getButtonCommand(v.getId()));
+			else {
+				Toast.makeText(AVRRemoteActivity.this, R.string.button_state_undefined, Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 	
@@ -499,6 +512,10 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 		else {
 			inflator.inflate(R.menu.context_statebuttons, menu);
+			if (ButtonStore.getStateType(v.getId()) == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_TOGGLE) {
+				menu.add(Menu.NONE, CMENU_EDIT_STATE_ICONIDS, Menu.FIRST+4, this.getString(R.string.cmenu_edit_state_icons));
+				menu.add(Menu.NONE, CMENU_EDIT_STATE_COMMANDS, Menu.FIRST+6, this.getString(R.string.cmenu_edit_state_commands));
+			} 
 		}
 		// store view id which called onCreateContextMenu
 		storedViewonCreateContext = v.getId();
@@ -533,6 +550,13 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
  			else 
  				Toast.makeText(this, R.string.toast_no_comment, Toast.LENGTH_SHORT).show();
 			return true;
+		case R.id.cmenu_show_state : 
+			String state = ButtonStore.getButtonState(storedViewonCreateContext); 
+ 			if (state != null && !state.equals("")) {
+ 				Toast.makeText(this, state, Toast.LENGTH_SHORT).show(); }
+ 			else 
+ 				Toast.makeText(this, R.string.button_state_undefined, Toast.LENGTH_SHORT).show();
+			return true;
 		case R.id.cmenu_edit_label :
 			this.showDialog(CMENU_EDIT_LABEL);
 			return true;
@@ -547,7 +571,25 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			return true;
 		case R.id.cmenu_edit_style :
 			this.showDialog(CMENU_EDIT_STYLE);
-			return true;	
+			return true;
+		case R.id.cmenu_edit_states :
+			this.showDialog(CMENU_EDIT_STATES);
+			return true;
+		case R.id.cmenu_edit_state_query :
+			this.showDialog(CMENU_EDIT_STATE_QUERY);
+			return true;
+		case R.id.cmenu_edit_state_labels :
+			this.showDialog(CMENU_EDIT_STATE_LABELS);
+			return true;
+		case CMENU_EDIT_STATE_ICONIDS :
+			this.showDialog(CMENU_EDIT_STATE_ICONIDS);
+			return true;
+		case R.id.cmenu_edit_state_styles :
+			this.showDialog(CMENU_EDIT_STATE_STYLES);
+			return true;
+		case CMENU_EDIT_STATE_COMMANDS :
+			this.showDialog(CMENU_EDIT_STATE_COMMANDS);
+			return true;
 			
 		default :
 			return super.onContextItemSelected(item);
@@ -886,6 +928,186 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			dialog = builder4.create();
 			break;
 			
+		case CMENU_EDIT_STATES:
+			final EditText inputStates = new EditText(this);
+			inputStates.setText(ButtonStore.getButtonStates(storedViewonCreateContext));
+			AlertDialog.Builder builderStates = new AlertDialog.Builder(this);
+			builderStates.setTitle(R.string.cmenu_edit_states)
+			.setView(inputStates)
+			.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				String newStates = inputStates.getText().toString();
+				if (newStates.length() > 0) {
+					if (ButtonStore.modify(ButtonStore.MODIFY_STATES, storedViewonCreateContext, newStates)) {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_states, Toast.LENGTH_SHORT).show();
+						flagModified = true;
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+				}
+				else {
+					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+				}
+				removeDialog(CMENU_EDIT_STATES); // <-- else view id is not updated
+			  }
+			})
+			.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int id) {
+				  removeDialog(CMENU_EDIT_STATES); // <-- else view id is not updated
+			  }
+			});
+			dialog = builderStates.create();
+	        break;
+	        
+		case CMENU_EDIT_STATE_QUERY :
+			final EditText inputStateQuery = new EditText(this);
+			inputStateQuery.setText(ButtonStore.getButtonStateQuery(storedViewonCreateContext));
+			AlertDialog.Builder builderStateQuery = new AlertDialog.Builder(this);
+			builderStateQuery.setTitle(R.string.cmenu_edit_state_query)
+			.setView(inputStateQuery)
+			.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				String newStateQuery = inputStateQuery.getText().toString();
+				if (newStateQuery.length() > 0) {
+					if (ButtonStore.modify(ButtonStore.MODIFY_STATE_QUERY, storedViewonCreateContext, newStateQuery)) {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_states_query, Toast.LENGTH_SHORT).show();
+						flagModified = true;
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+				}
+				else {
+					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+				}
+				removeDialog(CMENU_EDIT_STATE_QUERY); // <-- else view id is not updated
+			  }
+			})
+			.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int id) {
+				  removeDialog(CMENU_EDIT_STATE_QUERY); // <-- else view id is not updated
+			  }
+			});
+			dialog = builderStateQuery.create();
+			break;
+			
+		case CMENU_EDIT_STATE_LABELS :
+			final EditText inputStateLabels = new EditText(this);
+			inputStateLabels.setText(ButtonStore.getButtonStateLabels(storedViewonCreateContext));
+			AlertDialog.Builder builderStateLabels = new AlertDialog.Builder(this);
+			builderStateLabels.setTitle(R.string.cmenu_edit_state_labels)
+			.setView(inputStateLabels)
+			.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				String newStateLabels = inputStateLabels.getText().toString();
+				if (newStateLabels.length() > 0) {
+					if (ButtonStore.modify(ButtonStore.MODIFY_STATE_LABELS, storedViewonCreateContext, newStateLabels)) {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_states_labels, Toast.LENGTH_SHORT).show();
+						flagModified = true;
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+				}
+				else {
+					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+				}
+				removeDialog(CMENU_EDIT_STATE_LABELS); // <-- else view id is not updated
+			  }
+			})
+			.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int id) {
+				  removeDialog(CMENU_EDIT_STATE_LABELS); // <-- else view id is not updated
+			  }
+			});
+			dialog = builderStateLabels.create();
+			break;
+			
+		case CMENU_EDIT_STATE_ICONIDS :
+			final EditText inputStateIconIds = new EditText(this);
+			inputStateIconIds.setText(ButtonStore.getButtonIconIds(storedViewonCreateContext));
+			AlertDialog.Builder builderStateIconIds = new AlertDialog.Builder(this);
+			builderStateIconIds.setTitle(R.string.cmenu_edit_state_icons)
+			.setView(inputStateIconIds)
+			.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				String newStateIconIds = inputStateIconIds.getText().toString();
+				if (newStateIconIds.length() > 0) {
+					if (ButtonStore.modify(ButtonStore.MODIFY_STATE_ICONS, storedViewonCreateContext, newStateIconIds)) {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_states_icons, Toast.LENGTH_SHORT).show();
+						flagModified = true;
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+				}
+				else {
+					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+				}
+				removeDialog(CMENU_EDIT_STATE_ICONIDS); // <-- else view id is not updated
+			  }
+			})
+			.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int id) {
+				  removeDialog(CMENU_EDIT_STATE_ICONIDS); // <-- else view id is not updated
+			  }
+			});
+			dialog = builderStateIconIds.create();
+			break;
+			
+		case CMENU_EDIT_STATE_STYLES :
+			final EditText inputStateStyles = new EditText(this);
+			inputStateStyles.setText(ButtonStore.getButtonStateStyles(storedViewonCreateContext));
+			AlertDialog.Builder builderStateStyles = new AlertDialog.Builder(this);
+			builderStateStyles.setTitle(R.string.cmenu_edit_state_styles)
+			.setView(inputStateStyles)
+			.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				String newStateStyles = inputStateStyles.getText().toString();
+				if (newStateStyles.length() > 0) {
+					if (ButtonStore.modify(ButtonStore.MODIFY_STATE_STYLES, storedViewonCreateContext, newStateStyles)) {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_states_styles, Toast.LENGTH_SHORT).show();
+						flagModified = true;
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+				}
+				else {
+					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+				}
+				removeDialog(CMENU_EDIT_STATE_STYLES); // <-- else view id is not updated
+			  }
+			})
+			.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int id) {
+				  removeDialog(CMENU_EDIT_STATE_STYLES); // <-- else view id is not updated
+			  }
+			});
+			dialog = builderStateStyles.create();
+			break;
+			
+		case CMENU_EDIT_STATE_COMMANDS :
+			final EditText inputStateCommands = new EditText(this);
+			inputStateCommands.setText(ButtonStore.getButtonStateCommands(storedViewonCreateContext));
+			AlertDialog.Builder builderStateCommands = new AlertDialog.Builder(this);
+			builderStateCommands.setTitle(R.string.cmenu_edit_state_commands)
+			.setView(inputStateCommands)
+			.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				String newStateCommands = inputStateCommands.getText().toString();
+				if (newStateCommands.length() > 0) {
+					if (ButtonStore.modify(ButtonStore.MODIFY_STATE_COMMANDS, storedViewonCreateContext, newStateCommands)) {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_states_commands, Toast.LENGTH_SHORT).show();
+						flagModified = true;
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+				}
+				else {
+					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+				}
+				removeDialog(CMENU_EDIT_STATE_COMMANDS); // <-- else view id is not updated
+			  }
+			})
+			.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int id) {
+				  removeDialog(CMENU_EDIT_STATE_COMMANDS); // <-- else view id is not updated
+			  }
+			});
+			dialog = builderStateCommands.create();
+			break;
+			
 			
 		default:
 			return super.onCreateDialog(id, bundle);
@@ -1009,8 +1231,9 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			AVRRemoteActivity.this.buildButtonLayout(pageNo, display.getWidth());
 			
 			// update states on page change only
-			if (storedCurrentPage != pageNo) {
+			if ((storedCurrentPage != pageNo) || flagModified) {
 				this.updateStateChangeReceiverService();
+				flagModified = false;
 			}
 			
 			storedCurrentPage = pageNo;
@@ -1130,22 +1353,39 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			}
 			
 			// add button to view
-			if ((ButtonIcons.getResId(xmlButton.iconid) != ButtonIcons.NO_ICON) && AVRLayoutUtils.UseIcons) {
+			if ((ButtonIcons.getResId(xmlButton.iconid) != ButtonIcons.NO_ICON) && AVRLayoutUtils.UseIcons && !xmlButton.viewonly) {
 				
 				ImageButton button = new ImageButton(this);
-				button.setColorFilter(getResources().getColor(AVRLayoutUtils.resIdBtColor), PorterDuff.Mode.SRC_ATOP);
-				button.setImageDrawable(getResources().getDrawable(ButtonIcons.getResId(xmlButton.iconid)));
-				button.setPadding(BUTTON_PADDING * 2, BUTTON_PADDING, BUTTON_PADDING * 2, BUTTON_PADDING);
 				button.setId(xmlButton.id);
-				if (xmlButton.viewonly) {
-					button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style));
-					button.setClickable(false);
+				button.setColorFilter(getResources().getColor(AVRLayoutUtils.resIdBtColor), PorterDuff.Mode.SRC_ATOP);
+				button.setPadding(BUTTON_PADDING * 2, BUTTON_PADDING, BUTTON_PADDING * 2, BUTTON_PADDING);
+				
+				if (xmlButton.enabled) {
+					button.setImageDrawable(getResources().getDrawable(ButtonIcons.getResId(xmlButton.iconid)));
 				}
 				else {
-					button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
+					button.setImageDrawable(getResources().getDrawable(R.drawable.empty_icon));
+				}
+				
+				if (xmlButton.viewonly) {
+					button.setClickable(false);
+					
+					if (xmlButton.enabled) {
+						button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style));
+					}
+					else {
+						button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId("invalid"));
+					}
+				}
+				else {
 					button.setOnClickListener(avrButtonOnClickListener);
+					if (xmlButton.enabled) {
+						button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
+					}
+					else {
+						button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId("invalid"));
+					}
 				}				
-				button.setEnabled(xmlButton.enabled);
 				layoutButtons.addView(button, lp);				
 				this.registerForContextMenu(button);
 			}
@@ -1154,21 +1394,35 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				button.setId(xmlButton.id);
 				button.setTextAppearance(this, AVRLayoutUtils.resIdTextAppearence);
 				button.setTextColor(getResources().getColor(AVRLayoutUtils.resIdBtColor));
-				button.setText(xmlButton.label);
 				button.setShadowLayer(3, -1, -1, getResources().getColor(R.color.text_shadow));
 				button.setPadding(BUTTON_PADDING * 2, BUTTON_PADDING, BUTTON_PADDING * 2, BUTTON_PADDING);
+				
+				if (xmlButton.enabled) {
+					button.setText(xmlButton.label);
+				}
+				
 				if (xmlButton.viewonly) {
-					button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style)); 
 					button.setClickable(false);
-					// button.setGravity(Gravity.LEFT + Gravity.CENTER_VERTICAL);
 					button.setLines(1);
 					button.setIncludeFontPadding(false);
+					
+					if (xmlButton.enabled) {
+						button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style)); 
+					}
+					else {
+						button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId("invalid"));
+					}	
 				}
 				else {
-					button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style));
 					button.setOnClickListener(avrButtonOnClickListener);
+					
+					if (xmlButton.enabled) {
+						button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style)); 
+					}
+					else {
+						button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId("invalid"));
+					}
 				}
-				button.setEnabled(xmlButton.enabled);
 				layoutButtons.addView(button, lp);
 				this.registerForContextMenu(button);
 			}
@@ -1292,7 +1546,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			// add button to view
 			XmlButton xmlButton = ButtonStore.updateXmlStateButton(id);
 			
-			if ((ButtonIcons.getResId(xmlButton.iconid) != ButtonIcons.NO_ICON) && AVRLayoutUtils.UseIcons) {
+			if ((ButtonIcons.getResId(xmlButton.iconid) != ButtonIcons.NO_ICON) && AVRLayoutUtils.UseIcons && !xmlButton.viewonly) {
 				ImageButton button = (ImageButton) this.findViewById(id);
 				if (button != null) {
 					button.setImageDrawable(getResources().getDrawable(ButtonIcons.getResId(xmlButton.iconid)));
@@ -1302,7 +1556,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 					else {
 						button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style));
 					}
-					button.setEnabled(xmlButton.enabled);
 				}
 			}
 			else {
@@ -1315,7 +1568,6 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 					else {
 						button.setBackgroundResource(AVRLayoutUtils.getViewStyleResId(xmlButton.style));
 					}
-					button.setEnabled(xmlButton.enabled);
 				}
 			}
 		}

@@ -49,7 +49,6 @@ public class StateButtonAttributes {
 	public int getIconId(int stateId) { if (stateId >= 0 && stateId < noOfStates) return iconIds[stateId]; else return ButtonIcons.NO_ICON; }
 	public String getState(int stateId) { if (stateId >= 0 && stateId < noOfStates) return states[stateId]; else return ""; }
 	
-	
 	// copy constructor
 	public StateButtonAttributes(StateButtonAttributes stateButtonAttributes, int storeState, String receivedState) {
 		this.storeState = storeState;
@@ -85,7 +84,6 @@ public class StateButtonAttributes {
 			String label, String style, String iconid, int storeState) {
 		
 		this.storeState =  storeState;
-		
 		this.stateType = stateType;
 		this.statequery = statequery;
 		
