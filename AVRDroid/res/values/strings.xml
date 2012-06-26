@@ -87,7 +87,7 @@
     <string name="cmenu_edit_state_icons">Edit state icons</string>
     <string name="cmenu_edit_state_styles">Edit state styles</string>
     <string name="cmenu_edit_state_commands">Edit state commands</string>
-    <string name="cmenu_show_state">Show state</string>
+    <string name="cmenu_show_state">Show current state</string>
     <string name="toast_edit_label">Updated label.</string>
     <string name="toast_edit_command">Updated command.</string>
     <string name="toast_edit_command_error">Input line could not be left blank.</string>
@@ -113,11 +113,14 @@
     <string name="dialog_import_showlog">Show log</string>
     <string name="dialog_title_showlog">XML parser error log</string>
     <string name="dialog_import_valid_layout">This XML layout contains:\n</string>
+    <string name="dialog_title_reconnect">No connection</string>
+    <string name="button_reconnect">Try reconnect</string>
+    <string name="dialog_text_reconnect">Automatic reconnect is done with every remote button press as well.</string>
     <string name="keepscreenon_true">Screen lock ON.</string>
     <string name="keepscreenon_false">Screen lock OFF.</string>
     <string name="dialog_overwrite">Layout already exists</string>
     <string name="dialog_bt_overwrite">Overwrite</string>
-    
+    <string name="dialog_command_select">Choose:</string>
     <string name="pref_cat_volumekeys">Volume Keys Navigation</string>
     <string name="pref_cat_volumekeys_volup">Volume Up key</string>
 	<string name="pref_cat_volumekeys_volup_default">Default</string>

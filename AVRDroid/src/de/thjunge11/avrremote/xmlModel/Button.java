@@ -14,6 +14,8 @@ public class Button{
 	public static final int STATETYPE_NONE = 0;
 	public static final int STATETYPE_TOGGLE = 1;
 	public static final int STATETYPE_VIEW = 2;
+	public static final int STATETYPE_SELECT = 3;
+	
 	
 	@Attribute(required=false)
 	private int span;
@@ -118,6 +120,19 @@ public class Button{
 		}
 		else if (statetype.equals("view")) {
 			intStatetype = STATETYPE_VIEW;
+			// validate state elements
+			if ((statequery == null) || (states == null)) {
+				throw new XmlFileLayoutException("missing state attributes \"statequery\",  \"states\" for statetype=" + statetype);
+			}
+			if (statequery.equals("")) {
+				throw new XmlFileLayoutException("statequery attribute must not be empty");
+			}
+			if (states.equals("")) {
+				throw new XmlFileLayoutException("states attribute must not be empty");
+			}
+		}
+		else if (statetype.equals("chooser")) {
+			intStatetype = STATETYPE_SELECT;
 			// validate state elements
 			if ((statequery == null) || (states == null)) {
 				throw new XmlFileLayoutException("missing state attributes \"statequery\",  \"states\" for statetype=" + statetype);

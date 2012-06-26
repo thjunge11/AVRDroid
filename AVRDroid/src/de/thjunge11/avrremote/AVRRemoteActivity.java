@@ -47,6 +47,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
 import android.widget.Toast;
 import de.thjunge11.avrremote.SimpleGestureFilter.SimpleGestureListener;
 import de.thjunge11.avrremote.xmlLayout.ButtonIcons;
@@ -93,6 +94,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private AVRButtonOnClickListener avrButtonOnClickListener;
 	private SimpleGestureFilter detector;
 	private int storedViewonCreateContext;
+	private int storedChooserButtonId;
 	private SendAVRCommand taskHandlerSendAVRCommand;
 	private SendAVRStateQueryCommand taskHandlerSendAVRStateQueryCommand;
 	private boolean flagModified;
@@ -292,24 +294,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			return false;			
 		}
 		else if (strVolUpAction.equals(getResources().getStringArray(R.array.entries_volume_up_keys)[1])){
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(getString(R.string.pref_cat_volumekeys_volup_custom_default));
+			AVRRemoteActivity.this.fireAVRCommand(getString(R.string.pref_cat_volumekeys_volup_custom_default));
 			return true;
 		}
 		else if (strVolUpAction.equals(getResources().getStringArray(R.array.entries_volume_up_keys)[2])){
 			String customcommand = prefs.getString("volupkey_custom", getString(R.string.pref_cat_volumekeys_volup_custom_default));
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(customcommand);
+			AVRRemoteActivity.this.fireAVRCommand(customcommand);
 			return true;
 		}
 		return false;
@@ -325,24 +315,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			return false;			
 		}
 		else if (strVolDownAction.equals(getResources().getStringArray(R.array.entries_volume_down_keys)[1])){
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(getString(R.string.pref_cat_volumekeys_voldown_custom_default));
+			AVRRemoteActivity.this.fireAVRCommand(getString(R.string.pref_cat_volumekeys_voldown_custom_default));
 			return true;
 		}
 		else if (strVolDownAction.equals(getResources().getStringArray(R.array.entries_volume_down_keys)[2])){
 			String customcommand = prefs.getString("voldownkey_custom", getString(R.string.pref_cat_volumekeys_voldown_custom_default));
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute(customcommand);
+			AVRRemoteActivity.this.fireAVRCommand(customcommand);
 			return true;
 		}
 		return false;
@@ -376,19 +354,41 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 
 		@Override
 		public void onClick(View v) {
-			if (ButtonStore.isButtonStateDefined(v.getId())) {
-				if (taskHandlerSendAVRCommand != null) {
-					if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-						taskHandlerSendAVRCommand.cancel(true);
-					}
+			if (ButtonStore.getStateType(v.getId()) == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_SELECT) {
+				final CharSequence[] items = ButtonStore.getButtonStateLabelsArray(v.getId());
+				storedChooserButtonId = v.getId();
+				if (items != null) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(AVRRemoteActivity.this);
+					builder.setTitle(R.string.dialog_command_select);
+					builder.setItems(items, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							AVRRemoteActivity.this.fireAVRCommand(ButtonStore.getButtonStateCommand(storedChooserButtonId, which));							
+						}
+					});
+					AlertDialog dialog = builder.create();
+					dialog.show();
 				}
-				taskHandlerSendAVRCommand = new SendAVRCommand();
-				taskHandlerSendAVRCommand.execute(ButtonStore.getButtonCommand(v.getId()));
+			}
+			
+			else if (ButtonStore.isButtonStateDefined(v.getId())) {
+				AVRRemoteActivity.this.fireAVRCommand(ButtonStore.getButtonCommand(v.getId()));
 			}
 			else {
 				Toast.makeText(AVRRemoteActivity.this, R.string.button_state_undefined, Toast.LENGTH_SHORT).show();
 			}
 		}
+	}
+	
+	private void fireAVRCommand(String command) {
+		if (taskHandlerSendAVRCommand != null) {
+			if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
+				taskHandlerSendAVRCommand.cancel(true);
+			}
+		}
+		taskHandlerSendAVRCommand = new SendAVRCommand();
+		taskHandlerSendAVRCommand.execute(command);
 	}
 	
 	private class StateChangeListener implements AVRRemoteStateChangeListener {
@@ -464,12 +464,15 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI); 
 		if (!networkInfo.isConnected()) {
 			Toast.makeText(this, R.string.wifi_not_avaiable, Toast.LENGTH_SHORT).show();
+			this.showDialog(OP_MENU_RECONNECT);
 		}
 		else if (!status) {
 			Toast.makeText(this, R.string.toast_no_connection, Toast.LENGTH_SHORT).show();
+			this.showDialog(OP_MENU_RECONNECT);
 		}
 		else {
 			this.setupStateChangeReceiverService();
+			layoutButtons.setEnabled(false);
 		}
 	}
 	
@@ -512,7 +515,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 		else {
 			inflator.inflate(R.menu.context_statebuttons, menu);
-			if (ButtonStore.getStateType(v.getId()) == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_TOGGLE) {
+			if (ButtonStore.getStateType(v.getId()) != de.thjunge11.avrremote.xmlModel.Button.STATETYPE_VIEW) {
 				menu.add(Menu.NONE, CMENU_EDIT_STATE_ICONIDS, Menu.FIRST+4, this.getString(R.string.cmenu_edit_state_icons));
 				menu.add(Menu.NONE, CMENU_EDIT_STATE_COMMANDS, Menu.FIRST+6, this.getString(R.string.cmenu_edit_state_commands));
 			} 
@@ -610,13 +613,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		
 			
 		case OP_MENU_RECONNECT :
-			if (taskHandlerSendAVRCommand != null) {
-				if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRCommand = new SendAVRCommand();
-			taskHandlerSendAVRCommand.execute("");
+			AVRRemoteActivity.this.fireAVRCommand("");
 			return true;
 			
 
@@ -699,6 +696,24 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		final Bundle bundle = args;
 
 		switch(id) {
+		
+		case OP_MENU_RECONNECT :
+			final TextView reconnectTv = new TextView(this);
+			reconnectTv.setText(R.string.dialog_text_reconnect);
+			AlertDialog.Builder reconnect = new AlertDialog.Builder(this);
+			reconnect.setTitle(R.string.dialog_title_reconnect)
+			.setView(reconnectTv)
+			.setPositiveButton(R.string.button_reconnect, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				AVRRemoteActivity.this.fireAVRCommand("");
+			  }
+			})
+			.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int id) {
+			  }
+			});
+			dialog = reconnect.create();
+	        break;
 		
 		case CMENU_EDIT_LABEL:
 			final EditText inputLabel = new EditText(this);
@@ -1364,7 +1379,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 					button.setImageDrawable(getResources().getDrawable(ButtonIcons.getResId(xmlButton.iconid)));
 				}
 				else {
-					button.setImageDrawable(getResources().getDrawable(R.drawable.empty_icon));
+					// button.setImageDrawable(getResources().getDrawable(R.drawable.empty_icon));
 				}
 				
 				if (xmlButton.viewonly) {

@@ -14,6 +14,12 @@
                 states="SISAT/CBL;SISERVER;SIGAME"
                 label="net;ps3;reelbox" style="red;light;dark"
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">SISERVER;SIGAME;SISAT/CBL</button>
+             <button comment="select input" 
+                statetype="chooser"
+                statequery="SI?"
+                states="SISAT/CBL;SISERVER;SIGAME"
+                label="Reelbox;Media Server;PS3" style="red"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">SISAT/CBL;SISERVER;SIGAME</button>
             <button comment="view source" 
                 statetype="view"
                 statequery="SI?"

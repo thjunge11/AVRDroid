@@ -199,6 +199,14 @@ public class ButtonStore {
 			return "";
 		}
 	}
+	static public String[] getButtonStateLabelsArray (int id) {
+		if (mapStateButtonAttributes.containsKey(id)) {
+			return mapStateButtonAttributes.get(id).getLabels();
+		}
+		else {
+			return null;
+		}
+	}
 	static public String getButtonStateStyles (int id) {
 		if (mapButtonAttributes.containsKey(id)) {
 			return xmlButtonslayout.getPages().get(mapButtonAttributes.get(id).getPageId()).getButtons().get(mapButtonAttributes.get(id).getButtonId()).getStyle();
@@ -213,6 +221,14 @@ public class ButtonStore {
 		}
 		else {
 			return "";
+		}
+	}
+	static public String getButtonStateCommand(int id, int stateId) {
+		if (mapStateButtonAttributes.containsKey(id)) {
+			return mapStateButtonAttributes.get(id).getCommand(stateId);
+		}
+		else {
+			return null;
 		}
 	}
 	static public String getButtonState (int id) {
@@ -235,7 +251,12 @@ public class ButtonStore {
 			}
 		}
 		else {
-			return false;
+			if (mapButtonAttributes.containsKey(id)) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 	}
 	
