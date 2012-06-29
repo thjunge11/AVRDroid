@@ -2,17 +2,13 @@
    <pages class="java.util.ArrayList">
       <page orientation="portrait" name="Main" buttonheight_scale="0.7" buttons_per_row="4">
          <buttons class="java.util.ArrayList">
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="PW?"
-                states="PWON;PWSTANDBY"
-                label="Standby;On" style="light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">PWSTANDBY;PWON</button>
-            <button comment="toggle input" 
-                statetype="toggle"
-                statequery="SI?"
-                states="SISAT/CBL;SISERVER;SIGAME"
-                label="net;ps3;reelbox" style="red;light;dark"
+            <button comment="Switch receiver on/off" statetype="toggle"
+                statequery="PW?" states="PWON;PWSTANDBY" label="Standby;On" style="red;dark"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">PWSTANDBY;PWON</button>
+            <button comment="Source Select" statetype="select" 
+                statequery="SI?" states="SI$text"
+                label="Source: $" style="light"
+                list="Media Server;PS3;Reelbox"
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">SISERVER;SIGAME;SISAT/CBL</button>
              <button comment="select input" 
                 statetype="chooser"

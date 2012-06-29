@@ -22,6 +22,7 @@ public class StateButtonAttributes {
 	private String[] styles;
 	private String[] commands;
 	private int paramType;
+	private String[] list;
 	
 	// getters
 	public int getNoOfStates() { return noOfStates; }
@@ -33,6 +34,7 @@ public class StateButtonAttributes {
 	public String[] getCommands() { return commands; }
 	public int[] geticonIds() { return iconIds; }
 	public int getParamType() { return paramType; }
+	public String[] getList() { return list; }
 	
 	// single state access
 	public int getStoredState() { return storeState; }
@@ -62,6 +64,7 @@ public class StateButtonAttributes {
 		this.iconIds = stateButtonAttributes.geticonIds();
 		this.paramType = stateButtonAttributes.getParamType();
 		this.storedParam = stateButtonAttributes.getStoredParam();
+		this.list = stateButtonAttributes.getList();
 		
 		if (this.paramType == PARAM_TYPE_NUMBER) {
 			String value = receivedState.substring(states[0].length()-1);

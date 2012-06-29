@@ -56,6 +56,9 @@ public class Button{
 	@Attribute(required=false)
 	private String states;
 	
+	@Attribute(required=false)
+	private String list;
+	
 	// getters
 	public String getLabel() { return label; }
 	public boolean getNewRow() { return newrow;	}
@@ -70,6 +73,7 @@ public class Button{
 	public int getStateType() { return intStatetype; }
 	public String getStateQuery() { return statequery; }
 	public String getStates() { return states; }
+	public String getList() { return list; }
 	
 	// modify
 	public void setLabel(String newLabel) { if (newLabel != null) this.label = newLabel; else this.label = ""; }
@@ -82,7 +86,7 @@ public class Button{
 	public void setStates(String newStates) { if (newStates != null) this.states = newStates; else this.states = ""; }
 	public void setStateQuery(String newStateQuery) { if (newStateQuery != null) this.statequery = newStateQuery; else this.statequery = ""; }
 	public void setIconIds(String newIconIds) { if (newIconIds != null) this.iconid = newIconIds; else this.iconid = "0"; }
-	
+	public void setList(String newList) { if (newList != null) this.list = newList; else this.list = ""; }
 	
 	@Validate
 	public void validate() throws XmlFileLayoutException {
@@ -134,14 +138,17 @@ public class Button{
 		else if (statetype.equals("chooser")) {
 			intStatetype = STATETYPE_SELECT;
 			// validate state elements
-			if ((statequery == null) || (states == null)) {
-				throw new XmlFileLayoutException("missing state attributes \"statequery\",  \"states\" for statetype=" + statetype);
+			if ((statequery == null) || (states == null) || (list == null)) {
+				throw new XmlFileLayoutException("missing one or more state attribute(s) \"list\", \"statequery\",  \"states\" for statetype=" + statetype);
 			}
 			if (statequery.equals("")) {
 				throw new XmlFileLayoutException("statequery attribute must not be empty");
 			}
 			if (states.equals("")) {
 				throw new XmlFileLayoutException("states attribute must not be empty");
+			}
+			if (list.equals("")) {
+				throw new XmlFileLayoutException("list attribute must not be empty");
 			}
 		}
 		else {
@@ -181,6 +188,8 @@ public class Button{
 		str.append(statequery);
 		str.append(";states=");
 		str.append(states);
+		str.append(";list=");
+		str.append(list);
 		str.append("]");
 		return str.toString();
 	}
