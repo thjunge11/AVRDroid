@@ -88,6 +88,7 @@
     <string name="cmenu_edit_state_styles">Edit state styles</string>
     <string name="cmenu_edit_state_commands">Edit state commands</string>
     <string name="cmenu_show_state">Show current state</string>
+    <string name="cmenu_edit_state_list">Edit chooser list</string>
     <string name="toast_edit_label">Updated label.</string>
     <string name="toast_edit_command">Updated command.</string>
     <string name="toast_edit_command_error">Input line could not be left blank.</string>
@@ -101,6 +102,7 @@
     <string name="toast_edit_states_icons">Updated state icons.</string>
     <string name="toast_edit_states_styles">Updated state styles.</string>
     <string name="toast_edit_states_commands">Updated state commands.</string>
+    <string name="toast_edit_states_list">Updated chooser list.</string>
     <string name="button_state_undefined">No valid state received yet.</string>
     <string name="toast_no_comment">No comment attached.</string>
     <string name="toast_broadcast_command">AVRDroid broadcast receiver active.</string>  

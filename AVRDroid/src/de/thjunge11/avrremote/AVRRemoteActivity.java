@@ -76,6 +76,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private static final int CMENU_EDIT_STATE_ICONIDS = 0x17;
 	private static final int CMENU_EDIT_STATE_STYLES = 0x18;
 	private static final int OP_MENU_RECONNECT = 0x19;
+	private static final int CMENU_EDIT_STATE_LIST = 0x20;
 	private static final int REQUEST_CODE_IMPORT = 0x51;
 	private static final int REQUEST_CODE_SELECT = 0x52;
 	
@@ -355,7 +356,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		@Override
 		public void onClick(View v) {
 			if (ButtonStore.getStateType(v.getId()) == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_SELECT) {
-				final CharSequence[] items = ButtonStore.getButtonStateLabelsArray(v.getId());
+				final CharSequence[] items = ButtonStore.getButtonChooserList(v.getId());
 				storedChooserButtonId = v.getId();
 				if (items != null) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(AVRRemoteActivity.this);
@@ -364,6 +365,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
+							String command = ButtonStore.getButtonStateCommand(storedChooserButtonId, which);
 							AVRRemoteActivity.this.fireAVRCommand(ButtonStore.getButtonStateCommand(storedChooserButtonId, which));							
 						}
 					});
@@ -518,7 +520,10 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			if (ButtonStore.getStateType(v.getId()) != de.thjunge11.avrremote.xmlModel.Button.STATETYPE_VIEW) {
 				menu.add(Menu.NONE, CMENU_EDIT_STATE_ICONIDS, Menu.FIRST+4, this.getString(R.string.cmenu_edit_state_icons));
 				menu.add(Menu.NONE, CMENU_EDIT_STATE_COMMANDS, Menu.FIRST+6, this.getString(R.string.cmenu_edit_state_commands));
-			} 
+			}
+			if (ButtonStore.getStateType(v.getId()) == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_SELECT) {
+				menu.add(Menu.NONE, CMENU_EDIT_STATE_LIST, Menu.FIRST+7, this.getString(R.string.cmenu_edit_state_list));
+			}
 		}
 		// store view id which called onCreateContextMenu
 		storedViewonCreateContext = v.getId();
@@ -592,6 +597,9 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			return true;
 		case CMENU_EDIT_STATE_COMMANDS :
 			this.showDialog(CMENU_EDIT_STATE_COMMANDS);
+			return true;
+		case CMENU_EDIT_STATE_LIST :
+			this.showDialog(CMENU_EDIT_STATE_LIST);
 			return true;
 			
 		default :
@@ -1123,6 +1131,35 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			dialog = builderStateCommands.create();
 			break;
 			
+		case CMENU_EDIT_STATE_LIST :
+			final EditText inputStateList = new EditText(this);
+			inputStateList.setText(ButtonStore.getButtonStateList(storedViewonCreateContext));
+			AlertDialog.Builder builderStateList = new AlertDialog.Builder(this);
+			builderStateList.setTitle(R.string.cmenu_edit_state_list)
+			.setView(inputStateList)
+			.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				String newStateList = inputStateList.getText().toString();
+				if (newStateList.length() > 0) {
+					if (ButtonStore.modify(ButtonStore.MODIFY_STATE_LIST, storedViewonCreateContext, newStateList)) {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_states_list, Toast.LENGTH_SHORT).show();
+						flagModified = true;
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+				}
+				else {
+					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+				}
+				removeDialog(CMENU_EDIT_STATE_LIST); // <-- else view id is not updated
+			  }
+			})
+			.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int id) {
+				  removeDialog(CMENU_EDIT_STATE_LIST); // <-- else view id is not updated
+			  }
+			});
+			dialog = builderStateList.create();
+			break;			
 			
 		default:
 			return super.onCreateDialog(id, bundle);

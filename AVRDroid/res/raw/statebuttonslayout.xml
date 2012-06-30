@@ -5,17 +5,17 @@
             <button comment="Switch receiver on/off" statetype="toggle"
                 statequery="PW?" states="PWON;PWSTANDBY" label="Standby;On" style="red;dark"
                 seperator="false" skip="0" span="1" newrow="false" iconid="0">PWSTANDBY;PWON</button>
-            <button comment="Source Select" statetype="select" 
+            <button comment="Source Select" statetype="chooser" 
                 statequery="SI?" states="SI$text"
                 label="Source: $" style="light"
                 list="Media Server;PS3;Reelbox"
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">SISERVER;SIGAME;SISAT/CBL</button>
-             <button comment="select input" 
-                statetype="chooser"
+             <button comment="toggle input" 
+                statetype="toggle"
                 statequery="SI?"
                 states="SISAT/CBL;SISERVER;SIGAME"
                 label="Reelbox;Media Server;PS3" style="red"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">SISAT/CBL;SISERVER;SIGAME</button>
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">SISERVER;SIGAME;SISAT/CBL</button>
             <button comment="view source" 
                 statetype="view"
                 statequery="SI?"

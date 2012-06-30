@@ -23,6 +23,7 @@ public class StateButtonAttributes {
 	private String[] commands;
 	private int paramType;
 	private String[] list;
+	private int noOfChooseItems;
 	
 	// getters
 	public int getNoOfStates() { return noOfStates; }
@@ -35,7 +36,7 @@ public class StateButtonAttributes {
 	public int[] geticonIds() { return iconIds; }
 	public int getParamType() { return paramType; }
 	public String[] getList() { return list; }
-	
+	public int getNoOfChooseItems()  { return this.noOfChooseItems; }
 	// single state access
 	public int getStoredState() { return storeState; }
 	public String getStoredParam () { return storedParam; }
@@ -46,7 +47,13 @@ public class StateButtonAttributes {
 		}
 		else return ""; 
 	}
-	public String getCommand(int stateId) { if (stateId >= 0 && stateId < noOfStates) return commands[stateId]; else return ""; }
+	public String getCommand(int stateId) { 
+		if (this.stateType == Button.STATETYPE_SELECT) {
+			if (stateId >= 0 && stateId < noOfChooseItems) return commands[stateId]; else return "";
+		}
+		else {
+			if (stateId >= 0 && stateId < noOfStates) return commands[stateId]; else return ""; }
+	}
 	public String getStyle(int stateId) { if (stateId >= 0 && stateId < noOfStates) return styles[stateId]; else return ""; }
 	public int getIconId(int stateId) { if (stateId >= 0 && stateId < noOfStates) return iconIds[stateId]; else return ButtonIcons.NO_ICON; }
 	public String getState(int stateId) { if (stateId >= 0 && stateId < noOfStates) return states[stateId]; else return ""; }
@@ -65,6 +72,7 @@ public class StateButtonAttributes {
 		this.paramType = stateButtonAttributes.getParamType();
 		this.storedParam = stateButtonAttributes.getStoredParam();
 		this.list = stateButtonAttributes.getList();
+		this.noOfChooseItems = stateButtonAttributes.getNoOfChooseItems();
 		
 		if (this.paramType == PARAM_TYPE_NUMBER) {
 			String value = receivedState.substring(states[0].length()-1);
@@ -83,7 +91,7 @@ public class StateButtonAttributes {
 	
 	
 	// constructor
-	public StateButtonAttributes(int stateType, String statequery, String states, String command,
+	public StateButtonAttributes(int stateType, String statequery, String states, String list, String command,
 			String label, String style, String iconid, int storeState) {
 		
 		this.storeState =  storeState;
@@ -111,6 +119,36 @@ public class StateButtonAttributes {
 			storedParam = "";
 			paramType = PARAM_TYPE_NONE;
 		}
+		
+		// process commands/list
+		if (stateType == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_SELECT) {
+			String providedCommands[] = command.split(Button.STATE_SEP, 0);
+			int noOfCommands = providedCommands.length;
+			String providedList[] = list.split(Button.STATE_SEP, 0);
+			int noOfItems = providedList.length;
+			if (noOfItems < noOfCommands) {
+				this.noOfChooseItems = noOfItems;
+			}
+			else {
+				this.noOfChooseItems = noOfCommands;
+			}
+			this.commands = new String[this.noOfChooseItems];
+			this.list = new String[this.noOfChooseItems];
+			for (int i=0; i < this.noOfChooseItems; i++) {
+				this.commands[i] = providedCommands[i];
+				this.list[i] = providedList[i];
+			}			
+		}
+		else {
+			String[] providedCommands = command.split(Button.STATE_SEP, 0);
+			String storeCommand = "";
+			this.commands = new String[this.noOfStates];
+			for (int i=0; i < this.noOfStates; i++) {
+				if (i < providedCommands.length) { storeCommand = this.commands[i] = providedCommands[i]; }
+				else { this.commands[i] = storeCommand; }
+			}
+			this.list = null;
+		}
 			
 		
 		// process labels
@@ -128,14 +166,6 @@ public class StateButtonAttributes {
 		for (int i=0; i < this.noOfStates; i++) {
 			if (i < providedStyles.length) { storeStyle = this.styles[i] = providedStyles[i]; }
 			else { this.styles[i] = storeStyle; }
-		}
-		// process commands
-		String[] providedCommands = command.split(Button.STATE_SEP, 0);
-		String storeCommand = "";
-		this.commands = new String[this.noOfStates];
-		for (int i=0; i < this.noOfStates; i++) {
-			if (i < providedCommands.length) { storeCommand = this.commands[i] = providedCommands[i]; }
-			else { this.commands[i] = storeCommand; }
 		}
 		// process iconids
 		String[] providedIconIds = iconid.split(Button.STATE_SEP, 0);
@@ -167,12 +197,21 @@ public class StateButtonAttributes {
 		for (int i=0; i < noOfStates; i++) { str.append(states[i]); str.append("|"); }
 		str.append(";labels=");
 		for (int i=0; i < noOfStates; i++) { str.append(labels[i]); str.append("|"); }
-		str.append(";commands=");
-		for (int i=0; i < noOfStates; i++) { str.append(commands[i]); str.append("|"); }
 		str.append(";styles=");
 		for (int i=0; i < noOfStates; i++) { str.append(styles[i]); str.append("|"); }
 		str.append(";iconIds=");
 		for (int i=0; i < noOfStates; i++) { str.append(iconIds[i]); str.append("|"); }
+		if (stateType == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_SELECT) {
+			str.append(";commands=");
+			for (int i=0; i < noOfChooseItems; i++) { str.append(commands[i]); str.append("|"); }
+			str.append(";list=");
+			for (int i=0; i < noOfChooseItems; i++) { str.append(list[i]); str.append("|"); }
+		}
+		else {
+			str.append(";commands=");
+			for (int i=0; i < noOfStates; i++) { str.append(commands[i]); str.append("|"); }
+		}
+		
 		str.append("]");
 		return str.toString();
 	}

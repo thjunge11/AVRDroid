@@ -37,6 +37,8 @@ public class ButtonStore {
 	public final static int MODIFY_STATE_ICONS = 104;
 	public final static int MODIFY_STATE_STYLES = 105;
 	public final static int MODIFY_STATE_COMMANDS = 106;
+	public final static int MODIFY_STATE_LIST = 107;
+	
 	
 	
 	// fields
@@ -199,9 +201,9 @@ public class ButtonStore {
 			return "";
 		}
 	}
-	static public String[] getButtonStateLabelsArray (int id) {
+	static public String[] getButtonChooserList (int id) {
 		if (mapStateButtonAttributes.containsKey(id)) {
-			return mapStateButtonAttributes.get(id).getLabels();
+			return mapStateButtonAttributes.get(id).getList();
 		}
 		else {
 			return null;
@@ -218,6 +220,14 @@ public class ButtonStore {
 	static public String getButtonStateCommands (int id) {
 		if (mapButtonAttributes.containsKey(id)) {
 			return xmlButtonslayout.getPages().get(mapButtonAttributes.get(id).getPageId()).getButtons().get(mapButtonAttributes.get(id).getButtonId()).getValue();
+		}
+		else {
+			return "";
+		}
+	}
+	static public String getButtonStateList (int id) {
+		if (mapButtonAttributes.containsKey(id)) {
+			return xmlButtonslayout.getPages().get(mapButtonAttributes.get(id).getPageId()).getButtons().get(mapButtonAttributes.get(id).getButtonId()).getList();
 		}
 		else {
 			return "";
@@ -404,7 +414,10 @@ public class ButtonStore {
 				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setCommand(newValue);
 				mapStateButtonAttributes.remove(id);
 				break;
-				
+			case MODIFY_STATE_LIST :
+				xmlButtonslayout.getPages().get(pageid).getButtons().get(buttonid).setList(newValue);
+				mapStateButtonAttributes.remove(id);
+				break;
 				
 				
 			default:
@@ -581,7 +594,8 @@ public class ButtonStore {
 					String statequery = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStateQuery();
 					String states = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getStates();
 					String iconIds = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getIconIds();
-					StateButtonAttributes stateButtonAttributes = new StateButtonAttributes(stateType, statequery, states, command, label, style, iconIds, 
+					String list = xmlButtonslayout.getPages().get(buttonStreamPageindex).getButtons().get(buttonStreamButtonindex).getList();
+					StateButtonAttributes stateButtonAttributes = new StateButtonAttributes(stateType, statequery, states, list, command, label, style, iconIds, 
 							StateButtonAttributes.STATE_UNDEFINED);
 					
 					mapStateButtonAttributes.put(id, stateButtonAttributes);
