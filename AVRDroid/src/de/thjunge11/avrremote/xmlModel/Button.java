@@ -83,10 +83,10 @@ public class Button{
 		this.intIconId = newId;
 		this.iconid = Integer.toString(newId); }
 	public void setStyle (String newStyle) { if (newStyle != null) this.style = newStyle; else this.style = ""; }
-	public void setStates(String newStates) { if (newStates != null) this.states = newStates; else this.states = ""; }
-	public void setStateQuery(String newStateQuery) { if (newStateQuery != null) this.statequery = newStateQuery; else this.statequery = ""; }
+	public void setStates(String newStates) { this.states = newStates; }
+	public void setStateQuery(String newStateQuery) { this.statequery = newStateQuery;  }
 	public void setIconIds(String newIconIds) { if (newIconIds != null) this.iconid = newIconIds; else this.iconid = "0"; }
-	public void setList(String newList) { if (newList != null) this.list = newList; else this.list = ""; }
+	public void setList(String newList) { this.list = newList; }
 	
 	@Validate
 	public void validate() throws XmlFileLayoutException {
@@ -138,14 +138,18 @@ public class Button{
 		else if (statetype.equals("chooser")) {
 			intStatetype = STATETYPE_SELECT;
 			// validate state elements
-			if ((statequery == null) || (states == null) || (list == null)) {
-				throw new XmlFileLayoutException("missing one or more state attribute(s) \"list\", \"statequery\",  \"states\" for statetype=" + statetype);
+			if ((list == null)) {
+				throw new XmlFileLayoutException("missing attribute \"list\" for statetype=" + statetype);
 			}
-			if (statequery.equals("")) {
-				throw new XmlFileLayoutException("statequery attribute must not be empty");
+			if (statequery != null) {
+				if (statequery.equals("")) {
+					throw new XmlFileLayoutException("statequery attribute must not be empty");
+				}
 			}
-			if (states.equals("")) {
-				throw new XmlFileLayoutException("states attribute must not be empty");
+			if (states != null) {
+				if (states.equals("")) {
+					throw new XmlFileLayoutException("states attribute must not be empty");
+				}
 			}
 			if (list.equals("")) {
 				throw new XmlFileLayoutException("list attribute must not be empty");

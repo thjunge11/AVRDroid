@@ -83,7 +83,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private static final String CURRENTLAYOUT = "currentlayout.xml"; 
 	private static final String CURRENTLAYOUTSHARE = "currentlayout_share.xml";
 	private static final String KEY_FILENAME = "filename";
-	private static final int TIME_WAIT_STATE_QUERIES = 100;
+	private static final int TIME_WAIT_STATE_QUERIES = 200;
 	
 	private static final int HOR_DUMMY_VIEW_HEIGHT = 20;
 	private static final int BUTTON_MARGIN = 0;
@@ -365,8 +365,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							String command = ButtonStore.getButtonStateCommand(storedChooserButtonId, which);
-							AVRRemoteActivity.this.fireAVRCommand(ButtonStore.getButtonStateCommand(storedChooserButtonId, which));							
+								AVRRemoteActivity.this.fireAVRCommand(ButtonStore.getButtonStateCommand(storedChooserButtonId, which));							
 						}
 					});
 					AlertDialog dialog = builder.create();

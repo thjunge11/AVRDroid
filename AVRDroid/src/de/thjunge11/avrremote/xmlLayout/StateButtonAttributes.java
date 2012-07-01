@@ -56,7 +56,7 @@ public class StateButtonAttributes {
 	}
 	public String getStyle(int stateId) { if (stateId >= 0 && stateId < noOfStates) return styles[stateId]; else return ""; }
 	public int getIconId(int stateId) { if (stateId >= 0 && stateId < noOfStates) return iconIds[stateId]; else return ButtonIcons.NO_ICON; }
-	public String getState(int stateId) { if (stateId >= 0 && stateId < noOfStates) return states[stateId]; else return ""; }
+	public String getState(int stateId) { if ((stateId >= 0 && stateId < noOfStates) && (states != null)) return states[stateId]; else return ""; }
 	
 	// copy constructor
 	public StateButtonAttributes(StateButtonAttributes stateButtonAttributes, int storeState, String receivedState) {
@@ -98,30 +98,39 @@ public class StateButtonAttributes {
 		this.stateType = stateType;
 		this.statequery = statequery;
 		
-		// process states
-		if (states.endsWith("$text")) {
-			this.paramType = PARAM_TYPE_TEXT;
-			this.storedParam = "";
-			this.noOfStates = 1;
-			this.states = new String[this.noOfStates];
-			this.states[0] = states.replace("$text","$");
-		}
-		else if (states.endsWith("$number")) {
-			this.paramType = PARAM_TYPE_NUMBER;
-			this.storedParam = "";
-			this.noOfStates = 1;
-			this.states = new String[this.noOfStates];
-			this.states[0] = states.replace("$number","$");
-		}
-		else {
-			this.states = states.split(Button.STATE_SEP, 0);
-			this.noOfStates = this.states.length;
-			storedParam = "";
-			paramType = PARAM_TYPE_NONE;
-		}
-		
 		// process commands/list
 		if (stateType == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_SELECT) {
+			// process states
+			if (states != null) {
+				if (states.endsWith("$text")) {
+					this.paramType = PARAM_TYPE_TEXT;
+					this.storedParam = "";
+					this.noOfStates = 1;
+					this.states = new String[this.noOfStates];
+					this.states[0] = states.replace("$text","$");
+				}
+				else if (states.endsWith("$number")) {
+					this.paramType = PARAM_TYPE_NUMBER;
+					this.storedParam = "";
+					this.noOfStates = 1;
+					this.states = new String[this.noOfStates];
+					this.states[0] = states.replace("$number","$");
+				}
+				else {
+					this.states = states.split(Button.STATE_SEP, 0);
+					this.noOfStates = this.states.length;
+					storedParam = "";
+					paramType = PARAM_TYPE_NONE;
+				}
+			}
+			else {
+				this.states = null;
+				this.noOfStates = 1;
+				this.storeState = 0;
+				storedParam = "";
+				paramType = PARAM_TYPE_NONE;
+			}
+			
 			String providedCommands[] = command.split(Button.STATE_SEP, 0);
 			int noOfCommands = providedCommands.length;
 			String providedList[] = list.split(Button.STATE_SEP, 0);
@@ -140,6 +149,28 @@ public class StateButtonAttributes {
 			}			
 		}
 		else {
+			// process states
+			if (states.endsWith("$text")) {
+				this.paramType = PARAM_TYPE_TEXT;
+				this.storedParam = "";
+				this.noOfStates = 1;
+				this.states = new String[this.noOfStates];
+				this.states[0] = states.replace("$text","$");
+			}
+			else if (states.endsWith("$number")) {
+				this.paramType = PARAM_TYPE_NUMBER;
+				this.storedParam = "";
+				this.noOfStates = 1;
+				this.states = new String[this.noOfStates];
+				this.states[0] = states.replace("$number","$");
+			}
+			else {
+				this.states = states.split(Button.STATE_SEP, 0);
+				this.noOfStates = this.states.length;
+				storedParam = "";
+				paramType = PARAM_TYPE_NONE;
+			}
+			
 			String[] providedCommands = command.split(Button.STATE_SEP, 0);
 			String storeCommand = "";
 			this.commands = new String[this.noOfStates];

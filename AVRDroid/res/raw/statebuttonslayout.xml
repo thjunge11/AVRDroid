@@ -10,6 +10,10 @@
                 label="Source: $" style="light"
                 list="Media Server;PS3;Reelbox"
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">SISERVER;SIGAME;SISAT/CBL</button>
+            <button comment="Source Select" statetype="chooser" 
+                label="Sleep" style="red"
+                list="Sleep Off;Sleep 10;Sleep 20;Sleep 30;Sleep 45;Sleep 60;Sleep 90;Sleep 120 "
+                seperator="false" skip="0" span="1" newrow="false" iconid="10">SLPOFF;SLP010;SLP020;SLP030;SLP045;SLP060;SLP090;SLP120</button>
              <button comment="toggle input" 
                 statetype="toggle"
                 statequery="SI?"

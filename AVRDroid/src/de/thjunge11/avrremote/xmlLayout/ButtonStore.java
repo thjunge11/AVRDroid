@@ -273,7 +273,9 @@ public class ButtonStore {
 	static public Vector<String> getStates() {
 		Vector<String> states = new Vector<String>();
 		for (StateButtonAttributes stateButtonAttributes : mapStateButtonAttributes.values()) {
-			states.addAll(Arrays.asList(stateButtonAttributes.getStates()));
+			if (stateButtonAttributes.getStates() != null) {
+				states.addAll(Arrays.asList(stateButtonAttributes.getStates()));
+			}
 		}
 		// hack to remove duplicates
 		return new Vector<String>(new LinkedHashSet<String>(states));
@@ -283,11 +285,13 @@ public class ButtonStore {
 		// String[] stateQueries = new String[mapStateButtonAttributes.size()];
 		Vector<String> stateQueries = new Vector<String>();
 		for (StateButtonAttributes stateButtonAttributes : mapStateButtonAttributes.values()) {
-			if (!stateQueries.contains(stateButtonAttributes.getStateQuery())) {
-				stateQueries.add(stateButtonAttributes.getStateQuery());
+			if (stateButtonAttributes.getStateQuery() != null) {
+				if (!stateQueries.contains(stateButtonAttributes.getStateQuery())) {
+					stateQueries.add(stateButtonAttributes.getStateQuery());
+				}
 			}
 		}
-		return stateQueries.toArray(new String[1]);
+		return stateQueries.toArray(new String[stateQueries.size()]);
 	}
 	
 	static public Vector<Integer> processState(String receivedState) {
@@ -303,15 +307,17 @@ public class ButtonStore {
 		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()){
 		    
 		    if (entry.getValue().getParamType() == StateButtonAttributes.PARAM_TYPE_NONE) {
-		    	String[] states = entry.getValue().getStates();
-		    	for (int i=0; i < states.length; i++) {
-		    		if (states[i].equals(receivedState)) {
-			    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found exact match:" + states[i]);
-			    		matchedKeys.add(entry.getKey());
-			    		matchedKeysStateIds.add(i);
-			    		break;
-			    	}		    	
-			    }
+		    	if (entry.getValue().getStates() != null) {
+			    	String[] states = entry.getValue().getStates();
+			    	for (int i=0; i < states.length; i++) {
+			    		if (states[i].equals(receivedState)) {
+				    		if (BuildConfig.DEBUG) Log.d(TAG, "processState(): found exact match:" + states[i]);
+				    		matchedKeys.add(entry.getKey());
+				    		matchedKeysStateIds.add(i);
+				    		break;
+				    	}		    	
+				    }
+		    	}
 		    }
 		    else {
 		    	String state = entry.getValue().getState(0);
