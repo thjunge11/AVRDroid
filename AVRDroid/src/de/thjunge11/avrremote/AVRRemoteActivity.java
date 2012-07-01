@@ -987,7 +987,15 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 					}
 				}
 				else {
-					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+					if (ButtonStore.getStateType(storedViewonCreateContext) == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_SELECT) {
+						ButtonStore.modify(ButtonStore.MODIFY_STATES, storedViewonCreateContext, null);
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_states, Toast.LENGTH_SHORT).show();
+						flagModified = true;
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+					else {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+					}
 				}
 				removeDialog(CMENU_EDIT_STATES); // <-- else view id is not updated
 			  }
@@ -1017,7 +1025,15 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 					}
 				}
 				else {
-					Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+					if (ButtonStore.getStateType(storedViewonCreateContext) == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_SELECT) {
+						ButtonStore.modify(ButtonStore.MODIFY_STATE_QUERY, storedViewonCreateContext, null);
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_states_query, Toast.LENGTH_SHORT).show();
+						flagModified = true;
+						AVRRemoteActivity.this.selectPage(storedCurrentPage);
+					}
+					else {
+						Toast.makeText(AVRRemoteActivity.this, R.string.toast_edit_command_error, Toast.LENGTH_LONG).show();
+					}
 				}
 				removeDialog(CMENU_EDIT_STATE_QUERY); // <-- else view id is not updated
 			  }
