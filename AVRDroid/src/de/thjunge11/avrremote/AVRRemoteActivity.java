@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 
 import android.app.AlertDialog;
@@ -103,6 +105,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private boolean mStateChangeReceiverBound;
 	private AVRRemoteStateChangeService mStateChangeReceiverService;
 	private StateChangeListener stateChangeListener;
+	private Queue<String> mQueueStateQuery;
 	private ServiceConnection mServiceConnection = new ServiceConnection() {
 		
 		@Override
@@ -138,6 +141,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		avrButtonOnClickListener = new AVRButtonOnClickListener();
 		stateChangeListener = new StateChangeListener();
 		AVRLayoutUtils.bScreenLock = false;
+		mQueueStateQuery = new LinkedList<String>();
 		
 		// load current layout from private file if possible, else load default
 		storedCurrentPage = 1;
@@ -185,6 +189,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		 * will be invoked on A. B will not be created until A's onPause() returns, 
 		 * Running AVRSendCommand Task should be canceled here
 		 */
+		mQueueStateQuery.clear();
 		if (taskHandlerSendAVRCommand != null) {
 			if (taskHandlerSendAVRCommand.getStatus() == AsyncTask.Status.RUNNING) {
 				taskHandlerSendAVRCommand.cancel(true);
@@ -440,21 +445,23 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 	}
 	
-	protected class SendAVRStateQueryCommand extends AsyncTask<String, Void, Void> {
+	protected class SendAVRStateQueryCommand extends AsyncTask<String, Void, Boolean> {
 
 		@Override
-		protected Void doInBackground(String... arg0) {
+		protected Boolean doInBackground(String... arg0) {
 			// flush socket read buffer
 			
-			for (int i = 0; i < arg0.length; i++) {
-				AVRConnection.sendComplexCommand(arg0[i]);
-				try {
-					Thread.sleep(TIME_WAIT_STATE_QUERIES);
-				} catch (InterruptedException e1) {
-					Log.e(TAG, e1.getMessage());
-				}
+			AVRConnection.sendComplexCommand(arg0[0]);
+			try {
+				Thread.sleep(TIME_WAIT_STATE_QUERIES);
+			} catch (InterruptedException e1) {
+				Log.e(TAG, e1.getMessage());
 			}
-			return null;
+			return true;
+		}
+		
+		protected void onPostExecute(Boolean status) {
+			AVRRemoteActivity.this.updateStateQueryQueue();
 		}
 	}
 	
@@ -482,28 +489,41 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 			mStateChangeReceiverService.registerListener(stateChangeListener);
 			mStateChangeReceiverService.registerStates(ButtonStore.getStates());
 			mStateChangeReceiverService.startReceiving();
-			if (taskHandlerSendAVRStateQueryCommand != null) {
-				if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRStateQueryCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
-			taskHandlerSendAVRStateQueryCommand.execute(ButtonStore.getStateQueries());
+			this.initStateQueryQueue();
 		}
 	}
 	
 	private void updateStateChangeReceiverService() {
 		if (mStateChangeReceiverBound && mStateChangeReceiverService.isReceivingThreadRunning()) {
 			mStateChangeReceiverService.registerStates(ButtonStore.getStates());
-			if (taskHandlerSendAVRStateQueryCommand != null) {
-				if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
-					taskHandlerSendAVRStateQueryCommand.cancel(true);
-				}
-			}
-			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
-			taskHandlerSendAVRStateQueryCommand.execute(ButtonStore.getStateQueries());
+			this.initStateQueryQueue();
 		}
 	}
+	
+	private void initStateQueryQueue() {
+		mQueueStateQuery.clear();
+		if (taskHandlerSendAVRStateQueryCommand != null) {
+			if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
+				taskHandlerSendAVRStateQueryCommand.cancel(true);
+			}
+		}
+		String queue[] = ButtonStore.getStateQueries();
+		for (int i=0; i < queue.length; i++ ) {
+			mQueueStateQuery.add(queue[i]);
+		}
+		if (!mQueueStateQuery.isEmpty()) {
+			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
+			taskHandlerSendAVRStateQueryCommand.execute(mQueueStateQuery.poll());
+		}
+	}
+	
+	private void updateStateQueryQueue() {
+		if (!mQueueStateQuery.isEmpty()) {
+			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
+			taskHandlerSendAVRStateQueryCommand.execute(mQueueStateQuery.poll());
+		}
+	}
+	
 	// *********************************************
 	// context and options menus + dialogs
 	// *********************************************
