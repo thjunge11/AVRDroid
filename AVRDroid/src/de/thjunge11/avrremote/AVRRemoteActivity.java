@@ -87,6 +87,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private static final String CURRENTLAYOUTSHARE = "currentlayout_share.xml";
 	private static final String KEY_FILENAME = "filename";
 	private static final int TIME_WAIT_STATE_QUERIES = 50;
+	private static final int MAX_STATE_QUERIES = 10;
 	
 	private static final int HOR_DUMMY_VIEW_HEIGHT = 20;
 	private static final int BUTTON_MARGIN = 0;
@@ -107,6 +108,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private AVRRemoteStateChangeService mStateChangeReceiverService;
 	private StateChangeListener stateChangeListener;
 	private Queue<StateQueryAttributes> mQueueStateQuery;
+	private int mStateQueryCounter;
 	private ServiceConnection mServiceConnection = new ServiceConnection() {
 		
 		@Override
@@ -503,6 +505,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	
 	private void initStateQueryQueue() {
 		mQueueStateQuery.clear();
+		mStateQueryCounter = MAX_STATE_QUERIES;
 		if (taskHandlerSendAVRStateQueryCommand != null) {
 			if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
 				taskHandlerSendAVRStateQueryCommand.cancel(true);
@@ -518,8 +521,18 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	}
 	
 	private void updateStateQueryQueue() {
-		if (ButtonStore.isButtonStateDefined(mQueueStateQuery.peek().getButtonId())) {
-			mQueueStateQuery.remove();
+		if (!mQueueStateQuery.isEmpty()) {
+			if (ButtonStore.isButtonStateDefined(mQueueStateQuery.peek().getButtonId())) {
+				mQueueStateQuery.remove();
+				mStateQueryCounter = MAX_STATE_QUERIES;
+			}
+			else {
+				mStateQueryCounter--;
+				if (mStateQueryCounter <= 0) {
+					mQueueStateQuery.remove();
+					mStateQueryCounter = MAX_STATE_QUERIES;
+				}
+			}
 		}
 		if (!mQueueStateQuery.isEmpty()) {
 			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
