@@ -249,6 +249,14 @@ public class ButtonStore {
 			return null;
 		}
 	}
+	static public String getInterpretedButtonState (int id) {
+		if (mapStateButtonAttributes.containsKey(id)) {
+			return mapStateButtonAttributes.get(id).getInterpretedState(mapStateButtonAttributes.get(id).getStoredState());
+		}
+		else {
+			return null;
+		}
+	}
 	
 	// states
 	static public boolean isButtonStateDefined(int id) {

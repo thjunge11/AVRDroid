@@ -595,7 +595,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
  				Toast.makeText(this, R.string.toast_no_comment, Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.cmenu_show_state : 
-			String state = ButtonStore.getButtonState(storedViewonCreateContext); 
+			String state = ButtonStore.getInterpretedButtonState(storedViewonCreateContext); 
  			if (state != null && !state.equals("")) {
  				Toast.makeText(this, state, Toast.LENGTH_SHORT).show(); }
  			else 

@@ -47,6 +47,13 @@ public class StateButtonAttributes {
 		}
 		else return ""; 
 	}
+	public String getInterpretedState(int stateId) {
+		if ((stateId >= 0 && stateId < noOfStates) && (states != null)) {
+			String state = states[stateId].replace("$", storedParam);
+			return state; 
+		}
+		else return "";
+	}
 	public String getCommand(int stateId) { 
 		if (this.stateType == Button.STATETYPE_SELECT) {
 			if (stateId >= 0 && stateId < noOfChooseItems) return commands[stateId]; else return "";
