@@ -54,6 +54,7 @@ import android.widget.Toast;
 import de.thjunge11.avrremote.SimpleGestureFilter.SimpleGestureListener;
 import de.thjunge11.avrremote.xmlLayout.ButtonIcons;
 import de.thjunge11.avrremote.xmlLayout.ButtonStore;
+import de.thjunge11.avrremote.xmlLayout.StateQueryAttributes;
 import de.thjunge11.avrremote.xmlLayout.XmlButton;
 
 public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListener {
@@ -85,7 +86,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private static final String CURRENTLAYOUT = "currentlayout.xml"; 
 	private static final String CURRENTLAYOUTSHARE = "currentlayout_share.xml";
 	private static final String KEY_FILENAME = "filename";
-	private static final int TIME_WAIT_STATE_QUERIES = 200;
+	private static final int TIME_WAIT_STATE_QUERIES = 50;
 	
 	private static final int HOR_DUMMY_VIEW_HEIGHT = 20;
 	private static final int BUTTON_MARGIN = 0;
@@ -105,7 +106,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private boolean mStateChangeReceiverBound;
 	private AVRRemoteStateChangeService mStateChangeReceiverService;
 	private StateChangeListener stateChangeListener;
-	private Queue<String> mQueueStateQuery;
+	private Queue<StateQueryAttributes> mQueueStateQuery;
 	private ServiceConnection mServiceConnection = new ServiceConnection() {
 		
 		@Override
@@ -141,7 +142,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		avrButtonOnClickListener = new AVRButtonOnClickListener();
 		stateChangeListener = new StateChangeListener();
 		AVRLayoutUtils.bScreenLock = false;
-		mQueueStateQuery = new LinkedList<String>();
+		mQueueStateQuery = new LinkedList<StateQueryAttributes>();
 		
 		// load current layout from private file if possible, else load default
 		storedCurrentPage = 1;
@@ -507,20 +508,23 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				taskHandlerSendAVRStateQueryCommand.cancel(true);
 			}
 		}
-		String queue[] = ButtonStore.getStateQueries();
-		for (int i=0; i < queue.length; i++ ) {
-			mQueueStateQuery.add(queue[i]);
-		}
+		Vector <StateQueryAttributes> queue = ButtonStore.getStateQueries();
+		mQueueStateQuery.addAll(queue);
 		if (!mQueueStateQuery.isEmpty()) {
 			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
-			taskHandlerSendAVRStateQueryCommand.execute(mQueueStateQuery.poll());
+			String statequery = mQueueStateQuery.peek().getStateQuery();
+			taskHandlerSendAVRStateQueryCommand.execute(statequery);
 		}
 	}
 	
 	private void updateStateQueryQueue() {
+		if (ButtonStore.isButtonStateDefined(mQueueStateQuery.peek().getButtonId())) {
+			mQueueStateQuery.remove();
+		}
 		if (!mQueueStateQuery.isEmpty()) {
 			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
-			taskHandlerSendAVRStateQueryCommand.execute(mQueueStateQuery.poll());
+			String statequery = mQueueStateQuery.peek().getStateQuery();
+			taskHandlerSendAVRStateQueryCommand.execute(statequery);
 		}
 	}
 	

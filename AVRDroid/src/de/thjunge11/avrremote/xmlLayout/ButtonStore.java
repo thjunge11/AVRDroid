@@ -256,18 +256,8 @@ public class ButtonStore {
 			if (mapStateButtonAttributes.get(id).getStoredState() == StateButtonAttributes.STATE_UNDEFINED) {
 				return false;
 			}
-			else {
-				return true;
-			}
 		}
-		else {
-			if (mapButtonAttributes.containsKey(id)) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
+		return true;
 	}
 	
 	static public Vector<String> getStates() {
@@ -281,17 +271,18 @@ public class ButtonStore {
 		return new Vector<String>(new LinkedHashSet<String>(states));
 	}
 	
-	static public String[] getStateQueries() {
-		// String[] stateQueries = new String[mapStateButtonAttributes.size()];
-		Vector<String> stateQueries = new Vector<String>();
-		for (StateButtonAttributes stateButtonAttributes : mapStateButtonAttributes.values()) {
-			if (stateButtonAttributes.getStateQuery() != null) {
-				if (!stateQueries.contains(stateButtonAttributes.getStateQuery())) {
-					stateQueries.add(stateButtonAttributes.getStateQuery());
+	static public Vector<StateQueryAttributes> getStateQueries() {
+		Vector<StateQueryAttributes> stateQueries = new Vector<StateQueryAttributes>();
+		Vector<String> stateQueryStrings = new Vector<String>();
+		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()) {
+			if (entry.getValue().getStateQuery() != null) {
+				if (!stateQueryStrings.contains(entry.getValue().getStateQuery())) {
+					stateQueryStrings.add(entry.getValue().getStateQuery());
+					stateQueries.add(new StateQueryAttributes(entry.getValue().getStateQuery(), entry.getKey()));
 				}
 			}
 		}
-		return stateQueries.toArray(new String[stateQueries.size()]);
+		return stateQueries;
 	}
 	
 	static public Vector<Integer> processState(String receivedState) {

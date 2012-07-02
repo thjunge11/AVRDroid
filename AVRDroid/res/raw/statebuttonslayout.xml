@@ -3,77 +3,39 @@
       <page orientation="portrait" name="Main" buttonheight_scale="0.7" buttons_per_row="4">
          <buttons class="java.util.ArrayList">
             <button comment="Switch receiver on/off" statetype="toggle"
-                statequery="PW?" states="PWON;PWSTANDBY" label="Standby;On" style="red;dark"
+                statequery="PW?" states="PWON;PWSTANDBY" label="Standby;On" style="dark;red"
                 seperator="false" skip="0" span="1" newrow="false" iconid="0">PWSTANDBY;PWON</button>
-            <button comment="Source Select" statetype="chooser" 
+            <button comment="Switch Main Zone on/off" statetype="toggle"
+                statequery="ZM?" states="ZMON;ZMOFF" label="Main Zone Off;Main Zone On" style="dark;red"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">ZMOFF;ZMON</button>
+            <button comment="Select input source" statetype="chooser" 
                 statequery="SI?" states="SI$text"
                 label="Source: $" style="light"
-                list="Media Server;PS3;Reelbox"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">SISERVER;SIGAME;SISAT/CBL</button>
-            <button comment="Source Select" statetype="chooser" 
-                label="Sleep" style="red"
+                list="Blue Ray;Sat/Cable;TV;Net/USB;DVD;V.AUX;Dock;Tuner;Game 1;Game 2;DVR;CD;Phono"
+                seperator="false" skip="0" span="2" newrow="false" 
+                iconid="0">SIBD;SISAT/CBL;SITV;SINET/USB;SIDVD;SIV.AUX;SIDOCK;SITUNER;SIGAME;SIGAME2;SIDVR;SICD;SIPHONO</button>
+            <button comment="Switch Mute on/off" statetype="toggle" 
+                statequery="MU?" states="MUON;MUOFF" label="Mute off;Mute on" iconid="20;21" style="red;dark"
+                seperator="false" skip="0" span="1" newrow="false">MUOFF;MUON</button>
+            <button comment="Set Sleep" statetype="chooser" 
+                label="Sleep" style="light"
                 list="Sleep Off;Sleep 10;Sleep 20;Sleep 30;Sleep 45;Sleep 60;Sleep 90;Sleep 120 "
-                seperator="false" skip="0" span="1" newrow="false" iconid="10">SLPOFF;SLP010;SLP020;SLP030;SLP045;SLP060;SLP090;SLP120</button>
-             <button comment="toggle input" 
-                statetype="toggle"
-                statequery="SI?"
-                states="SISAT/CBL;SISERVER;SIGAME"
-                label="Reelbox;Media Server;PS3" style="red"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">SISERVER;SIGAME;SISAT/CBL</button>
-            <button comment="view source" 
-                statetype="view"
-                statequery="SI?"
-                states="SISAT/CBL;SISERVER;SIGAME"
-                label="reelbox;net;ps3" style="light;red"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
-            <button comment="view source arg" 
-                statetype="view"
-                statequery="SI?"
-                states="SI$text"
-                label="Source: $" style="red;light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+                seperator="false" skip="0" span="1" newrow="false"
+                iconid="0">SLPOFF;SLP010;SLP020;SLP030;SLP045;SLP060;SLP090;SLP120</button>
+             <button comment="Select mode" statetype="chooser" 
+                statequery="MS?" states="MS$text"
+                label="Mode: $" style="light"
+                list="MOVIE;MUSIC;GAME;DIRECT;PURE DIRECT;STEREO;STANDARD;DOLBY DIGITAL;DTS SUROUND;MCH STEREO;ROCK ARENA;JAZZ CLUB;MONO MOVIE;MATRIX;VIDEO GAME;VIRTUAL"
+                seperator="false" skip="0" span="2" newrow="false" 
+                iconid="0">MSMOVIE;MSMUSIC;MSGAME;MSDIRECT;MSPURE DIRECT;MSSTEREO;MSSTANDARD;MSDOLBY DIGITAL;MSDTS SUROUND;MSMCH STEREO;MSROCK ARENA;MSJAZZ CLUB;MSMONO MOVIE;MSMATRIX;MSVIDEO GAME;MSVIRTUAL</button>
             <button comment="volume" 
                 statetype="view"
                 statequery="MV?"
                 states="MV$number"
                 label="Volume: $" style="light"
                 seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
-            <button 
-                statetype="toggle" 
-                statequery="MU?" 
-                states="MUON;MUOFF" 
-                label="Mute off;Mute on"
-                iconid="20;21"
-                style="red;light"
-                comment="Mute toggle" seperator="false" skip="0" span="1" 
-                newrow="false">MUOFF;MUON</button>
-            <button comment="Switch receiver on" 
-                statetype="view"
-                statequery="MS?"
-                states="MS$text"
-                label="$" 
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
-            <button comment="Switch receiver on" 
-                statetype="view"
-                statequery="MU?"
-                states="MUON;MUOFF"
-                label="Mute;Unmuted"
-                style="red;light" 
-                seperator="false" skip="0" span="1" newrow="false" iconid="0">dummy</button>
-                <button comment="Switch receiver on" 
-                statetype="view"
-                statequery="MU?"
-                states="MUON;MUOFF"
-                label="Mute;Unmuted"
-                style="red;light" 
-                seperator="false" skip="0" span="1" newrow="false" iconid="20;21">dummy</button>
-            <button comment="Switch receiver on" 
-                statetype="toggle"
-                statequery="Z2?"
-                states="Z2ON;Z2OFF"
-                label="Z2 Off;Z2 on" style="red;light"
-                seperator="false" skip="0" span="2" newrow="false" iconid="0">Z2OFF;Z2ON</button>
-             <button comment="Call Preset 1" label="Preset 1" style="" seperator="true" skip="0" span="1" newrow="false" iconid="0">NSP1</button>
+            
+            <button comment="Call Preset 1" label="Preset 1" style="" seperator="true" skip="0" span="1" newrow="false" iconid="0">NSP1</button>
             <button comment="Call Preset 2" label="Preset 2" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP2</button>
             <button comment="Call Preset 3" label="Preset 3" style="" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSP3</button>
             <button comment="Set volume to -50db" label="-50db" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">MV30</button>
