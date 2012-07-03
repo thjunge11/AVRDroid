@@ -1520,6 +1520,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				}
 				else {
 					button.setOnClickListener(avrButtonOnClickListener);
+					button.setLines(2);
 					
 					if (xmlButton.enabled) {
 						button.setBackgroundResource(AVRLayoutUtils.getButtonStyleResId(xmlButton.style)); 
