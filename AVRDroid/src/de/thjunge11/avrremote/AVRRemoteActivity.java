@@ -725,11 +725,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
 		switch(id) {
 		case OP_MENU_SAVE:
+		case OP_MENU_RECONNECT:
 			// do not remove previous dialog to preserve filename
 			break;
 			
 		default:
-			removeDialog(id);
+			this.removeDialog(id);
 		}
 		super.onPrepareDialog(id, dialog, args);
 	}
