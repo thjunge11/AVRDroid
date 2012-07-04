@@ -18,7 +18,7 @@
                 statequery="PW?" states="PWON;PWSTANDBY" label="Standby;On" style="dark;red"
                 seperator="false" skip="0" span="1" newrow="false" iconid="0">PWSTANDBY;PWON</button>
             <button comment="Switch Main Zone on/off" statetype="toggle"
-                statequery="ZM?" states="ZMON;ZMOFF" label="MZ Off;MZ On" style="dark;red"
+                statequery="ZM?" states="ZMON;ZMOFF" label="ZM Off;ZM On" style="dark;red"
                 seperator="false" skip="0" span="1" newrow="false" iconid="0">ZMOFF;ZMON</button>
             <button comment="Select input source" statetype="chooser" 
                 statequery="SI?" states="SI$text"
@@ -57,7 +57,7 @@
                 list="Sleep Off;Sleep 10min;Sleep 20min;Sleep 30min;Sleep 45min;Sleep 60min;Sleep 90min;Sleep 120min "
                 seperator="false" skip="0" span="1" newrow="false"
                 iconid="0">SLPOFF;SLP010;SLP020;SLP030;SLP045;SLP060;SLP090;SLP120</button>
-            <button comment="Enter/Play" label="Enter" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="4">NS94</button>
+            <button comment="Enter/Play" label="Enter" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">NS94</button>
             
             <button comment="Switch Mute on/off" statetype="toggle" 
                 statequery="MU?" states="MUON;MUOFF" label="Mute off;Mute on" iconid="20;21" style="red;dark"
@@ -65,12 +65,12 @@
             <button comment="Increase volume" label="Vol+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP</button>
             <button comment="Audyssey seetings MultEQ XT" statetype="chooser"
                 statequery="PSMULTEQ: ?" states="PSMULTEQ:$text"
-                label="MultEQ $" style="light"
+                label="Multi EQ $" style="light"
                 list="Off;Audyssey;Audyssey Byp. L/R;Audyssey Flat;Manual"
                 seperator="false" skip="0" span="1" newrow="false" iconid="0">PSMULTEQ:OFF;PSMULTEQ:AUDYSSEY;PSMULTEQ:BYP.LR;PSMULTEQ:FLAT;PSMULTEQ:MANUAL</button>
             <button comment="Switch Dynamic EQ on/off" statetype="chooser"
                 statequery="PSDYNEQ ?" states="PSDYNEQ $text"
-                label="DynEQ $" style="light"
+                label="Dyn EQ $" style="light"
                 list="Dynamic EQ Off;Dynamic EQ On"
                 seperator="false" skip="0" span="1" newrow="false" iconid="0">PSDYNEQ OFF;PSDYNEQ ON</button>
             <button comment="Set volume to ..." statetype="chooser"
@@ -80,7 +80,7 @@
             <button comment="Decrease volume" label="Vol-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN</button>
             <button comment="Set Dynamic Volume" statetype="chooser"
                 statequery="PSDYNVOL ?" states="PSDYNVOL $text"
-                label="DynVol $" style="light"
+                label="Dyn Vol $" style="light"
                 list="Dynamic Volume Off;Dynamic Volume Day;Dynamic Volume Evening;Dynamic Volume Midnight"
                 seperator="false" skip="0" span="1" newrow="false" iconid="0">PSDYNVOL OFF;PSDYNVOL DAY;PSDYNVOL EVE;PSDYNVOL NGT</button>
             <button comment="Set Reference Level Offset" statetype="chooser"
@@ -93,20 +93,6 @@
             
          </buttons>
       </page>
-      <page orientation="landscape" name="Control" buttonheight_scale="0.4" buttons_per_row="8">
-         <buttons class="java.util.ArrayList">
-         <button statetype="view" statequery="NSE" states="NSE0$text" label="line 1:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
-         <button statetype="view" statequery="NSE" states="NSE1$text" label="line 2:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
-         <button statetype="view" statequery="NSE" states="NSE2$text" label="line 3:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
-         <button statetype="view" statequery="NSE" states="NSE3$text" label="line 4:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
-         <button statetype="view" statequery="NSE" states="NSE4$text" label="line 5:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
-         <button statetype="view" statequery="NSE" states="NSE5$text" label="line 6:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
-         <button statetype="view" statequery="NSE" states="NSE6$text" label="line 7:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
-         <button statetype="view" statequery="NSE" states="NSE7$text" label="line 8:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
-         <button statetype="view" statequery="NSE" states="NSE8$text" label="line 9:$" seperator="false" skip="0" span="8" newrow="false" iconid="0">dummy</button>
-            
-         </buttons>
-         </page>
        <page orientation="landscape" name="Control" buttonheight_scale="0.7" buttons_per_row="8">
          <buttons class="java.util.ArrayList">
             <button comment="Switch receiver on" label="On" style="light" seperator="false" skip="0" span="2" newrow="false" iconid="0">PWON</button>
@@ -141,6 +127,7 @@
             <button comment="Skip next title/track" label="Skip next" style="" seperator="false" skip="0" span="1" newrow="false" iconid="2">NS9D</button>
          </buttons>
       </page>
+      
       <page orientation="portrait" name="Media" buttonheight_scale="0.7" buttons_per_row="4">
          <buttons class="java.util.ArrayList">
             <button comment="Search for letter A" label="Search A" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="0">NSDA</button>
@@ -169,6 +156,106 @@
             <button comment="Switch Repeat on" label="Rpt On" style="" seperator="false" skip="0" span="1" newrow="false" iconid="6">NS9H</button>
             <button comment="Switch Repeat/Random off" label="Off" style="" seperator="false" skip="0" span="1" newrow="false" iconid="13">NS9M_NS9J</button>
             <button comment="Decrease volume" label="Vol -" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN</button>
+         </buttons>
+      </page>
+      <page orientation="portrait" name="Zone 2" buttonheight_scale="0.7" buttons_per_row="4">
+         <buttons class="java.util.ArrayList">
+            <button comment="Current volume Zone 2" statetype="view"
+                statequery="Z2?" states="Z2$number"
+                label="Z2 Volume: $" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Zone 2 Stereo/Mono" statetype="view"
+                statequery="Z2CS?" states="Z2CSST;Z2CSMONO"
+                label="Stereo;Mono" style="dark;dark"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">dummy</button>
+       		<button comment="Zone 2 HPF on/off" statetype="view"
+                statequery="Z2HPF?" states="Z2HPFON;Z2HPFOFF"
+                label="HPF On;HPF Off" style="dark;dark"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">dummy</button>
+            <button comment="Switch receiver on/off" statetype="toggle"
+                statequery="PW?" states="PWON;PWSTANDBY" label="Standby;On" style="dark;red"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">PWSTANDBY;PWON</button>
+            <button comment="Switch Zone 2 on/off" statetype="toggle"
+                statequery="Z2?" states="Z2ON;Z2OFF" label="Z2 Off;Z2 On" style="dark;red"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">Z2OFF;Z2ON</button>
+            <button comment="Select input source" statetype="chooser"
+                label="Source Z2" style="light"
+                list="Source;Blue Ray;Sat/Cable;TV;Net/USB;DVD;V.AUX;Dock;Tuner;Game 1;Game 2;DVR;CD;Phono"
+                seperator="false" skip="0" span="2" newrow="false" 
+                iconid="0">Z2SOURCE;Z2BD;Z2SAT/CBL;Z2TV;Z2NET/USB;Z2DVD;Z2V.AUX;Z2DOCK;Z2TUNER;Z2GAME;Z2GAME2;Z2DVR;Z2CD;Z2PHONO</button>
+              
+			<button comment="Quick Select 1" label="Quick 1" style="dark" seperator="true" skip="0" span="1" newrow="false" iconid="0">Z2QUICK1</button>
+            <button comment="Quick Select 2" label="Quick 2" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z2QUICK2</button>
+            <button comment="Quick Select 3" label="Quick 3" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z2QUICK3</button>
+            <button comment="Quick Select 4" label="Quick 4" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z2QUICK4</button>            
+            
+            <button comment="Switch Mute on/off" statetype="toggle" 
+                statequery="Z2MU?" states="Z2MUON;Z2MUOFF" label="Mute off;Mute on" iconid="20;21" style="red;dark"
+                seperator="true" skip="0" span="1" newrow="false">Z2MUOFF;Z2MUON</button>
+            <button comment="Increase volume" label="Vol+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z2UP</button>
+           <button comment="Switch Zone 2 Channel setting Mono/Stereo" statetype="toggle" 
+                statequery="Z2CS?" states="Z2CSMONO;Z2CSST" label="Stereo;Mono" style="dark;dark"
+                seperator="false" skip="0" span="1" newrow="false">Z2CSST;Z2CSMONO</button>
+             <button comment="Switch Zone 2 HPF on/off" statetype="toggle" 
+                statequery="Z2HPF?" states="Z2HPFON;Z2HPFOFF" label="HPF off;HPF on" style="dark;dark"
+                seperator="false" skip="0" span="1" newrow="false">Z2HPFOFF;Z2HPFON</button>
+            <button comment="Set volume to ..." statetype="chooser"
+			    label="Set Vol" style="light" 
+			    list="-70db;-60db;-50db;-40db;-30db;-25db;-20db;-15db;-10db"
+			    seperator="false" skip="0" span="1" newrow="false" iconid="0">Z210;Z220;Z230;Z240;Z250;Z255;Z260;Z265;Z270</button>
+            <button comment="Decrease volume" label="Vol-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z2DOWN</button>
+             
+            
+         </buttons>
+      </page>
+      <page orientation="portrait" name="Zone 3" buttonheight_scale="0.7" buttons_per_row="4">
+         <buttons class="java.util.ArrayList">
+            <button comment="Current volume Zone 3" statetype="view"
+                statequery="Z3?" states="Z3$number"
+                label="Z3 Volume: $" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Zone 2 Stereo/Mono" statetype="view"
+                statequery="Z3CS?" states="Z3CSST;Z3CSMONO"
+                label="Stereo;Mono" style="dark;dark"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">dummy</button>
+       		<button comment="Zone 2 HPF on/off" statetype="view"
+                statequery="Z3HPF?" states="Z3HPFON;Z3HPFOFF"
+                label="HPF On;HPF Off" style="dark;dark"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">dummy</button>
+            <button comment="Switch receiver on/off" statetype="toggle"
+                statequery="PW?" states="PWON;PWSTANDBY" label="Standby;On" style="dark;red"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">PWSTANDBY;PWON</button>
+            <button comment="Switch Zone 2 on/off" statetype="toggle"
+                statequery="Z3?" states="Z3ON;Z3OFF" label="Z3 Off;Z3 On" style="dark;red"
+                seperator="false" skip="0" span="1" newrow="false" iconid="0">Z3OFF;Z3ON</button>
+            <button comment="Select input source" statetype="chooser"
+                label="Source Z3" style="light"
+                list="Source;Blue Ray;Sat/Cable;TV;Net/USB;DVD;V.AUX;Dock;Tuner;Game 1;Game 2;DVR;CD;Phono"
+                seperator="false" skip="0" span="2" newrow="false" 
+                iconid="0">Z3SOURCE;Z3BD;Z3SAT/CBL;Z3TV;Z3NET/USB;Z3DVD;Z3V.AUX;Z3DOCK;Z3TUNER;Z3GAME;Z3GAME2;Z3DVR;Z3CD;Z3PHONO</button>
+              
+			<button comment="Quick Select 1" label="Quick 1" style="dark" seperator="true" skip="0" span="1" newrow="false" iconid="0">Z3QUICK1</button>
+            <button comment="Quick Select 2" label="Quick 2" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z3QUICK2</button>
+            <button comment="Quick Select 3" label="Quick 3" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z3QUICK3</button>
+            <button comment="Quick Select 4" label="Quick 4" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z3QUICK4</button>            
+            
+            <button comment="Switch Mute on/off" statetype="toggle" 
+                statequery="Z3MU?" states="Z3MUON;Z3MUOFF" label="Mute off;Mute on" iconid="20;21" style="red;dark"
+                seperator="true" skip="0" span="1" newrow="false">Z3MUOFF;Z3MUON</button>
+            <button comment="Increase volume" label="Vol+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z3UP</button>
+           <button comment="Switch Zone 2 Channel setting Mono/Stereo" statetype="toggle" 
+                statequery="Z3CS?" states="Z3CSMONO;Z3CSST" label="Stereo;Mono" style="dark;dark"
+                seperator="false" skip="0" span="1" newrow="false">Z3CSST;Z3CSMONO</button>
+             <button comment="Switch Zone 2 HPF on/off" statetype="toggle" 
+                statequery="Z3HPF?" states="Z3HPFON;Z3HPFOFF" label="HPF off;HPF on" style="dark;dark"
+                seperator="false" skip="0" span="1" newrow="false">Z3HPFOFF;Z3HPFON</button>
+            <button comment="Set volume to ..." statetype="chooser"
+			    label="Set Vol" style="light" 
+			    list="-70db;-60db;-50db;-40db;-30db;-25db;-20db;-15db;-10db"
+			    seperator="false" skip="0" span="1" newrow="false" iconid="0">Z310;Z320;Z330;Z340;Z350;Z355;Z360;Z365;Z370</button>
+            <button comment="Decrease volume" label="Vol-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">Z3DOWN</button>
+             
+            
          </buttons>
       </page>
       <page orientation="landscape" name="Media" buttonheight_scale="0.7" buttons_per_row="8">
