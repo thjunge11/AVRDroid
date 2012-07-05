@@ -22,6 +22,7 @@ public class AVRRemoteStateChangeService extends Service {
 	private AtomicBoolean stateReceiving = new AtomicBoolean();
 	private AVRRemoteStateChangeListener callback;
 	private StateVector stateVector;
+	private Object lock = new Object();
 	
 	public class LocalBinder extends Binder {
 		AVRRemoteStateChangeService getService() {
@@ -84,9 +85,11 @@ public class AVRRemoteStateChangeService extends Service {
 		this.callback = callback;
 	}
 	
-	synchronized public void registerStates(Vector<String> states) {
-		stateVector.clear();
-		stateVector.addAll(states);
+	public void registerStates(Vector<String> states) {
+		synchronized(lock) {
+			stateVector.clear();
+			stateVector.addAll(states);
+		}
 		if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService: states registered:" + states.toString());
 	}
 	
@@ -107,7 +110,7 @@ public class AVRRemoteStateChangeService extends Service {
 	private Runnable bodyReceivingThread = new Runnable() {
 		
 		@Override
-		synchronized public void run() {
+		public void run() {
 		
 			if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread started");
 			
@@ -128,9 +131,11 @@ public class AVRRemoteStateChangeService extends Service {
 							// if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
 							
 							// check if in state vector
-							if (stateVector.contains(receiveEvent)) {
-								// if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread callback: " + receiveEvent);
-								callback.onStateChange(receiveEvent);
+							synchronized(lock) {
+								if (stateVector.contains(receiveEvent)) {
+									// if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread callback: " + receiveEvent);
+									callback.onStateChange(receiveEvent);
+								}
 							}
 							
 							receiveEvent = "";
