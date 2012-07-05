@@ -93,6 +93,7 @@
             
          </buttons>
       </page>
+      
        <page orientation="landscape" name="Control" buttonheight_scale="0.7" buttons_per_row="8">
          <buttons class="java.util.ArrayList">
             <button comment="Switch receiver on" label="On" style="light" seperator="false" skip="0" span="2" newrow="false" iconid="0">PWON</button>
@@ -158,6 +159,99 @@
             <button comment="Decrease volume" label="Vol -" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN</button>
          </buttons>
       </page>
+      <page orientation="portrait" name="Level" buttonheight_scale="0.6" buttons_per_row="6">
+         <buttons class="java.util.ArrayList">
+            <button comment="Front left channel volume" statetype="view"
+                statequery="CV?" states="CVFL $number"
+                label="Front L: $" style="light"
+                seperator="true" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Center channel volume" statetype="view"
+                statequery="CV?" states="CVC $number"
+                label="Center: $" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Front right channel volume" statetype="view"
+                statequery="CV?" states="CVFR $number"
+                label="Front R: $" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFL UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFL DOWN</button>
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVC UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVC DOWN</button>
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFR UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFR DOWN</button>
+            
+            <button comment="Surround left channel volume" statetype="view"
+                statequery="CV?" states="CVSL $number"
+                label="Surr L: $" style="light"
+                seperator="true" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Subwoofer channel volume" statetype="view"
+                statequery="CV?" states="CVSW $number"
+                label="Sub: $" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Surround right channel volume" statetype="view"
+                statequery="CV?" states="CVSR $number"
+                label="Surr R: $" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSL UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSL DOWN</button>
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSW UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSW DOWN</button>
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSR UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSR DOWN</button>
+            
+            <button comment="Surround Back left channel volume" statetype="view"
+                statequery="CV?" states="CVSBL $number"
+                label="Surr B L: $" style="light"
+                seperator="true" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Surround Back channel volume" statetype="view"
+                statequery="CV?" states="CVSB $number"
+                label="Surr B: $" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Surround Back right channel volume" statetype="view"
+                statequery="CV?" states="CVSBR $number"
+                label="Surr B R: $" style="light"
+                seperator="false" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSBL UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSBL DOWN</button>
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSB UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSB DOWN</button>
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSBR UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVSBR DOWN</button>
+            
+            <button comment="Front Hight left channel volume" statetype="view"
+                statequery="CV?" states="CVFHL $number"
+                label="Fr H L: $" style="light"
+                seperator="true" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Front Hight right channel volume" statetype="view"
+                statequery="CV?" states="CVFHR $number"
+                label="Fr H R: $" style="light"
+                seperator="false" skip="2" span="2" newrow="false" iconid="0">dummy</button>
+            
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFHL UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFHL DOWN</button>
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="2" span="1" newrow="false" iconid="0">CVFHR UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFHR DOWN</button>
+            
+            <button comment="Front Wide left channel volume" statetype="view"
+                statequery="CV?" states="CVFWL $number"
+                label="Fr W L: $" style="light"
+                seperator="true" skip="0" span="2" newrow="false" iconid="0">dummy</button>
+            <button comment="Front Wide right channel volume" statetype="view"
+                statequery="CV?" states="CVFWR $number"
+                label="Fr W R: $" style="light"
+                seperator="false" skip="2" span="2" newrow="false" iconid="0">dummy</button>
+            
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFWL UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFWL DOWN</button>
+            <button comment="volume up" label="+" style="dark" seperator="false" skip="2" span="1" newrow="false" iconid="0">CVFWR UP</button>
+            <button comment="volume down" label="-" style="dark" seperator="false" skip="0" span="1" newrow="false" iconid="0">CVFWR DOWN</button>
+            
+         </buttons>
+      </page>
+      
       <page orientation="portrait" name="Zone 2" buttonheight_scale="0.7" buttons_per_row="4">
          <buttons class="java.util.ArrayList">
             <button comment="Current volume Zone 2" statetype="view"
