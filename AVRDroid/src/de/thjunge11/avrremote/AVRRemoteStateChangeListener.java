@@ -1,5 +1,7 @@
 package de.thjunge11.avrremote;
 
+import android.os.Bundle;
+
 public interface AVRRemoteStateChangeListener {
-	void onStateChange(String message);
+	void onStateChange(Bundle bundle);
 }

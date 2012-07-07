@@ -12,6 +12,7 @@ public class StateButtonAttributes {
 	
 	private int storeState;
 	private String storedParam;
+	private boolean stateReceived;
 	
 	private int noOfStates;
 	private int stateType;
@@ -39,6 +40,7 @@ public class StateButtonAttributes {
 	public int getNoOfChooseItems()  { return this.noOfChooseItems; }
 	// single state access
 	public int getStoredState() { return storeState; }
+	public boolean getStateReceived() { return stateReceived; }
 	public String getStoredParam () { return storedParam; }
 	public String getLabel(int stateId) { 
 		if (stateId >= 0 && stateId < noOfStates) {
@@ -65,8 +67,11 @@ public class StateButtonAttributes {
 	public int getIconId(int stateId) { if (stateId >= 0 && stateId < noOfStates) return iconIds[stateId]; else return ButtonIcons.NO_ICON; }
 	public String getState(int stateId) { if ((stateId >= 0 && stateId < noOfStates) && (states != null)) return states[stateId]; else return ""; }
 	
+	// access fields
+	public void resetStateReceived () { this.stateReceived = false; }
+	
 	// copy constructor
-	public StateButtonAttributes(StateButtonAttributes stateButtonAttributes, int storeState, String receivedState) {
+	public StateButtonAttributes(StateButtonAttributes stateButtonAttributes, int storeState, String receivedState, boolean stateReceived) {
 		this.storeState = storeState;
 		this.noOfStates = stateButtonAttributes.getNoOfStates();
 		this.statequery = stateButtonAttributes.getStateQuery();
@@ -80,6 +85,7 @@ public class StateButtonAttributes {
 		this.storedParam = stateButtonAttributes.getStoredParam();
 		this.list = stateButtonAttributes.getList();
 		this.noOfChooseItems = stateButtonAttributes.getNoOfChooseItems();
+		this.stateReceived = stateReceived;
 		
 		if (this.paramType == PARAM_TYPE_NUMBER) {
 			String value = receivedState.substring(states[0].length()-1);
@@ -104,6 +110,7 @@ public class StateButtonAttributes {
 		this.storeState =  storeState;
 		this.stateType = stateType;
 		this.statequery = statequery;
+		this.stateReceived = false;
 		
 		// process commands/list
 		if (stateType == de.thjunge11.avrremote.xmlModel.Button.STATETYPE_SELECT) {
@@ -249,6 +256,10 @@ public class StateButtonAttributes {
 			str.append(";commands=");
 			for (int i=0; i < noOfStates; i++) { str.append(commands[i]); str.append("|"); }
 		}
+		str.append(";storeState=");
+		str.append(storeState);
+		str.append(";stateReceived=");
+		str.append(stateReceived);
 		
 		str.append("]");
 		return str.toString();

@@ -286,11 +286,34 @@ public class ButtonStore {
 			if (entry.getValue().getStateQuery() != null) {
 				if (!stateQueryStrings.contains(entry.getValue().getStateQuery())) {
 					stateQueryStrings.add(entry.getValue().getStateQuery());
+					if (BuildConfig.DEBUG) Log.d(TAG, "getStateQueries(): added statequery=" + entry.getValue().getStateQuery());
 					stateQueries.add(new StateQueryAttributes(entry.getValue().getStateQuery(), entry.getKey()));
 				}
 			}
 		}
 		return stateQueries;
+	}
+	
+	static public void resetStatesReceived() {
+		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()){
+			entry.getValue().resetStateReceived();
+		}
+	}
+	
+	static public boolean areStatesReceived(String stateQuery) {
+		if (BuildConfig.DEBUG) Log.d(TAG, "areStatesReceived(): called with statequery=:" + stateQuery);
+		// return false if at least on button with corresponding statequery has not received a state in processState yet
+		for (Map.Entry<Integer, StateButtonAttributes> entry : mapStateButtonAttributes.entrySet()){
+			if (entry.getValue().getStateQuery() != null) {
+				if (entry.getValue().getStateQuery().equals(stateQuery)) {
+					if (entry.getValue().getStateReceived() == false) {
+						if (BuildConfig.DEBUG) Log.d(TAG, "areStatesReceived(): found:" + entry.getValue().toString());
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 	
 	static public Vector<Integer> processState(String receivedState) {
@@ -336,7 +359,7 @@ public class ButtonStore {
 		if (matchedKeys.size() > 0) {
 			for (int i=0; i < matchedKeys.size(); i++) {
 				StateButtonAttributes storeAttr = mapStateButtonAttributes.get(matchedKeys.get(i));
-				mapStateButtonAttributes.put(matchedKeys.get(i), new StateButtonAttributes(storeAttr, matchedKeysStateIds.get(i), receivedState));	
+				mapStateButtonAttributes.put(matchedKeys.get(i), new StateButtonAttributes(storeAttr, matchedKeysStateIds.get(i), receivedState, true));	
 			}
 		}
 		return matchedKeys;

@@ -191,13 +191,13 @@
             <button comment="Skip previous track/title" label="Skip prev" style="light" seperator="true" skip="0" span="1" newrow="false" iconid="5">NS9E</button>
             <button comment="Pause" label="Pause" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="3">NS9B</button>
             <button comment="Skip next track/title" label="Skip next" style="light" seperator="false" skip="0" span="1" newrow="false" iconid="2">NS9D</button>
-            <button comment="Increase volume" label="Vol +" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP_MVUP</button>
+            <button comment="Increase volume" label="Vol +" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVUP</button>
             
             <button comment="Toggle Random" label="Rnd On" style="" seperator="false" skip="0" span="1" newrow="false" iconid="8">NS9K</button>
             
             <button comment="Switch Repeat on" label="Rpt On" style="" seperator="false" skip="0" span="1" newrow="false" iconid="6">NS9H</button>
             <button comment="Switch Repeat/Random off" label="Off" style="" seperator="false" skip="0" span="1" newrow="false" iconid="13">NS9M_NS9J</button>
-            <button comment="Decrease volume" label="Vol -" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN</button>
+            <button comment="Decrease volume" label="Vol -" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN</button>
          </buttons>
       </page>
       <page orientation="landscape" name="Media" buttonheight_scale="0.7" buttons_per_row="8">
@@ -224,8 +224,8 @@
             <button comment="Switch Repeat/Random off" label="Off" style="" seperator="false" skip="0" span="1" newrow="false" iconid="13">NS9M_NS9J</button>
             <button comment="Move down" label="down" style="" seperator="false" skip="1" span="1" newrow="false" iconid="14">NS91</button>
             <button comment="Go back" label="Back" style="" seperator="false" skip="1" span="1" newrow="false" iconid="12">MNRTN</button>
-            <button comment="Increase volume" label="Vol +" style="red" seperator="false" skip="1" span="1" newrow="false" iconid="0">MVUP_MVUP</button>
-            <button comment="Decrease volume" label="Vol -" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN_MVDOWN</button>
+            <button comment="Increase volume" label="Vol +" style="red" seperator="false" skip="1" span="1" newrow="false" iconid="0">MVUP</button>
+            <button comment="Decrease volume" label="Vol -" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="0">MVDOWN</button>
             <button comment="Mute on" label="Mute On" style="red" seperator="false" skip="0" span="1" newrow="false" iconid="21">MUON</button>
          </buttons>
       </page>

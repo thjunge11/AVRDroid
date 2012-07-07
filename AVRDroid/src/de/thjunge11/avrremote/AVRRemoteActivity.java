@@ -86,8 +86,9 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private static final String CURRENTLAYOUT = "currentlayout.xml"; 
 	private static final String CURRENTLAYOUTSHARE = "currentlayout_share.xml";
 	private static final String KEY_FILENAME = "filename";
+	private static final String KEY_WAIT_ONLY = "AVRRemoteActivity.WAIT_ONLY";
 	private static final int TIME_WAIT_STATE_QUERIES = 50;
-	private static final int MAX_STATE_QUERIES = 10;
+	private static final int MAX_STATE_QUERIES = 5;
 	
 	private static final int HOR_DUMMY_VIEW_HEIGHT = 20;
 	private static final int BUTTON_MARGIN = 0;
@@ -403,12 +404,24 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private class StateChangeListener implements AVRRemoteStateChangeListener {
 
 		@Override
-		public void onStateChange(final String state) {
+		public void onStateChange(final Bundle bundle) {
 			AVRRemoteActivity.this.runOnUiThread(new Runnable() {
 				
 				@Override
 				public void run() {
-					AVRRemoteActivity.this.updateStateButtons(ButtonStore.processState(state));
+					// cancel sleeping task
+					if (taskHandlerSendAVRStateQueryCommand != null) {
+						if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
+							taskHandlerSendAVRStateQueryCommand.cancel(true);
+						}
+					}
+					// start new sleeping task without sending to wait for new incoming events
+					taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();			
+					taskHandlerSendAVRStateQueryCommand.execute(KEY_WAIT_ONLY);
+					
+					if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeListener(); called with arg:" + bundle.getString(AVRRemoteStateChangeService.KEY_STATECHANGE_EVENT));
+					AVRRemoteActivity.this.updateStateButtons(ButtonStore.processState(bundle.getString(AVRRemoteStateChangeService.KEY_STATECHANGE_EVENT)));
+					AVRRemoteActivity.this.updateStateQueryQueue(true);
 				}
 			});
 		}
@@ -452,9 +465,12 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 
 		@Override
 		protected Boolean doInBackground(String... arg0) {
-			// flush socket read buffer
 			
-			AVRConnection.sendComplexCommand(arg0[0]);
+			if (!arg0[0].equals(KEY_WAIT_ONLY)) {
+				AVRConnection.sendComplexCommand(arg0[0]);
+			}
+			// we need this timer in combination with call to updateStateQuery
+			// if no callback answer comes from stateChangeReceiver
 			try {
 				Thread.sleep(TIME_WAIT_STATE_QUERIES);
 			} catch (InterruptedException e1) {
@@ -464,9 +480,10 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 		
 		protected void onPostExecute(Boolean status) {
-			AVRRemoteActivity.this.updateStateQueryQueue();
+			AVRRemoteActivity.this.updateStateQueryQueue(false);
 		}
 	}
+	
 	
 	@Override
 	protected void updateConnectionStatus(boolean status) {
@@ -513,6 +530,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 		Vector <StateQueryAttributes> queue = ButtonStore.getStateQueries();
 		mQueueStateQuery.addAll(queue);
+		ButtonStore.resetStatesReceived();
 		if (!mQueueStateQuery.isEmpty()) {
 			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
 			String statequery = mQueueStateQuery.peek().getStateQuery();
@@ -520,23 +538,32 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 	}
 	
-	private void updateStateQueryQueue() {
+	private void updateStateQueryQueue(boolean waitForNextEvent) {
 		if (!mQueueStateQuery.isEmpty()) {
-			if (ButtonStore.isButtonStateDefined(mQueueStateQuery.peek().getButtonId())) {
+			if (ButtonStore.areStatesReceived(mQueueStateQuery.peek().getStateQuery())) {
 				mQueueStateQuery.remove();
 				mStateQueryCounter = MAX_STATE_QUERIES;
+				// Remove following statequeries if states are already received
+				while (!mQueueStateQuery.isEmpty()) {
+					if (!ButtonStore.areStatesReceived(mQueueStateQuery.peek().getStateQuery())) {
+						break;
+					}
+					mQueueStateQuery.remove();
+				}
 			}
-			else {
+			else if (!waitForNextEvent) {
+				// remove query after MAX_STATE_QUERIES tries
 				mStateQueryCounter--;
 				if (mStateQueryCounter <= 0) {
 					mQueueStateQuery.remove();
 					mStateQueryCounter = MAX_STATE_QUERIES;
 				}
-			}
+			}			
 		}
-		if (!mQueueStateQuery.isEmpty()) {
-			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
+		if (!mQueueStateQuery.isEmpty() && !waitForNextEvent) {
 			String statequery = mQueueStateQuery.peek().getStateQuery();
+			if (BuildConfig.DEBUG)Log.d(TAG, "updateStateQueryQueue(); send next: " + statequery);
+			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();			
 			taskHandlerSendAVRStateQueryCommand.execute(statequery);
 		}
 	}

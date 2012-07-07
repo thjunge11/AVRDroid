@@ -10,12 +10,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
 public class AVRRemoteStateChangeService extends Service {
 
 	private static final String TAG = AVRRemoteStateChangeService.class.getSimpleName();
+	public static final String KEY_STATECHANGE_EVENT = "AVRRemoteStateChangeService.Event";
 		
 	private final IBinder mBinder = new LocalBinder();
 	private Thread handlerReceivingThread;
@@ -128,13 +130,15 @@ public class AVRRemoteStateChangeService extends Service {
 						intChar = socketInputStream.read();
 					
 						if (intChar == 0x0D) {
-							// if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
+							if (BuildConfig.DEBUG) Log.d(TAG, "received: " + receiveEvent);
 							
 							// check if in state vector
 							synchronized(lock) {
 								if (stateVector.contains(receiveEvent)) {
-									// if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread callback: " + receiveEvent);
-									callback.onStateChange(receiveEvent);
+									Bundle bundle = new Bundle();
+									bundle.putString(KEY_STATECHANGE_EVENT, receiveEvent);
+									if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeReceiverService.ReceivingThread callback: " + bundle.toString());
+									callback.onStateChange(bundle);
 								}
 							}
 							
