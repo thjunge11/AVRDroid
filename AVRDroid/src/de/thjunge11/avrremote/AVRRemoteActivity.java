@@ -88,7 +88,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 	private static final String KEY_FILENAME = "filename";
 	private static final String KEY_WAIT_ONLY = "AVRRemoteActivity.WAIT_ONLY";
 	private static final int TIME_WAIT_STATE_QUERIES = 50;
-	private static final int MAX_STATE_QUERIES = 5;
+	private static final int MAX_STATE_QUERIES = 10;
 	
 	private static final int HOR_DUMMY_VIEW_HEIGHT = 20;
 	private static final int BUTTON_MARGIN = 0;
@@ -409,19 +409,8 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 				
 				@Override
 				public void run() {
-					// cancel sleeping task
-					if (taskHandlerSendAVRStateQueryCommand != null) {
-						if (taskHandlerSendAVRStateQueryCommand.getStatus() == AsyncTask.Status.RUNNING) {
-							taskHandlerSendAVRStateQueryCommand.cancel(true);
-						}
-					}
-					// start new sleeping task without sending to wait for new incoming events
-					taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();			
-					taskHandlerSendAVRStateQueryCommand.execute(KEY_WAIT_ONLY);
-					
 					if (BuildConfig.DEBUG) Log.d(TAG, "StateChangeListener(); called with arg:" + bundle.getString(AVRRemoteStateChangeService.KEY_STATECHANGE_EVENT));
 					AVRRemoteActivity.this.updateStateButtons(ButtonStore.processState(bundle.getString(AVRRemoteStateChangeService.KEY_STATECHANGE_EVENT)));
-					AVRRemoteActivity.this.updateStateQueryQueue(true);
 				}
 			});
 		}
@@ -480,7 +469,7 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		}
 		
 		protected void onPostExecute(Boolean status) {
-			AVRRemoteActivity.this.updateStateQueryQueue(false);
+			AVRRemoteActivity.this.updateStateQueryQueue();
 		}
 	}
 	
@@ -532,39 +521,47 @@ public class AVRRemoteActivity extends AVRActivity implements SimpleGestureListe
 		mQueueStateQuery.addAll(queue);
 		ButtonStore.resetStatesReceived();
 		if (!mQueueStateQuery.isEmpty()) {
-			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
 			String statequery = mQueueStateQuery.peek().getStateQuery();
+			if (BuildConfig.DEBUG)Log.d(TAG, "initStateQueryQueue(); send: " + statequery);
+			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();
 			taskHandlerSendAVRStateQueryCommand.execute(statequery);
 		}
 	}
 	
-	private void updateStateQueryQueue(boolean waitForNextEvent) {
+	private void updateStateQueryQueue() {
+		// remove last query from queue
 		if (!mQueueStateQuery.isEmpty()) {
-			if (ButtonStore.areStatesReceived(mQueueStateQuery.peek().getStateQuery())) {
-				mQueueStateQuery.remove();
-				mStateQueryCounter = MAX_STATE_QUERIES;
-				// Remove following statequeries if states are already received
-				while (!mQueueStateQuery.isEmpty()) {
-					if (!ButtonStore.areStatesReceived(mQueueStateQuery.peek().getStateQuery())) {
-						break;
-					}
-					mQueueStateQuery.remove();
-				}
-			}
-			else if (!waitForNextEvent) {
-				// remove query after MAX_STATE_QUERIES tries
-				mStateQueryCounter--;
-				if (mStateQueryCounter <= 0) {
-					mQueueStateQuery.remove();
-					mStateQueryCounter = MAX_STATE_QUERIES;
-				}
-			}			
+			mQueueStateQuery.remove();
 		}
-		if (!mQueueStateQuery.isEmpty() && !waitForNextEvent) {
+		// send burst queries
+		if (!mQueueStateQuery.isEmpty()) {
 			String statequery = mQueueStateQuery.peek().getStateQuery();
 			if (BuildConfig.DEBUG)Log.d(TAG, "updateStateQueryQueue(); send next: " + statequery);
 			taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();			
 			taskHandlerSendAVRStateQueryCommand.execute(statequery);
+		}
+		// update queue
+		else if (mStateQueryCounter > 0){
+			
+			mStateQueryCounter--;
+			if (BuildConfig.DEBUG)Log.d(TAG, "updateStateQueryQueue(); counter: " + mStateQueryCounter);
+			
+			Vector <StateQueryAttributes> queue = ButtonStore.getStateQueries();
+			Vector <StateQueryAttributes> updatedqueue = new Vector<StateQueryAttributes>();
+			
+			for (int i=0; i < queue.size(); i++) {
+				if (!ButtonStore.areStatesReceived(queue.get(i).getStateQuery())) {
+					updatedqueue.add(queue.get(i));
+				}
+			}
+			mQueueStateQuery.addAll(updatedqueue);
+			
+			if (!mQueueStateQuery.isEmpty()) {
+				String statequery = mQueueStateQuery.peek().getStateQuery();
+				if (BuildConfig.DEBUG)Log.d(TAG, "updateStateQueryQueue(); send first from updated queue: " + statequery);
+				taskHandlerSendAVRStateQueryCommand = new SendAVRStateQueryCommand();			
+				taskHandlerSendAVRStateQueryCommand.execute(statequery);
+			}
 		}
 	}
 	
