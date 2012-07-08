@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AVRDroid</string>
-    <string name="versionName">1.5</string>
+    <string name="versionName">2.0</string>
     <string name="version">Version:</string>
     <string name="status_not_connected">No Connection</string>
     <string name="label_bt_send">Send</string>
